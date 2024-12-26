@@ -8,9 +8,9 @@ html {
   }
 }
 
-.btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
+/* .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
-}
+} */
 
 html {
   position: relative;
@@ -73,7 +73,7 @@ body {
   color: #282828;
   font-weight: bold;
 }
-
+/*Lọc danh sách*/
 /* Danh sách menu genres */
 .genre-menu-list {
   list-style-type: none;       /* Bỏ bullet mặc định */
@@ -82,6 +82,10 @@ body {
   display: flex;              /* Sắp xếp các mục nằm ngang */
   justify-content: center;    /* Căn giữa menu */
   gap: 15px;                  /* Khoảng cách giữa các mục */
+  background-color: #f8f9fa;  /* Màu nền */
+  padding: 10px 20px;         /* Khoảng cách bên trong */
+  border: 1px solid #ddd;     /* Viền */
+  border-radius: 5px;         /* Bo góc */
 }
 
 /* Mỗi mục menu */
@@ -94,20 +98,44 @@ body {
   text-decoration: none;      /* Bỏ gạch chân */
   color: #333;                /* Màu chữ */
   font-size: 16px;            /* Kích thước chữ */
-  padding: 5px 10px;          /* Khoảng cách trong */
+  padding: 5px 15px;          /* Khoảng cách trong */
   border-radius: 3px;         /* Bo góc */
   transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng hover */
 }
 
-
 /* Hiệu ứng hover */
-.genre-menu a:hover {
-  background-color: #95a5a6; /* Màu nền khi hover */
-  color: #fff;               /* Màu chữ khi hover */
+.genre-menu-link:hover {
+  background-color: #95a5a6;  /* Màu nền khi hover */
+  color: #fff;                /* Màu chữ khi hover */
 }
+
+/* Mục được chọn */
+.genre-menu-link.active {
+  background-color: #0056b3;  /* Màu nền khi được chọn */
+  color: #fff;                /* Màu chữ khi được chọn */
+}
+
+/* Responsive: Thiết bị nhỏ */
+@media (max-width: 768px) {
+  .genre-menu-list {
+    flex-direction: column;    /* Chuyển thành dạng dọc */
+    align-items: center;       /* Căn giữa các mục */
+    gap: 10px;                 /* Giảm khoảng cách */
+  }
+
+  .genre-menu-link {
+    font-size: 14px;           /* Giảm kích thước chữ */
+    padding: 5px 10px;         /* Giảm padding */
+  }
+}
+
+/* Responsive: Thiết bị rất nhỏ */
 @media (max-width: 300px) {
-  .genre-menu ul {
-      flex-direction: column; /* Menu chuyển thành dạng dọc */
-      align-items: center;
+  .genre-menu-list {
+    padding: 5px 10px;         /* Giảm khoảng cách trong */
+  }
+
+  .genre-menu-link {
+    font-size: 12px;           /* Kích thước chữ nhỏ hơn */
   }
 }

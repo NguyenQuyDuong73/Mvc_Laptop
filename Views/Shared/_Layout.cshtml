@@ -34,8 +34,23 @@
         </nav>
     </header>
     <!-- Hiển thị menu các thể loại -->
-    <div class="genre-menu">
+    @* <div class="genre-menu">
         @await Html.PartialAsync("_GenreMenu", ViewData["Genres"] as IEnumerable<string>)
+    </div> *@
+    <div class="genre-menu">
+        @if (ViewData["Genres"] != null)
+        {
+            <ul class="genre-menu-list">
+                @foreach (var genre in (IEnumerable<string>)ViewData["Genres"])
+                {
+                    <li class="genre-menu-item">
+                        <a asp-controller="Home" asp-action="Index" asp-route-genre="@genre" class="genre-menu-link">
+                            @genre
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
     </div>
     <hr>
     <div class="container">

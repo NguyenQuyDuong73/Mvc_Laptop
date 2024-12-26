@@ -14,15 +14,20 @@ public class HomeController : Controller
         _context = context;
         _logger = logger;
     }
-    public IActionResult Index()
+    public IActionResult Index(string genre)
     {
         ViewData["Genres"] = _context.Laptop
             .Select(l => l.Genre)
             .Distinct()
             .OrderBy(g => g)
             .ToList();
+        // Lọc sản phẩm theo Genre
+        var laptops = string.IsNullOrEmpty(genre)
+            ? _context.Laptop.ToList() // Nếu không có genre, trả về tất cả sản phẩm
+            : _context.Laptop.Where(l => l.Genre == genre).ToList(); // Lọc theo genre
 
-        var laptops = _context.Laptop.ToList();
+        // Ghi lại Genre hiện tại (nếu có)
+        ViewData["CurrentGenre"] = genre;
         return View(laptops);
     }
 
