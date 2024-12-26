@@ -33,6 +33,11 @@
             </div>
         </nav>
     </header>
+    <!-- Hiển thị menu các thể loại -->
+    <div class="genre-menu">
+        @await Html.PartialAsync("_GenreMenu", ViewData["Genres"] as IEnumerable<string>)
+    </div>
+    <hr>
     <div class="container">
         <main role="main" class="pb-3">
             @RenderBody()

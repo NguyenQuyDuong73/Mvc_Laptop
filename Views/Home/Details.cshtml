@@ -1,0 +1,51 @@
+@model MvcLaptop.Models.Laptop
+
+@{
+    ViewData["Title"] = Model.Title;
+}
+
+<div class="details-container">
+    <div class="details-image">
+        <img src="@Model.ImageUrl" alt="@Model.Title" />
+    </div>
+    <div class="details-info">
+        <h1>@Model.Title</h1>
+        <p><strong>Thể loại:</strong> @Model.Genre</p>
+        <p><strong>Giá sản phẩm:</strong> $@Model.Price</p>
+        <p><strong>Thông tin sản phẩm:</strong></p>
+        <p>@Model.Description</p>
+    </div>
+</div>
+
+<style>
+    .details-container {
+        display: flex;
+        gap: 20px;
+        margin-top: 20px;
+    }
+
+    .details-image img {
+        max-width: 300px;
+        height: auto;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .details-info {
+        flex: 1;
+    }
+
+    .details-info h1 {
+        font-size: 28px;
+        margin-bottom: 10px;
+    }
+
+    .details-info p {
+        font-size: 16px;
+        margin: 5px 0;
+    }
+
+    .details-info strong {
+        color: #007BFF;
+    }
+</style>

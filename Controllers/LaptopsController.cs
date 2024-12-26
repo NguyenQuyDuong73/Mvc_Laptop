@@ -24,7 +24,7 @@ namespace MvcLaptop.Controllers
         {
             return View(await _context.Laptop.ToListAsync());
         }
-
+        
         // GET: Laptops/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -33,8 +33,7 @@ namespace MvcLaptop.Controllers
                 return NotFound();
             }
 
-            var laptop = await _context.Laptop
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var laptop = await _context.Laptop.FirstOrDefaultAsync(m => m.Id == id);
             if (laptop == null)
             {
                 return NotFound();

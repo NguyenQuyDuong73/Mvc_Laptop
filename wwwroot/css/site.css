@@ -20,3 +20,94 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/* Index */
+.product-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.product-card {
+  border: 1px solid #ddd;
+  border-radius: 10px;
+  padding: 15px;
+  text-align: center;
+  background-color: #f9f9f9;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  text-decoration: none; /* Loại bỏ dấu gạch chân */
+  color: inherit; /* Giữ nguyên màu sắc văn bản */
+}
+
+.product-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.product-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 5px;
+  margin-bottom: 10px;
+}
+
+.product-title {
+  font-size: 18px;
+  margin: 10px 0;
+  color: #333;
+  min-height: 48px; /* Đảm bảo đủ chiều cao cho 2 dòng */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-genre {
+  font-size: 14px;
+  color: #555;
+}
+
+.product-price {
+  font-size: 16px;
+  color: #282828;
+  font-weight: bold;
+}
+
+/* Danh sách menu genres */
+.genre-menu-list {
+  list-style-type: none;       /* Bỏ bullet mặc định */
+  margin: 0;                  /* Xóa khoảng cách bên ngoài */
+  padding: 0;                 /* Xóa khoảng cách bên trong */
+  display: flex;              /* Sắp xếp các mục nằm ngang */
+  justify-content: center;    /* Căn giữa menu */
+  gap: 15px;                  /* Khoảng cách giữa các mục */
+}
+
+/* Mỗi mục menu */
+.genre-menu-item {
+  display: inline;            /* Đảm bảo nằm ngang */
+}
+
+/* Liên kết trong menu */
+.genre-menu-link {
+  text-decoration: none;      /* Bỏ gạch chân */
+  color: #333;                /* Màu chữ */
+  font-size: 16px;            /* Kích thước chữ */
+  padding: 5px 10px;          /* Khoảng cách trong */
+  border-radius: 3px;         /* Bo góc */
+  transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng hover */
+}
+
+
+/* Hiệu ứng hover */
+.genre-menu a:hover {
+  background-color: #95a5a6; /* Màu nền khi hover */
+  color: #fff;               /* Màu chữ khi hover */
+}
+@media (max-width: 300px) {
+  .genre-menu ul {
+      flex-direction: column; /* Menu chuyển thành dạng dọc */
+      align-items: center;
+  }
+}

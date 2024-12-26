@@ -16,15 +16,41 @@ public class HomeController : Controller
     }
     public IActionResult Index()
     {
+        ViewData["Genres"] = _context.Laptop
+            .Select(l => l.Genre)
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
+
         var laptops = _context.Laptop.ToList();
         return View(laptops);
     }
+
 
     public IActionResult Privacy()
     {
         return View();
     }
+    public IActionResult Details(int id)
+    {
+        var laptop = _context.Laptop.FirstOrDefault(l => l.Id == id);
+        if (laptop == null)
+        {
+            return NotFound();
+        }
+        return View(laptop);
+    }
+     // Action trả về danh sách Genre
+    public IActionResult PartialGenres()
+    {
+        var genres = _context.Laptop
+            .Select(l => l.Genre)
+            .Distinct()
+            .OrderBy(g => g)
+            .ToList();
 
+        return PartialView("_GenreMenu", genres);
+    }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
