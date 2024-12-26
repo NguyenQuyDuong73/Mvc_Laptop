@@ -53,7 +53,7 @@ namespace MvcLaptop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Genre,Description,Price,ImageUrl")] Laptop laptop)
+        public async Task<IActionResult> Create([Bind("Id,Title,Genre,Description,Quantity,Price,ImageUrl")] Laptop laptop)
         {
             if (ModelState.IsValid)
             {
@@ -85,7 +85,7 @@ namespace MvcLaptop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Genre,Description,Price,ImageUrl")] Laptop laptop)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Genre,Description,Quantity,Price,ImageUrl")] Laptop laptop)
         {
             if (id != laptop.Id)
             {

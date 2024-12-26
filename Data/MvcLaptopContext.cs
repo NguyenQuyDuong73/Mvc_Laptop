@@ -15,5 +15,6 @@ namespace MvcLaptop.Data
         }
 
         public DbSet<MvcLaptop.Models.Laptop> Laptop { get; set; } = default!;
+        public DbSet<MvcLaptop.Models.User> Users { get; set; }
     }
 }

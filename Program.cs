@@ -7,6 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<MvcLaptopContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext") ?? throw new InvalidOperationException("Connection string 'MvcLaptopContext' not found.")));
 
+builder.Services.AddDistributedMemoryCache();  // Sử dụng bộ nhớ để lưu trữ session
+builder.Services.AddSession(options =>
+{
+    options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
+    options.Cookie.HttpOnly = true;  // Cookie chỉ có thể truy cập từ server
+    options.Cookie.IsEssential = true;  // Làm cho cookie session là cần thiết
+});
 // Add services to the container.
 builder.Services.AddControllersWithViews();
 
@@ -20,7 +27,6 @@ else
     builder.Services.AddDbContext<MvcLaptopContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcLaptopContext")));
 }
-
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -39,7 +45,7 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
-
+app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();

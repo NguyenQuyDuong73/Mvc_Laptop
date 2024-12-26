@@ -25,6 +25,7 @@ public static class SeedData
                     Title = "Laptop Asus Vivobook 14 OLED",
                     Genre = "Asus",
                     Description = "Asus Vivobook 14 OLED là một dòng laptop tầm trung, nổi bật với màn hình OLED chất lượng cao, hiệu năng ổn định, và thiết kế mỏng nhẹ. Máy hướng đến đối tượng người dùng văn phòng, sinh viên hoặc những ai cần một thiết bị nhỏ gọn, mạnh mẽ để xử lý các tác vụ hàng ngày và giải trí đa phương tiện.",
+                    Quantity = 100,
                     Price = 7.99M,
                     ImageUrl = "https://anphat.com.vn/media/product/44758_laptop_asus_vivobook_14_oled_a1405va_km095w__2_.jpg"
                 },
@@ -33,6 +34,7 @@ public static class SeedData
                     Title = "Laptop Acer Predator",
                     Genre = "Acer",
                     Description = "Acer Predator PT515-51-731Z là một chiếc laptop gaming cao cấp thuộc dòng Predator Triton 500 của Acer. Máy được thiết kế cho game thủ chuyên nghiệp và người dùng yêu cầu hiệu năng cao, với cấu hình mạnh mẽ, màn hình tần số quét cao, và thiết kế mỏng nhẹ so với chuẩn laptop gaming.",
+                    Quantity = 100,
                     Price = 8.99M,
                     ImageUrl = "https://anphat.com.vn/media/product/30547_laptop_acer_predator_pt515_51_731z_nh_q4xsv_006_1.jpg"
                 },
@@ -41,8 +43,9 @@ public static class SeedData
                     Title = "Laptop Lenovo LOQ",
                     Genre = "Lenovo",
                     Description = "Lenovo LOV-15 (15.6 inch FHD IPS) là một chiếc laptop thông minh và hiệu năng cao của Lenovo với màn hình IPS 15.6 inch, hiệu năng ổn định, và thiết kế mỏng nhẹ.",
+                    Quantity = 100,
                     Price = 3.99M,
-                    ImageUrl = "https://anphat.com.vn/media/product/45246_laptop_lenovo_lov_15_15_6_ips_1000_q4wkv_003_1.jpg"
+                    ImageUrl = "https://anphat.com.vn/media/product/47499_laptop_lenovo_loq_15iax9_83gs001svn_anphatcomputer_1.jpg"
                 }
             );
             context.SaveChanges();

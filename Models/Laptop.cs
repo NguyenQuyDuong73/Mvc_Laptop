@@ -9,6 +9,7 @@ public class Laptop
     public string? Title { get; set; }
     public string? Genre { get; set; }
     public string? Description { get; set; }
+    public int Quantity { get; set; }
     
     [Range(1, 10000)]
     [DataType(DataType.Currency)]

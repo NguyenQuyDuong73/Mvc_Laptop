@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/MvcLaptop.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 </head>
 <body>
     <header>
@@ -28,19 +29,46 @@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="Laptops" asp-action="Index">Laptop</a>
                         </li>
+                        <!-- Nếu người dùng chưa đăng nhập, hiển thị Login và Register -->
+                        @if (string.IsNullOrEmpty(ViewData["UserName"] as string))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Register">Register</a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Nếu người dùng đã đăng nhập, hiển thị UserName và Logout -->
+                            <li class="nav-item">
+                                <span class="nav-link text-dark">Hello, @ViewData["UserName"]</span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                    </ul>
+                    <!-- Thêm biểu tượng giỏ hàng vào đây -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item">
+                            <a class="nav-link" href="@Url.Action("Index", "Cart")">
+                                <i class="fas fa-shopping-cart mr-0"></i>
+                                <span class="js-cart-count cart-count">0</span>
+                            </a>
+                        </li>
                     </ul>
                 </div>
             </div>
         </nav>
     </header>
     <!-- Hiển thị menu các thể loại -->
-    @* <div class="genre-menu">
-        @await Html.PartialAsync("_GenreMenu", ViewData["Genres"] as IEnumerable<string>)
-    </div> *@
     <div class="genre-menu">
         @if (ViewData["Genres"] != null)
         {
             <ul class="genre-menu-list">
+                <li class="genre-menu-item"><a asp-action="Index" asp-route-genre="" class="genre-menu-link">All</a></li>
                 @foreach (var genre in (IEnumerable<string>)ViewData["Genres"])
                 {
                     <li class="genre-menu-item">
