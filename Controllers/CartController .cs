@@ -10,7 +10,7 @@ namespace MvcLaptop.Controllers
 {
     public class CartController : Controller
     {
-        private readonly MvcLaptopContext _context;
+        private readonly MvcLaptopContext _context; //Dependency Injection
 
         // Constructor để inject DbContext
         public CartController(MvcLaptopContext context)
@@ -18,61 +18,57 @@ namespace MvcLaptop.Controllers
             _context = context;
         }
         // Giỏ hàng tạm thời (có thể thay bằng lưu trữ cơ sở dữ liệu hoặc session)
+        private static Dictionary<int, int> CartItems = new Dictionary<int, int>();
 
         // Thêm sản phẩm vào giỏ hàng
         public IActionResult AddToCart(int id, int quantity = 1)
         {
-            var cartItems = HttpContext.Session.GetObject<Dictionary<int, int>>("CartItems") ?? new Dictionary<int, int>();
-            if (cartItems.ContainsKey(id)) // Sử dụng ContainsKey để kiểm tra khóa
-            {
-                // Nếu sản phẩm đã tồn tại, tăng số lượng
-                cartItems[id] += quantity;
-            }
-            else
-            {
-                // Nếu sản phẩm chưa tồn tại, thêm mới
-                cartItems.Add(id, quantity); // Sử dụng Add để thêm một cặp khóa-giá trị
-            }
+           if (CartItems.ContainsKey(id)) // Sử dụng ContainsKey để kiểm tra khóa
+        {
+            // Nếu sản phẩm đã tồn tại, tăng số lượng
+            CartItems[id] += quantity;
+        }
+        else
+        {
+            // Nếu sản phẩm chưa tồn tại, thêm mới
+            CartItems.Add(id, quantity); // Sử dụng Add để thêm một cặp khóa-giá trị
+        }
 
-            HttpContext.Session.SetObject("CartItems", cartItems);
-
-            TempData["Message"] = "Sản phẩm đã được thêm vào giỏ hàng!";
-            return RedirectToAction("Details", "Home", new { id = id });
+        TempData["Message"] = "Sản phẩm đã được thêm vào giỏ hàng!";
+        return RedirectToAction("Details", "Home", new { id = id });
         }
 
         // Mua sản phẩm ngay lập tức
         public IActionResult BuyNow(int id, int quantity = 1)
         {
-            // Lấy giỏ hàng từ session
-            var cartItems = HttpContext.Session.GetObject<Dictionary<int, int>>("CartItems") ?? new Dictionary<int, int>();
-            if (cartItems.ContainsKey(id)) // Sử dụng ContainsKey
+            if (CartItems.ContainsKey(id)) // Sử dụng ContainsKey
             {
                 // Nếu sản phẩm đã tồn tại, tăng số lượng
-                cartItems[id] += quantity;
+                CartItems[id] += quantity;
             }
             else
             {
                 // Nếu sản phẩm chưa tồn tại, thêm mới
-                cartItems.Add(id, quantity);
+                CartItems.Add(id, quantity);
             }
-            HttpContext.Session.SetObject("CartItems", cartItems);
+
             return RedirectToAction("Index");
         }
 
         // Hiển thị giỏ hàng (tuỳ chọn)
         public IActionResult Index()
         {
-            // Lấy giỏ hàng từ session
-            var cartItems = HttpContext.Session.GetObject<Dictionary<int, int>>("CartItems") ?? new Dictionary<int, int>();
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
             // Lấy danh sách sản phẩm và số lượng từ giỏ hàng
-            var cartProducts  = cartItems.Select(ci => new
+            var cartProducts  = CartItems.Select(ci => new
             {
                 Product = _context.Laptop.FirstOrDefault(l => l.Id == ci.Key),
                 Quantity = ci.Value
             }).ToList();
 
             // Tính tổng số lượng sản phẩm trong giỏ hàng
-            var totalQuantity = cartItems.Values.Sum(); // Cộng tất cả số lượng sản phẩm trong giỏ hàng
+            var totalQuantity = CartItems.Values.Sum(); // Cộng tất cả số lượng sản phẩm trong giỏ hàng
 
             // Lưu tổng số lượng vào ViewData
             ViewData["CartItemCount"] = totalQuantity;
@@ -81,36 +77,33 @@ namespace MvcLaptop.Controllers
         }
         public IActionResult UpdateQuantity(int id, int quantity)
         {
-            // Lấy giỏ hàng từ session
-            var cartItems = HttpContext.Session.GetObject<Dictionary<int, int>>("CartItems") ?? new Dictionary<int, int>();
-
             // Cập nhật số lượng sản phẩm trong giỏ hàng
-            if (cartItems.ContainsKey(id))
+            if (CartItems.ContainsKey(id))
             {
-                cartItems[id] = quantity;  // Cập nhật lại số lượng cho sản phẩm
+                CartItems[id] = quantity;  // Cập nhật lại số lượng cho sản phẩm
             }
-
-            // Lưu giỏ hàng lại vào session
-            HttpContext.Session.SetObject("CartItems", cartItems);
-
             // Trả về trạng thái thành công hoặc dữ liệu giỏ hàng mới (nếu cần)
             return Json(new { success = true });
         }
+        public IActionResult GetCartItemCount()
+        {
+            // Tính tổng số lượng sản phẩm trong giỏ hàng
+            var totalQuantity = CartItems.Values.Sum();
 
+            // Trả về số lượng sản phẩm dưới dạng JSON
+            return Json(new { totalQuantity });
+        }
         public IActionResult RemoveFromCart(int id)
         {
-            var cartItems = HttpContext.Session.GetObject<Dictionary<int, int>>("CartItems") ?? new Dictionary<int, int>();
-            if (cartItems.ContainsKey(id)) // Use ContainsKey instead of Contains
+            if (CartItems.ContainsKey(id)) // Use ContainsKey instead of Contains
             {
-                cartItems.Remove(id);
+                CartItems.Remove(id);
                 TempData["Message"] = "Sản phẩm đã được xóa khỏi giỏ hàng!";
             }
             else
             {
                 TempData["Message"] = "Sản phẩm không tồn tại trong giỏ hàng!";
             }
-
-            HttpContext.Session.SetObject("CartItems", cartItems);
 
             return RedirectToAction("Index");
         }

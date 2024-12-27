@@ -8,14 +8,16 @@ namespace MvcLaptop.Controllers;
 
 public class HomeController : Controller
 {
-    private readonly ILogger<HomeController> _logger;
-    private readonly MvcLaptopContext _context;
+    private readonly ILogger<HomeController> _logger; //Dependency Injection
+
+    private readonly MvcLaptopContext _context; //Dependency Injection
+    
     public HomeController(MvcLaptopContext context,ILogger<HomeController> logger)
     {
         _context = context;
         _logger = logger;
     }
-    public IActionResult Index(string genre)
+    public async Task<IActionResult> Index(string genre,string searchString)
     {
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
@@ -26,23 +28,29 @@ public class HomeController : Controller
             .ToList();
         // Lọc sản phẩm theo Genre
         var laptops = string.IsNullOrEmpty(genre)
-            ? _context.Laptop.ToList() // Nếu không có genre, trả về tất cả sản phẩm
-            : _context.Laptop.Where(l => l.Genre == genre).ToList(); // Lọc theo genre
+            ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
+            : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
 
-        // Ghi lại Genre hiện tại (nếu có)
+         if (!string.IsNullOrEmpty(searchString))
+        {
+            laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
         ViewData["CurrentGenre"] = genre;
-        HttpContext.Session.SetObject("CartItems", new Dictionary<int, int>());
-
-        return View(laptops);
+        ViewData["SearchString"] = searchString;
+        return View(await laptops.ToListAsync());
     }
 
 
     public IActionResult Privacy()
     {
+        var userName = HttpContext.Session.GetString("UserName");
+        ViewData["UserName"] = userName;
         return View();
     }
     public IActionResult Details(int id)
     {
+        var userName = HttpContext.Session.GetString("UserName");
+        ViewData["UserName"] = userName;
         var laptop = _context.Laptop.FirstOrDefault(l => l.Id == id);
         if (laptop == null)
         {
@@ -110,8 +118,18 @@ public class HomeController : Controller
     {
         if (ModelState.IsValid)
         {
+            // Kiểm tra xem tên người dùng đã tồn tại trong cơ sở dữ liệu chưa
+            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
+            if (existingUser != null)
+            {
+                // Nếu tên người dùng đã tồn tại, thêm lỗi vào ModelState
+                ModelState.AddModelError("UserName", "Tên tài khoản này đã tồn tại. Vui lòng chọn tên khác.");
+                return View(user);  // Trả về view đăng ký với thông báo lỗi
+            }
+            // Nếu tên người dùng chưa tồn tại, thêm người dùng mới vào cơ sở dữ liệu
             _context.Add(user);
             await _context.SaveChangesAsync();
+            // Đăng ký thành công, chuyển hướng tới trang đăng nhập
             return RedirectToAction(nameof(Login));
         }
         return View(user);

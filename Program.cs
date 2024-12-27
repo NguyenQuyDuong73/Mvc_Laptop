@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MvcLaptop.Data;
 using MvcLaptop.Models;
+using MvcLaptop.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<MvcLaptopContext>(options =>
@@ -16,6 +17,11 @@ builder.Services.AddSession(options =>
 });
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+builder.Services.AddScoped<ILaptopService, LaptopService>();
+
+// Đăng ký AutoMapper
+builder.Services.AddAutoMapper(typeof(Program));
 
 if (builder.Environment.IsDevelopment())
 {
@@ -49,6 +55,10 @@ app.UseSession();
 app.UseRouting();
 
 app.UseAuthorization();
+
+app.MapControllerRoute(
+    name: "Admin",
+    pattern: "{area:exists}/{controller=Home}/{action=Index}/{id?}");
 
 app.MapControllerRoute(
     name: "default",

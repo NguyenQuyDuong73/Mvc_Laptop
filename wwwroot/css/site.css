@@ -1,7 +1,6 @@
 html {
   font-size: 14px;
 }
-
 @media (min-width: 768px) {
   html {
     font-size: 16px;
@@ -20,6 +19,7 @@ html {
 body {
   margin-bottom: 60px;
 }
+
 
 /* Index */
 .product-grid {
@@ -73,6 +73,44 @@ body {
   color: #282828;
   font-weight: bold;
 }
+.header-container {
+  display: flex;
+  justify-content: space-between; /* Canh đều 2 bên */
+  align-items: center; /* Căn giữa theo trục dọc */
+  padding: 10px; /* Thêm khoảng cách nếu cần */
+  border-bottom: 1px solid #ccc; /* Tùy chỉnh viền nếu cần */
+}
+
+.header-container h1 {
+  margin: 0; /* Loại bỏ khoảng cách mặc định */
+  font-size: 1.5rem; /* Tùy chỉnh kích thước */
+}
+
+.search-form {
+  display: flex;
+  align-items: center; /* Căn giữa các phần tử trong form */
+}
+
+.search-form input[type="text"] {
+  padding: 5px;
+  margin-right: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.search-form input[type="submit"] {
+  padding: 5px 10px;
+  background-color: #007bff;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.search-form input[type="submit"]:hover {
+  background-color: #0056b3;
+}
+
 /*Lọc danh sách*/
 /* Danh sách menu genres */
 .genre-menu-list {
@@ -235,7 +273,6 @@ body {
   border-radius: 3px; /* Bo góc input */
   height: 30px; /* Chiều cao khớp với nút */
 }
-
 .navbar-nav .nav-item .fa-shopping-cart {
   position: relative;
   font-size: 1.5rem; /* Điều chỉnh kích thước biểu tượng giỏ hàng */

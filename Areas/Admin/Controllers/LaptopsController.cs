@@ -7,38 +7,43 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using MvcLaptop.Data;
 using MvcLaptop.Models;
+using AutoMapper;
+using MvcLaptop.Services;
 
-namespace MvcLaptop.Controllers
+namespace MvcLaptop.Areas.Admin.Controllers
 {
+    [Area("Admin")]
     public class LaptopsController : Controller
     {
-        private readonly MvcLaptopContext _context;
-
-        public LaptopsController(MvcLaptopContext context)
+        private readonly ILaptopService _laptopService;
+        public LaptopsController(ILaptopService laptopService)
         {
-            _context = context;
+            _laptopService = laptopService;
         }
 
         // GET: Laptops
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Laptop.ToListAsync());
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
+            return View(await _laptopService.GetLaptops());
         }
         
         // GET: Laptops/Details/5
         public async Task<IActionResult> Details(int? id)
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
             if (id == null)
             {
                 return NotFound();
             }
 
-            var laptop = await _context.Laptop.FirstOrDefaultAsync(m => m.Id == id);
+            var laptop = await _laptopService.GetLaptopById(id.Value);
             if (laptop == null)
             {
                 return NotFound();
             }
-
             return View(laptop);
         }
 
@@ -53,15 +58,15 @@ namespace MvcLaptop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Genre,Description,Quantity,Price,ImageUrl")] Laptop laptop)
+        public async Task<IActionResult> Create(LaptopRequest request)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(laptop);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                var result = await _laptopService.Create(request);
+                if(result == null)
+                    return RedirectToAction(nameof(Index));
             }
-            return View(laptop);
+            return View(request);
         }
 
         // GET: Laptops/Edit/5
@@ -71,8 +76,7 @@ namespace MvcLaptop.Controllers
             {
                 return NotFound();
             }
-
-            var laptop = await _context.Laptop.FindAsync(id);
+            var laptop = await _laptopService.GetLaptopById(id.Value);
             if (laptop == null)
             {
                 return NotFound();
@@ -85,7 +89,7 @@ namespace MvcLaptop.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Genre,Description,Quantity,Price,ImageUrl")] Laptop laptop)
+        public async Task<IActionResult> Edit(int id,LaptopViewModel laptop)
         {
             if (id != laptop.Id)
             {
@@ -96,12 +100,15 @@ namespace MvcLaptop.Controllers
             {
                 try
                 {
-                    _context.Update(laptop);
-                    await _context.SaveChangesAsync();
+                    var result = await _laptopService.Update(id, laptop);
+                    if(result)
+                    {
+                        return RedirectToAction(nameof(Index));
+                    }
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!LaptopExists(laptop.Id))
+                    if (!_laptopService.LaptopExists(laptop.Id))
                     {
                         return NotFound();
                     }
@@ -123,8 +130,7 @@ namespace MvcLaptop.Controllers
                 return NotFound();
             }
 
-            var laptop = await _context.Laptop
-                .FirstOrDefaultAsync(m => m.Id == id);
+            var laptop = await _laptopService.GetLaptopById(id.Value);
             if (laptop == null)
             {
                 return NotFound();
@@ -138,19 +144,8 @@ namespace MvcLaptop.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var laptop = await _context.Laptop.FindAsync(id);
-            if (laptop != null)
-            {
-                _context.Laptop.Remove(laptop);
-            }
-
-            await _context.SaveChangesAsync();
+            await _laptopService.Delete(id);
             return RedirectToAction(nameof(Index));
-        }
-
-        private bool LaptopExists(int id)
-        {
-            return _context.Laptop.Any(e => e.Id == id);
         }
     }
 }

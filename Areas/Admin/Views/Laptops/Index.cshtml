@@ -1,4 +1,4 @@
-@model IEnumerable<MvcLaptop.Models.Laptop>
+@model IEnumerable<MvcLaptop.Models.LaptopViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -9,6 +9,7 @@
 <p>
     <a asp-action="Create">Create New</a>
 </p>
+<div class="container" style="margin-top: 70px; margin-left: 50px;">
 <table class="table">
     <thead>
         <tr>
@@ -65,6 +66,7 @@
 }
     </tbody>
 </table>
+</div>
 <style>
     .action-buttons {
         display: flex;

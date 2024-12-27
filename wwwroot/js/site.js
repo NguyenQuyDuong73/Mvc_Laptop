@@ -1,17 +1,4 @@
-﻿// function decreaseQuantity(productId) {
-//     const input = document.getElementById(`quantity-${productId}`);
-//     if (input && input.value > 1) {
-//         input.value--;
-//     }
-// }
-
-// function increaseQuantity(productId) {
-//     const input = document.getElementById(`quantity-${productId}`);
-//     if (input) {
-//         input.value++;
-//     }
-// }
-function decreaseQuantity(productId) {
+﻿function decreaseQuantity(productId) {
     const input = document.getElementById(`quantity-${productId}`); // Sử dụng id để tìm input
     let quantity = parseInt(input.value); // Lấy giá trị của input
     if (quantity > 1) {
@@ -51,5 +38,49 @@ function updateQuantity(productId) {
     })
     .catch(error => {
         console.error("Có lỗi xảy ra khi cập nhật giỏ hàng:", error);
+    });
+}
+// Hàm để lấy số lượng giỏ hàng từ backend và cập nhật UI
+function updateCartCount() {
+    $.ajax({
+        url: '/Cart/GetCartItemCount',  // URL của action trong controller
+        type: 'GET',
+        success: function(data) {
+            // Cập nhật số lượng giỏ hàng trong span
+            $('.js-cart-count').text(data.totalQuantity);  // Cập nhật số lượng giỏ hàng
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi lấy số lượng giỏ hàng:', error);
+        }
+    });
+}
+// Gọi hàm updateCartCount sau khi thay đổi giỏ hàng (thêm sản phẩm, xóa sản phẩm, cập nhật số lượng)
+updateCartCount();  // Gọi hàm khi trang được tải
+// Khi thêm sản phẩm vào giỏ hàng
+function addToCart(productId, quantity) {
+    $.ajax({
+        url: '/Cart/AddToCart',  // Thay đổi URL tương ứng với hành động trong controller
+        type: 'POST',
+        data: { id: productId, quantity: quantity },
+        success: function() {
+            updateCartCount();  // Cập nhật số lượng sau khi thêm sản phẩm
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng:', error);
+        }
+    });
+}
+// Khi xóa sản phẩm khỏi giỏ hàng
+function removeFromCart(productId) {
+    $.ajax({
+        url: '/Cart/RemoveFromCart',  // Thay đổi URL tương ứng với hành động trong controller
+        type: 'POST',
+        data: { id: productId },
+        success: function() {
+            updateCartCount();  // Cập nhật số lượng sau khi xóa sản phẩm
+        },
+        error: function(error) {
+            console.error('Có lỗi xảy ra khi xóa sản phẩm khỏi giỏ hàng:', error);
+        }
     });
 }
