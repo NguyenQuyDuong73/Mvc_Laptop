@@ -10,7 +10,6 @@ html {
 /* .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
 } */
-
 html {
   position: relative;
   min-height: 100%;
@@ -18,6 +17,7 @@ html {
 
 body {
   margin-bottom: 60px;
+  background-color: #b2bec3;
 }
 
 
@@ -77,7 +77,6 @@ body {
   display: flex;
   justify-content: space-between; /* Canh đều 2 bên */
   align-items: center; /* Căn giữa theo trục dọc */
-  padding: 10px; /* Thêm khoảng cách nếu cần */
   border-bottom: 1px solid #ccc; /* Tùy chỉnh viền nếu cần */
 }
 
@@ -100,7 +99,7 @@ body {
 
 .search-form input[type="submit"] {
   padding: 5px 10px;
-  background-color: #007bff;
+  background-color: #00b894;
   color: white;
   border: none;
   border-radius: 4px;
@@ -108,10 +107,11 @@ body {
 }
 
 .search-form input[type="submit"]:hover {
-  background-color: #0056b3;
+  background-color: #d63031;
 }
 
 /*Lọc danh sách*/
+
 /* Danh sách menu genres */
 .genre-menu-list {
   list-style-type: none;       /* Bỏ bullet mặc định */
@@ -120,10 +120,8 @@ body {
   display: flex;              /* Sắp xếp các mục nằm ngang */
   justify-content: center;    /* Căn giữa menu */
   gap: 15px;                  /* Khoảng cách giữa các mục */
-  background-color: #f8f9fa;  /* Màu nền */
-  padding: 10px 20px;         /* Khoảng cách bên trong */
-  border: 1px solid #ddd;     /* Viền */
-  border-radius: 5px;         /* Bo góc */
+  background-color: #2d3436;
+  padding: 15px 20px;        /* Khoảng cách bên trong */
 }
 
 /* Mỗi mục menu */
@@ -134,9 +132,10 @@ body {
 /* Liên kết trong menu */
 .genre-menu-link {
   text-decoration: none;      /* Bỏ gạch chân */
-  color: #333;                /* Màu chữ */
-  font-size: 16px;            /* Kích thước chữ */
+  color: #ffffff;                /* Màu chữ */
+  font-size: 18px;            /* Kích thước chữ */
   padding: 5px 15px;          /* Khoảng cách trong */
+  border: 1px solid #ffffff;
   border-radius: 3px;         /* Bo góc */
   transition: background-color 0.3s ease, color 0.3s ease; /* Hiệu ứng hover */
 }
@@ -177,8 +176,6 @@ body {
     font-size: 12px;           /* Kích thước chữ nhỏ hơn */
   }
 }
-
-
 
 /* Detail */ 
 
@@ -301,4 +298,194 @@ body {
 .btn-checkout {
   font-size: 18px;
   padding: 10px 20px;
+}
+
+/* Banners */
+/* Hero Carousel Container */
+.hero-carousel {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+}
+/* Individual Slides */
+.hero-carousel-slide {
+  position: relative;
+  display: none; /* Ẩn các slide mặc định */
+  width: 100%;
+  height: 600px; /* Chiều cao cố định cho toàn bộ carousel */
+  overflow: hidden; /* Ẩn phần ảnh vượt quá kích thước */
+}
+
+/* Hiển thị slide đầu tiên */
+.hero-carousel-slide:first-child {
+  display: block;
+}
+
+/* Slide Image */
+.hero-carousel-image {
+  width: 100%; /* Ảnh luôn phủ toàn bộ chiều rộng */
+  height: 100%; /* Đặt chiều cao để khớp với slide */
+  display: block;
+  object-fit: cover; /* Cắt ảnh vừa với container nếu cần */
+}
+/* Navigation Buttons */
+.hero-carousel-prev,
+.hero-carousel-next {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(0, 0, 0, 0.5);
+  color: white;
+  border: none;
+  font-size: 24px;
+  padding: 10px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.hero-carousel-prev {
+  left: 10px;
+}
+
+.hero-carousel-next {
+  right: 10px;
+}
+
+.hero-carousel-prev:hover,
+.hero-carousel-next:hover {
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+/* Dots Container */
+.hero-carousel-dots {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 8px;
+}
+
+.hero-carousel-dots button {
+  width: 12px;
+  height: 12px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background-color: transparent;
+  cursor: pointer;
+}
+
+.hero-carousel-dots button.active {
+  background-color: white;
+}
+/* Hot New Section */
+.hot-new {
+  margin-top: 1px;
+  padding: 20px 10px;
+  text-align: center;
+  background-color: #2980b9;
+}
+
+.hot-new-title {
+  font-size: 24px;
+  font-weight: bold;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Product Grid */
+.hot-new-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr); /* 3 sản phẩm mỗi hàng */
+  gap: 20px; /* Khoảng cách giữa các thẻ */
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+/* Product Card */
+.hot-new-card {
+  background: #f1c40f;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.hot-new-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+}
+
+.hot-new-link {
+  text-decoration: none;
+  color: inherit;
+  display: block;
+}
+
+.hot-new-image {
+  padding: 20px 20px;
+  width: 70%;
+  height: 70%;
+  object-fit: cover;
+  border-radius: 30px;
+}
+
+.hot-new-info {
+  padding: 15px;
+}
+
+.hot-new-title {
+  font-size: 18px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+
+.hot-new-price {
+  font-size: 16px;
+  color: #ff6f61;
+}
+/* HOT NEW Section */
+.hot-new-section {
+  text-align: center;
+  margin: 20px 0;
+}
+
+/* HOT NEW Banner */
+.hot-new-banner {
+  display: inline-flex;
+  align-items: center;
+  background: linear-gradient(90deg, #74b9ff, #0984e3); /* Gradient màu xanh */
+  border-radius: 20px; /* Bo tròn góc */
+  padding: 10px 20px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2); /* Tạo đổ bóng */
+  border: 10px solid #3498db;
+  user-select: none; /* Ngăn chọn văn bản */
+  -webkit-user-select: none; /* Hỗ trợ trình duyệt WebKit */
+  -ms-user-select: none; /* Hỗ trợ trình duyệt IE */
+}
+
+/* Text */
+.hot-new-text {
+  font-size: 50px;
+  font-weight: bold;
+  color: #ffffff; /* Màu chữ trắng */
+  text-shadow: 
+        2px 2px 0 #0984e3,  /* Viền đen góc dưới phải */
+       -2px 2px 0 #0984e3,  /* Viền đen góc dưới trái */
+        2px -2px 0 #0984e3, /* Viền đen góc trên phải */
+       -2px -2px 0 #0984e3, /* Viền đen góc trên trái */
+        2px 0 0 #0984e3,    /* Viền đen bên phải */
+       -2px 0 0 #0984e3,    /* Viền đen bên trái */
+        0 2px 0 #0984e3,    /* Viền đen bên dưới */
+        0 -2px 0 #0984e3;   /* Viền đen bên trên */
+  margin: 0 10px;
+}
+
+/* Lightning Icon */
+.hot-new-icon {
+  font-size: 30px; /* Kích thước icon */
+  color: yellow; /* Màu vàng cho tia sét */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng ánh sáng */
 }

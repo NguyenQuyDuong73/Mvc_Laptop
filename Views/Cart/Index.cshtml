@@ -4,7 +4,17 @@
 }
 
 <h1>@ViewData["Title"]</h1>
-
+@if (TempData["Message"] != null)
+{
+    <div class="alert alert-warning" role="alert">
+        @TempData["Message"]
+        @if (TempData["RedirectToLogin"] != null && (bool)TempData["RedirectToLogin"])
+        {
+            <br />
+            <a href="~/Account/Login" class="btn btn-primary mt-2">Đăng nhập ngay</a>
+        }
+    </div>
+}
 @if (!Model.Any())
 {
     <p>Giỏ hàng của bạn đang trống.</p>
@@ -30,9 +40,13 @@ else
                         <td>@item.Product.Title</td>
                         <td>
                             <div class="quantity-control">
-                                <button type="button" class="btn btn-outline-secondary btn-decrease" onclick="decreaseQuantity(@item.Product.Id)">-</button>
-                                <input type="number" id="quantity-@item.Product.Id" name="quantities[@item.Product.Id]" value="@item.Quantity" min="1" max="@item.Product.Quantity" class="form-control quantity-input" onchange="updateQuantity(@item.Product.Id)"/>
-                                <button type="button" class="btn btn-outline-secondary btn-increase" onclick="increaseQuantity(@item.Product.Id)">+</button>
+                                <button type="button" class="btn btn-outline-secondary btn-decrease"
+                                    onclick="decreaseQuantity(@item.Product.Id)">-</button>
+                                <input type="number" id="quantity-@item.Product.Id" name="quantities[@item.Product.Id]"
+                                    value="@item.Quantity" min="1" max="@item.Product.Quantity"
+                                    class="form-control quantity-input" onchange="updateQuantity(@item.Product.Id)" />
+                                <button type="button" class="btn btn-outline-secondary btn-increase"
+                                    onclick="increaseQuantity(@item.Product.Id)">+</button>
                             </div>
                         </td>
 
@@ -45,7 +59,9 @@ else
             </tbody>
         </table>
         <div class="checkout-container">
-            <button type="submit" class="btn btn-success btn-checkout">Thanh toán</button>
+            <form asp-action="Checkout" method="post">
+                <button type="submit" class="btn btn-success btn-checkout">Thanh toán</button>
+            </form>
         </div>
     </form>
 }

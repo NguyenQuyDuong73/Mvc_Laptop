@@ -2,8 +2,8 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using MvcLaptop.Models;
 using MvcLaptop.Data;
-using Microsoft.EntityFrameworkCore; 
-using System.Linq; 
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 namespace MvcLaptop.Controllers;
 
 public class HomeController : Controller
@@ -11,13 +11,33 @@ public class HomeController : Controller
     private readonly ILogger<HomeController> _logger; //Dependency Injection
 
     private readonly MvcLaptopContext _context; //Dependency Injection
-    
-    public HomeController(MvcLaptopContext context,ILogger<HomeController> logger)
+
+    public HomeController(MvcLaptopContext context, ILogger<HomeController> logger)
     {
         _context = context;
         _logger = logger;
     }
-    public async Task<IActionResult> Index(string genre,string searchString)
+    public async Task<IActionResult> Index(string genre, string searchString)
+    {
+        var userName = HttpContext.Session.GetString("UserName");
+        ViewData["UserName"] = userName;
+        ViewData["Genres"] = _context.Laptop
+                .Select(l => l.Genre)
+                .Distinct()
+                .OrderBy(g => g)
+                .ToList();
+        var laptops = string.IsNullOrEmpty(genre)
+            ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
+            : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
+        ViewData["CurrentGenre"] = genre;
+        return View(laptops);
+    }
+    public async Task<IActionResult> Product(string genre, string searchString)
     {
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
@@ -31,7 +51,7 @@ public class HomeController : Controller
             ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
             : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
 
-         if (!string.IsNullOrEmpty(searchString))
+        if (!string.IsNullOrEmpty(searchString))
         {
             laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
         }
@@ -39,7 +59,6 @@ public class HomeController : Controller
         ViewData["SearchString"] = searchString;
         return View(await laptops.ToListAsync());
     }
-
 
     public IActionResult Privacy()
     {
@@ -65,7 +84,7 @@ public class HomeController : Controller
 
         return View(laptop);
     }
-     // Action trả về danh sách Genre
+    // Action trả về danh sách Genre
     public IActionResult PartialGenres()
     {
         var genres = _context.Laptop
@@ -76,7 +95,8 @@ public class HomeController : Controller
 
         return PartialView("_GenreMenu", genres);
     }
-    public IActionResult Login(){
+    public IActionResult Login()
+    {
         return View();
     }
     [HttpPost]
@@ -109,9 +129,9 @@ public class HomeController : Controller
     }
     [HttpGet]
     public IActionResult Register()
-        {
-            return View();
-        }
+    {
+        return View();
+    }
     [HttpPost]
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Register([Bind("UserName,Email,Password")] User user)

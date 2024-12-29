@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Compute Zone</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MvcLaptop.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
+</head>
+
+<body>
+    <header>
+        @(await Component.InvokeAsync("Navbar"))
+    </header>
+    <!-- Hiển thị menu các thể loại -->
+    <div class="genre-menu">
+        @if (ViewData["Genres"] != null)
+        {
+            <ul class="genre-menu-list">
+                <li class="genre-menu-item"><a asp-action="Product" asp-route-genre="" class="genre-menu-link">All</a></li>
+                @foreach (var genre in (IEnumerable<string>)ViewData["Genres"])
+                {
+                    <li class="genre-menu-item">
+                        <a asp-controller="Home" asp-action="Product" asp-route-genre="@genre" class="genre-menu-link">
+                            @genre
+                        </a>
+                    </li>
+                }
+            </ul>
+        }
+    </div>
+        <main role="main" class="pb-3">
+            @RenderBody()
+        </main>        
+
+    @(await Component.InvokeAsync("Footer"))
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+
+</html>

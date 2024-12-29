@@ -111,35 +111,44 @@ namespace MvcLaptop.Controllers
         [HttpPost]
         public IActionResult Checkout(Dictionary<int, int> quantities)
         {
-            foreach (var item in quantities)
+            // Kiểm tra trạng thái đăng nhập
+            if (!User.Identity.IsAuthenticated)
             {
-                int productId = item.Key;
-                int quantityInCart = item.Value;
-
-                // Lấy sản phẩm từ cơ sở dữ liệu
-                var product = _context.Laptop.FirstOrDefault(l => l.Id == productId);
-
-                if (product != null)
+                // Nếu chưa đăng nhập, trả về thông báo yêu cầu đăng nhập
+                TempData["Message"] = "Bạn cần đăng nhập để tiếp tục thanh toán.";
+                TempData["RedirectToLogin"] = true; // Cờ báo để hiển thị thông báo
+                return RedirectToAction("Index", "Cart");
+            }else{
+                foreach (var item in quantities)
                 {
-                    // Kiểm tra số lượng tồn kho
-                    if (product.Quantity >= quantityInCart)
+                    int productId = item.Key;
+                    int quantityInCart = item.Value;
+
+                    // Lấy sản phẩm từ cơ sở dữ liệu
+                    var product = _context.Laptop.FirstOrDefault(l => l.Id == productId);
+
+                    if (product != null)
                     {
-                        product.Quantity -= quantityInCart; // Trừ số lượng trong kho
-                    }
-                    else
-                    {
-                        TempData["Error"] = $"Sản phẩm {product.Title} không đủ số lượng trong kho!";
-                        return RedirectToAction("Index");
+                        // Kiểm tra số lượng tồn kho
+                        if (product.Quantity >= quantityInCart)
+                        {
+                            product.Quantity -= quantityInCart; // Trừ số lượng trong kho
+                        }
+                        else
+                        {
+                            TempData["Error"] = $"Sản phẩm {product.Title} không đủ số lượng trong kho!";
+                            return RedirectToAction("Index");
+                        }
                     }
                 }
             }
+            // // Lưu thay đổi vào cơ sở dữ liệu
+            // _context.SaveChanges();
 
-            // Lưu thay đổi vào cơ sở dữ liệu
-            _context.SaveChanges();
+            // // Hiển thị thông báo thanh toán thành công
+            // TempData["Message"] = "Thanh toán thành công!";
+            return RedirectToAction("Index", "Checkout");
 
-            // Hiển thị thông báo thanh toán thành công
-            TempData["Message"] = "Thanh toán thành công!";
-            return RedirectToAction("Confirmation");
         }
 
         // Trang xác nhận thanh toán

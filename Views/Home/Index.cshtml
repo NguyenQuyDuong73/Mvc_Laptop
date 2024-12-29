@@ -2,21 +2,49 @@
 @{
     ViewData["Title"] = "Home";
 }
-<div class="header-container">
-    <h1 class="display-8">Computer Zone</h1>
-    <form asp-controller="Home" asp-action="Index" method="get" class="search-form">
-        <input type="text" name="searchString" value="@ViewData["SearchString"]" placeholder="Tên máy" />
-        <input type="submit" value="Search" />
-    </form>
-</div>
-<h1>@(ViewData["CurrentGenre"] ?? "All Products")</h1>
-<div class="product-grid">
-@foreach (var item in Model) {
-    <a asp-action="Details" asp-route-id="@item.Id" class="product-card">
-        <img src="@item.ImageUrl" alt="@item.Title" class="product-image" />
-        <h3 class="product-title">@item.Title</h3>
-        <p class="product-genre">@item.Genre</p>
-        <p class="product-price">$@item.Price</p>
-    </a>
-}
-</div>
+
+<section class="hero-carousel">
+    <!-- Slide 1 -->
+    <div class="hero-carousel-slide">
+        <img src="https://i.pinimg.com/736x/98/63/4e/98634e8e31a66a52bae91cb5c846d2be.jpg" alt="Image 1"
+            class="hero-carousel-image">
+    </div>
+    <!-- Slide 2 -->
+    <div class="hero-carousel-slide">
+        <img src="https://i.pinimg.com/736x/86/87/36/868736ee4dd097928d9c247c66b07dd3.jpg" alt="Image 2"
+            class="hero-carousel-image">
+    </div>
+    <!-- Slide 3 -->
+    <div class="hero-carousel-slide">
+        <img src="https://i.pinimg.com/736x/25/3b/0e/253b0ed01dcc5c3e45245fd22e861abc.jpg" alt="Image 3"
+            class="hero-carousel-image">
+    </div>
+    <!-- Buttons -->
+    <button class="hero-carousel-prev">&lt;</button>
+    <button class="hero-carousel-next">&gt;</button>
+    <!-- Dots -->
+    <div class="hero-carousel-dots"></div>
+</section>
+<section class="hot-new">
+    <section class="hot-new-section">
+        <div class="hot-new-banner">
+            <span class="hot-new-icon">⚡</span>
+            <span class="hot-new-text">HOT NEW</span>
+            <span class="hot-new-icon">⚡</span>
+        </div>
+    </section>
+    <div class="hot-new-grid">
+        @foreach (var item in Model.OrderByDescending(p => p.Id).Take(6)) // Lấy 6 sản phẩm có ID cao nhất
+        {
+            <div class="hot-new-card">
+                <a asp-action="Details" asp-route-id="@item.Id" class="hot-new-link">
+                    <img src="@item.ImageUrl" alt="@item.Title" class="hot-new-image" />
+                    <div class="hot-new-info">
+                        <h3 class="hot-new-title">@item.Title</h3>
+                        <p class="hot-new-price">$@item.Price</p>
+                    </div>
+                </a>
+            </div>
+        }
+    </div>
+</section>

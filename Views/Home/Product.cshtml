@@ -1,0 +1,25 @@
+@model IEnumerable<MvcLaptop.Models.Laptop>
+@{
+    ViewData["Title"] = "Product";
+}
+<div class="container">
+    <div class="header-container">
+        <h1 class="display-8">Computer Zone</h1>
+        <form asp-controller="Home" asp-action="Product" method="get" class="search-form">
+            <input type="text" name="searchString" value="@ViewData["SearchString"]" placeholder="Tên máy" />
+            <input type="submit" value="Search" />
+        </form>
+    </div>
+    <h1>@(ViewData["CurrentGenre"] ?? "All Products")</h1>
+    <div class="product-grid">
+        @foreach (var item in Model)
+        {
+            <a asp-action="Details" asp-route-id="@item.Id" class="product-card">
+                <img src="@item.ImageUrl" alt="@item.Title" class="product-image" />
+                <h3 class="product-title">@item.Title</h3>
+                <p class="product-genre">@item.Genre</p>
+                <p class="product-price">$@item.Price</p>
+            </a>
+        }
+    </div>
+</div>

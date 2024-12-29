@@ -6,7 +6,7 @@ namespace MvcLaptop.Controllers.Components
     {
         public Task<IViewComponentResult> InvokeAsync()
         {
-            return Task.FromResult((IViewComponentResult)View("Default"));
+            return Task.FromResult((IViewComponentResult)View("Index"));
         }
     }
 }
