@@ -41,10 +41,14 @@ public class LaptopService : ILaptopService
         return _mapper.Map<LaptopViewModel>(laptop);
     }
 
-    public async Task<IEnumerable<LaptopViewModel>> GetLaptops()
+    public async Task<IEnumerable<LaptopViewModel>> GetLaptops(string? searchString = null)
     {
-        var laptop = await _context.Laptop.ToListAsync();
-        return _mapper.Map<IEnumerable<LaptopViewModel>>(laptop);
+         // Lọc danh sách laptop theo từ khóa (nếu có)
+        var laptops = await _context.Laptop
+        .Where(l => string.IsNullOrEmpty(searchString) || 
+                    (l.Title != null && l.Title.ToUpper().Contains(searchString.ToUpper())))
+        .ToListAsync();
+        return _mapper.Map<IEnumerable<LaptopViewModel>>(laptops);
     }
 
     public bool LaptopExists(int id)
@@ -58,5 +62,4 @@ public class LaptopService : ILaptopService
         await _context.SaveChangesAsync();
         return true;
     }
-    
 }

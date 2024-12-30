@@ -4,6 +4,9 @@ using MvcLaptop.Models;
 using MvcLaptop.Data;
 using Microsoft.EntityFrameworkCore;
 using System.Linq;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 namespace MvcLaptop.Controllers;
 
 public class HomeController : Controller
@@ -105,15 +108,19 @@ public class HomeController : Controller
     {
         if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
         {
-            ModelState.AddModelError(string.Empty, "Username and password are required.");
+            ModelState.AddModelError(string.Empty, "Username Và password Không được để trống.");
             return View();
         }
-
+        if (_context?.Users == null)
+        {
+            ModelState.AddModelError(string.Empty, "Database connection error.");
+            return View();
+        }
         var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
 
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "Invalid username or password.");
+            ModelState.AddModelError(string.Empty, "username Hoặc password không hợp lệ.");
             return View();
         }
 

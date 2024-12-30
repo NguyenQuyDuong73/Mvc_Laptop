@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MvcLaptop.Data;
@@ -20,6 +22,7 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ILaptopService, LaptopService>();
 
+
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
 
@@ -28,11 +31,11 @@ if (builder.Environment.IsDevelopment())
     builder.Services.AddDbContext<MvcLaptopContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext")));
 }
-else
-{
-    builder.Services.AddDbContext<MvcLaptopContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcLaptopContext")));
-}
+// else
+// {
+//     builder.Services.AddDbContext<MvcLaptopContext>(options =>
+//         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcLaptopContext")));
+// }
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
@@ -53,7 +56,7 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseSession();
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(

@@ -11241,3 +11241,79 @@ body {
   font-size: 0.75rem;
   border-radius: 0.375rem !important;
 }
+/* ADMIN */
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-start;
+}
+
+.action-buttons .btn {
+  padding: 5px 10px;
+  text-decoration: none;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 14px;
+  color: #fff;
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.btn-edit {
+  background-color: #007bff;
+}
+
+.btn-edit:hover {
+  background-color: #0056b3;
+}
+
+.btn-details {
+  background-color: #28a745;
+}
+
+.btn-details:hover {
+  background-color: #218838;
+}
+
+.btn-delete {
+  background-color: #dc3545;
+}
+
+.btn-delete:hover {
+  background-color: #c82333;
+}
+ table th {
+ white-space: nowrap; /* Ngăn tiêu đề bị xuống dòng */
+ vertical-align: middle; /* Căn giữa theo chiều dọc */
+}
+
+d img {
+ display: block; /* Đảm bảo ảnh không bị ảnh hưởng bởi dòng khác */
+ margin: 0 auto; /* Căn giữa ảnh trong ô */
+}
+
+d-flex .btn {
+ min-width: 100px; /* Đảm bảo các nút có cùng chiều rộng */
+}
+
+#layoutSidenav {
+  display: flex;
+  flex-direction: row; /* Đảm bảo sidebar và nội dung chính nằm ngang hàng */
+  height: 100vh; /* Chiều cao toàn bộ màn hình */
+}
+
+#layoutSidenav_nav {
+  width: 250px; /* Đặt chiều rộng cố định cho menu */
+}
+
+#layoutSidenav_content {   
+  padding: 20px; /* Khoảng cách nội dung */
+}
+footer {
+  position: relative; /* Ghim footer xuống dưới cùng */
+  padding: 10px 0 ;
+  white-space: nowrap;
+  width: 100%; /* Đảm bảo footer chiếm toàn bộ chiều rộng */
+  background-color: #f8f9fa; /* Màu nền footer */
+  bottom: -18px;
+  left: 20px;
+}

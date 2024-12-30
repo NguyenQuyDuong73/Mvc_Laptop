@@ -88,22 +88,12 @@ function removeFromCart(productId) {
     },
   });
 }
-
-// Initialize Slick Carousel
-// $(document).ready(function () {
-//   $('.heroCarousel').slick({
-//       dots: true, // Hiển thị các nút chuyển slide (dots)
-//       arrows: true, // Hiển thị nút Previous/Next
-//       infinite: true, // Lặp lại carousel
-//       autoplay: true, // Tự động chuyển slide
-//       autoplaySpeed: 3000, // Tốc độ tự chuyển (3 giây)
-//       slidesToShow: 1, // Hiển thị 1 slide mỗi lần
-//       slidesToScroll: 1, // Cuộn 1 slide mỗi lần
-//       prevArrow: '<button type="button" class="slick-prev">Previous</button>',
-//       nextArrow: '<button type="button" class="slick-next">Next</button>',
-//   });
-// });
-
+function closeModal() {
+  const modal = document.getElementById('loginModal');
+  if (modal) {
+      modal.style.display = 'none';
+  }
+}
 document.addEventListener("DOMContentLoaded", function () {
   const slides = document.querySelectorAll(".hero-carousel-slide");
   const prevButton = document.querySelector(".hero-carousel-prev");

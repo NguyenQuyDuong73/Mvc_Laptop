@@ -1,0 +1,19 @@
+@model MvcLaptop.Models.Order
+
+<h1>Xác nhận thanh toán</h1>
+
+@if (Model != null)
+{
+    <p><strong>Họ và tên:</strong> @Model.FullName</p>
+    <p><strong>Email:</strong> @Model.Email</p>
+    <p><strong>Số điện thoại:</strong> @Model.PhoneNumber</p>
+    <p><strong>Địa chỉ:</strong> @Model.Address</p>
+    <p><strong>Phương thức thanh toán:</strong> @Model.PaymentMethod</p>
+    <p><strong>Ngày đặt hàng:</strong> @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+}
+else
+{
+    <p>Không tìm thấy đơn hàng.</p>
+}
+
+<a href="/" class="btn btn-primary">Quay lại trang chủ</a>

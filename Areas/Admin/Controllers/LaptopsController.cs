@@ -15,18 +15,22 @@ namespace MvcLaptop.Areas.Admin.Controllers
     [Area("Admin")]
     public class LaptopsController : Controller
     {
+        private readonly MvcLaptopContext _context;
         private readonly ILaptopService _laptopService;
-        public LaptopsController(ILaptopService laptopService)
+        public LaptopsController(MvcLaptopContext context,ILaptopService laptopService)
         {
+            _context = context;
             _laptopService = laptopService;
         }
 
         // GET: Laptops
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string searchString)
         {
             var userName = HttpContext.Session.GetString("UserName");
             ViewData["UserName"] = userName;
-            return View(await _laptopService.GetLaptops());
+            ViewData["SearchString"] = searchString;
+            // Lấy danh sách laptop
+            return View(await _laptopService.GetLaptops(searchString));
         }
         
         // GET: Laptops/Details/5

@@ -7,14 +7,10 @@ using MvcLaptop.Models;
 
 namespace MvcLaptop.Data
 {
-    public class MvcLaptopContext : DbContext
+    public class MvcLaptopContext(DbContextOptions<MvcLaptopContext> options) : DbContext(options)
     {
-        public MvcLaptopContext (DbContextOptions<MvcLaptopContext> options)
-            : base(options)
-        {
-        }
-
         public DbSet<MvcLaptop.Models.Laptop> Laptop { get; set; } = default!;
-        public DbSet<MvcLaptop.Models.User> Users { get; set; }
+        public DbSet<MvcLaptop.Models.User>? Users { get; set; }
+        public DbSet<MvcLaptop.Models.Order>? Orders { get; set; }
     }
 }

@@ -1,0 +1,73 @@
+@model MvcLaptop.Models.Order
+@{
+    ViewData["Title"] = "Thông tin thanh toán";
+    var cartItems = ViewData["CartItems"] as IEnumerable<dynamic>;
+    var totalPrice = ViewData["TotalPrice"] ?? 0m; // Lấy tổng tiền từ ViewData
+}
+<div class="container">
+    <h1>Thông tin thanh toán</h1>
+    @if (cartItems == null || !cartItems.Any())
+    {
+        <p>Giỏ hàng của bạn đang trống.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Sản phẩm</th>
+                    <th>Số lượng</th>
+                    <th>Giá</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in cartItems)
+                {
+                    <tr>
+                        <td>@item.Product.Title</td>
+                        <td>@item.Quantity</td>
+                        <td>@string.Format("{0:C}", item.Product.Price)</td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+        <div class="text-right">
+            <p><strong>Tổng tiền: @string.Format("{0:C}", totalPrice)</strong></p>
+        </div>
+    }
+
+    <form asp-action="ProcessCheckout" method="post" class="checkout-form">
+        <div class="form-group">
+            <label for="FullName">Họ và tên</label>
+            <input type="text" class="form-control" id="FullName" name="FullName" value="@Model.FullName" placeholder="Nhập họ và tên" required />
+        </div>
+
+        <div class="form-group">
+            <label for="PhoneNumber">Số điện thoại</label>
+            <input type="tel" class="form-control" id="PhoneNumber" name="PhoneNumber" value="@Model.PhoneNumber" placeholder="Nhập số điện thoại" required />
+        </div>
+
+        <div class="form-group">
+            <label for="Address">Địa chỉ</label>
+            <textarea class="form-control" id="Address" name="Address" rows="3" placeholder="Nhập địa chỉ giao hàng" required>@Model.Address</textarea>
+        </div>
+
+        <div class="form-group">
+            <label>Phương thức thanh toán</label>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="Banking" value="Banking" required />
+                <label class="form-check-label" for="Banking">Banking</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="COD" value="COD" required />
+                <label class="form-check-label" for="COD">Thanh toán khi nhận hàng</label>
+            </div>
+            <div class="form-check">
+                <input class="form-check-input" type="radio" name="PaymentMethod" id="EWallet" value="EWallet" required />
+                <label class="form-check-label" for="EWallet">Ví điện tử</label>
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Xác nhận thanh toán</button>
+    </form>
+</div>

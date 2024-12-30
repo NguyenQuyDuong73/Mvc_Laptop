@@ -14,6 +14,8 @@ public static class SessionExtensions
     public static T GetObject<T>(this ISession session, string key)
     {
         var json = session.GetString(key);  // Lấy chuỗi JSON từ session
+#pragma warning disable CS8603 // Possible null reference return.
         return json == null ? default(T) : JsonSerializer.Deserialize<T>(json);  // Deserialize chuỗi JSON thành đối tượng
+#pragma warning restore CS8603 // Possible null reference return.
     }
 }
