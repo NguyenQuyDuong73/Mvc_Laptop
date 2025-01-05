@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MvcLaptop.Models.Laptop>
+﻿@model IEnumerable<MvcLaptop.Models.Product>
 @{
     ViewData["Title"] = "Home";
 }
@@ -26,6 +26,7 @@
     <div class="hero-carousel-dots"></div>
 </section>
 <section class="hot-new">
+    <h1>Welcome to Compute Zone</h1>
     <section class="hot-new-section">
         <div class="hot-new-banner">
             <span class="hot-new-icon">⚡</span>
@@ -38,7 +39,8 @@
         {
             <div class="hot-new-card">
                 <a asp-action="Details" asp-route-id="@item.Id" class="hot-new-link">
-                    <img src="@item.ImageUrl" alt="@item.Title" class="hot-new-image" />
+                    @* <img src="@item.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl ?? Url.Content("~/images/default.jpg")" alt="@item.Title" class="hot-new-image" /> *@
+                    <img src="@item.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl" alt="@item.Title" class="hot-new-image" />
                     <div class="hot-new-info">
                         <h3 class="hot-new-title">@item.Title</h3>
                         <p class="hot-new-price">$@item.Price</p>

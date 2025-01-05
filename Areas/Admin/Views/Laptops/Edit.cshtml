@@ -9,8 +9,8 @@
 <h4>Laptop</h4>
 <hr />
 <div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
+    <div class="col-md-12">
+        <form asp-action="Edit" enctype="multipart/form-data">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
@@ -19,13 +19,13 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Genre" class="control-label"></label>
-                <input asp-for="Genre" class="form-control" />
-                <span asp-validation-for="Genre" class="text-danger"></span>
+                <label asp-for="CategoryId" class="control-label"></label>
+                <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
+                <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <textarea id="example" asp-for="Description" class="form-control" ></textarea>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -38,11 +38,27 @@
                 <input asp-for="Price" class="form-control" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
+            <!-- Hiển thị ảnh cũ -->
             <div class="form-group">
-                <label asp-for="ImageUrl" class="control-label"></label>
-                <input asp-for="ImageUrl" class="form-control" />
-                <span asp-validation-for="ImageUrl" class="text-danger"></span>
+                <label>Current Image</label>
+                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                {
+                    <div  class="image-frame">
+                        <img src="@Model.ImageUrl" alt="Current Image" style="max-width: 200px; height: auto; display: block;" />
+                    </div>
+                }
+                else
+                {
+                    <div>No image available</div>
+                }
             </div>
+
+            <!-- Thêm ảnh mới -->
+            <div class="form-group">
+                <label for="MainImage">Upload New Image</label>
+                <input type="file" name="MainImage" id="MainImage" class="form-control" />
+            </div>
+
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-primary" />
             </div>
@@ -55,5 +71,24 @@
 </div>
 
 @section Scripts {
-    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    <script>
+        var editor = new FroalaEditor('#example');
+    </script>
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
 }
+<style>
+    .image-frame {
+    border: 2px solid #007bff; /* Màu xanh lam */
+    padding: 5px;
+    display: inline-block;
+    border-radius: 5px; /* Bo góc khung ảnh */
+}
+
+.image-frame img {
+    max-width: 200px;
+    height: auto;
+    display: block;
+}
+</style>

@@ -20,47 +20,56 @@ public class HomeController : Controller
         _context = context;
         _logger = logger;
     }
-    public async Task<IActionResult> Index(string genre, string searchString)
+    public async Task<IActionResult> Index(int? categoryId, string searchString)
     {
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
-        ViewData["Genres"] = _context.Laptop
-                .Select(l => l.Genre)
-                .Distinct()
-                .OrderBy(g => g)
-                .ToList();
-        var laptops = string.IsNullOrEmpty(genre)
-            ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
-            : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
-
-        if (!string.IsNullOrEmpty(searchString))
-        {
-            laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
-        }
-        ViewData["CurrentGenre"] = genre;
-        return View(laptops);
-    }
-    public async Task<IActionResult> Product(string genre, string searchString)
-    {
-        var userName = HttpContext.Session.GetString("UserName");
-        ViewData["UserName"] = userName;
-        ViewData["Genres"] = _context.Laptop
-            .Select(l => l.Genre)
-            .Distinct()
-            .OrderBy(g => g)
+        ViewData["Categories"] = _context.Category!
+            .OrderBy(c => c.Name_Category)
             .ToList();
-        // Lọc sản phẩm theo Genre
-        var laptops = string.IsNullOrEmpty(genre)
-            ? _context.Laptop.AsQueryable() // Nếu không có genre, trả về tất cả sản phẩm
-            : _context.Laptop.Where(l => l.Genre == genre); // Lọc theo genre
+        var products = _context.Product
+         .Include(p => p.ProductImages)
+         .Include(p => p.Category).AsQueryable();
+        if (categoryId.HasValue)
+        {
+            products = products.Where(p => p.CategoryId == categoryId.Value);
+        }
 
         if (!string.IsNullOrEmpty(searchString))
         {
-            laptops = laptops.Where(l => l.Title!.ToUpper().Contains(searchString.ToUpper()));
+            products = products.Where(p => p.Title!.ToUpper().Contains(searchString.ToUpper()));
         }
-        ViewData["CurrentGenre"] = genre;
+
+        ViewData["CurrentCategory"] = categoryId;
         ViewData["SearchString"] = searchString;
-        return View(await laptops.ToListAsync());
+        return View(await products.ToListAsync());
+    }
+    public async Task<IActionResult> Product(int? categoryId, string searchString)
+    {
+        var userName = HttpContext.Session.GetString("UserName");
+        ViewData["UserName"] = userName;
+        ViewData["Categories"] = _context.Category!
+            .OrderBy(c => c.Name_Category)
+            .ToList();
+          var products = _context.Product
+          .Include(p => p.ProductImages)
+          .Include(p => p.Category)
+          .AsQueryable();
+
+        if (categoryId.HasValue)
+        {
+            products = products.Where(p => p.CategoryId == categoryId.Value);
+        }
+
+        if (!string.IsNullOrEmpty(searchString))
+        {
+            products = products.Where(p => p.Title!.ToUpper().Contains(searchString.ToUpper()));
+        }
+
+        ViewData["CurrentCategory"] = categoryId;
+        ViewData["SearchString"] = searchString;
+
+        return View(await products.ToListAsync());
     }
 
     public IActionResult Privacy()
@@ -73,30 +82,25 @@ public class HomeController : Controller
     {
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
-        var laptop = _context.Laptop.FirstOrDefault(l => l.Id == id);
+        var laptop = _context.Product.FirstOrDefault(l => l.Id == id);
         if (laptop == null)
         {
             return NotFound();
         }
         // Truyền danh sách Genres vào ViewData
-        ViewData["Genres"] = _context.Laptop
-            .Select(l => l.Genre)
-            .Distinct()
-            .OrderBy(g => g)
+        ViewData["Categories"] = _context.Category!
+            .OrderBy(c => c.Name_Category)
             .ToList();
-
         return View(laptop);
     }
     // Action trả về danh sách Genre
     public IActionResult PartialGenres()
     {
-        var genres = _context.Laptop
-            .Select(l => l.Genre)
-            .Distinct()
-            .OrderBy(g => g)
+        var categories = _context.Category!
+            .OrderBy(c => c.Name_Category)
             .ToList();
 
-        return PartialView("_GenreMenu", genres);
+        return PartialView("_CategoryMenu", categories);
     }
     public IActionResult Login()
     {
@@ -146,7 +150,7 @@ public class HomeController : Controller
         if (ModelState.IsValid)
         {
             // Kiểm tra xem tên người dùng đã tồn tại trong cơ sở dữ liệu chưa
-            var existingUser = await _context.Users.FirstOrDefaultAsync(u => u.UserName == user.UserName);
+            var existingUser = await _context.Users!.FirstOrDefaultAsync(u => u.UserName == user.UserName);
             if (existingUser != null)
             {
                 // Nếu tên người dùng đã tồn tại, thêm lỗi vào ModelState

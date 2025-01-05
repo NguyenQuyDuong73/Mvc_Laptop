@@ -22,6 +22,9 @@ builder.Services.AddControllersWithViews();
 
 builder.Services.AddScoped<ILaptopService, LaptopService>();
 
+builder.Services.AddScoped<ICartService, CartService>();
+
+builder.Services.AddHttpContextAccessor();
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));

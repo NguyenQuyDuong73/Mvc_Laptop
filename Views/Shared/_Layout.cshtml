@@ -19,7 +19,7 @@
         {
             <ul class="genre-menu-list">
                 <li class="genre-menu-item"><a asp-action="Index" asp-route-genre="" class="genre-menu-link">All</a></li>
-                @foreach (var genre in (IEnumerable<string>)ViewData["Genres"])
+                @foreach (var genre in (IEnumerable<string>)ViewData["Genres"]!)
                 {
                     <li class="genre-menu-item">
                         <a asp-controller="Home" asp-action="Index" asp-route-genre="@genre" class="genre-menu-link">

@@ -148,3 +148,16 @@ document.addEventListener("DOMContentLoaded", function () {
       showSlide(nextIndex);
   }, 5000);
 });
+
+/*Register*/
+document.getElementById("registerForm").onsubmit = function (event) {
+  var password = document.getElementById("Password").value;
+  var confirmPassword = document.getElementById("ConfirmPassword").value;
+  var confirmPasswordError = document.getElementById("ConfirmPasswordError");
+  if (password !== confirmPassword) {
+      event.preventDefault();
+      confirmPasswordError.textContent = "Mật khẩu và xác nhận mật khẩu không khớp.";
+  } else {
+      confirmPasswordError.textContent = ""; // Xóa lỗi nếu mật khẩu khớp
+  }
+};

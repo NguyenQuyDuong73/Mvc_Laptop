@@ -9,7 +9,7 @@
 {
     <div class="alert alert-warning" role="alert">
         @TempData["Message"]
-        @if (TempData["ShowLoginModal"] != null && (bool)TempData["ShowLoginModal"])
+        @if (TempData["ShowLoginModal"] != null && (bool)TempData["ShowLoginModal"]!)
         {
             <br />
             <a asp-action="Login" asp-controller="Home" class="btn btn-primary mt-2">Đăng nhập ngay</a>
@@ -67,7 +67,7 @@ else
     </form>
 }
 <!-- Modal Thông Báo -->
-@if (TempData["ShowLoginModal"] != null && (bool)TempData["ShowLoginModal"])
+@if (TempData["ShowLoginModal"] != null && (bool)TempData["ShowLoginModal"]!)
 {
     <div class="modal" id="loginModal" tabindex="-1" role="dialog" style="display:block; background:rgba(0,0,0,0.5);">
         <div class="modal-dialog" role="document">

@@ -5,11 +5,15 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>@ViewData["Title"] - Compute Zone</title>
-    <link rel="stylesheets" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheets" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheets" href="~/MvcLaptop.styles.css" asp-append-version="true" />
-    <link rel="stylesheets" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
-    <link rel="stylesheets" href="~/css/theme.css" asp-append-version="true" />
+    <meta name="description" content="Compute Zone - Nơi cung cấp các sản phẩm laptop chất lượng cao, phù hợp cho mọi nhu cầu công việc và giải trí." />
+    <meta name="keywords" content="Laptop, Máy tính, Mua laptop, Compute Zone" />
+    <meta name="robots" content="index, follow" />
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="~/MvcLaptop.styles.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/theme.css" asp-append-version="true" />
 </head>
 
 <body>
@@ -18,15 +22,23 @@
     </header>
     <!-- Hiển thị menu các thể loại -->
     <div class="genre-menu">
-        @if (ViewData["Genres"] != null)
+        @if (ViewData["Categories"] != null)
         {
             <ul class="genre-menu-list">
                 <li class="genre-menu-item"><a asp-action="Product" asp-route-genre="" class="genre-menu-link">All</a></li>
-                @foreach (var genre in (IEnumerable<string>)ViewData["Genres"])
+                @* @foreach (var genre in (IEnumerable<string>)ViewData["Genres"]!)
                 {
                     <li class="genre-menu-item">
-                        <a asp-controller="Home" asp-action="Product" asp-route-genre="@genre" class="genre-menu-link">
+                        <a asp-controller="Home" asp-action="Product" asp-route-genre="@genre" class="genre-menu-link" title="Hãng sản phẩm của @genre">
                             @genre
+                        </a>
+                    </li>
+                } *@
+                 @foreach (var category in (IEnumerable<MvcLaptop.Models.Category>)ViewData["Categories"]!)
+                {
+                    <li>
+                        <a asp-action="Product" asp-route-categoryId="@category.CategoryId" class="genre-menu-link" >
+                            @category.Name_Category
                         </a>
                     </li>
                 }

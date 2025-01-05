@@ -14,7 +14,7 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
                 </li>
                 <!-- Kiểm tra nếu người dùng là admin -->
-                @if (ViewData["UserName"] != null && ViewData["UserName"].ToString() == "admin")
+                @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
                 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>

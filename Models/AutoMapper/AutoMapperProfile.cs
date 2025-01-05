@@ -5,7 +5,7 @@ public class AutoMapperProfile : Profile
 {
     public AutoMapperProfile()
     {
-        CreateMap<Laptop, LaptopViewModel>().ReverseMap();
-        CreateMap<LaptopRequest, Laptop>();
+        CreateMap<Product, LaptopViewModel>().ReverseMap();
+        CreateMap<LaptopRequest, Product>();
     }
 }

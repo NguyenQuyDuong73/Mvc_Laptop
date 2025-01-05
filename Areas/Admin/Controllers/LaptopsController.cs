@@ -15,11 +15,9 @@ namespace MvcLaptop.Areas.Admin.Controllers
     [Area("Admin")]
     public class LaptopsController : Controller
     {
-        private readonly MvcLaptopContext _context;
         private readonly ILaptopService _laptopService;
-        public LaptopsController(MvcLaptopContext context,ILaptopService laptopService)
+        public LaptopsController(ILaptopService laptopService)
         {
-            _context = context;
             _laptopService = laptopService;
         }
 
@@ -52,8 +50,11 @@ namespace MvcLaptop.Areas.Admin.Controllers
         }
 
         // GET: Laptops/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
+            ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category");
             return View();
         }
 
@@ -62,14 +63,15 @@ namespace MvcLaptop.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create(LaptopRequest request)
+        public async Task<IActionResult> Create(LaptopRequest request, IFormFile MainImage)
         {
             if (ModelState.IsValid)
             {
-                var result = await _laptopService.Create(request);
+                var result = await _laptopService.Create(request, MainImage);
                 if(result == null)
                     return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category", request.CategoryId);
             return View(request);
         }
 
@@ -85,6 +87,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
             {
                 return NotFound();
             }
+            ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category", laptop.CategoryId);
             return View(laptop);
         }
 
@@ -93,7 +96,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id,LaptopViewModel laptop)
+        public async Task<IActionResult> Edit(int id,LaptopViewModel laptop, IFormFile? MainImage)
         {
             if (id != laptop.Id)
             {
@@ -104,7 +107,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
             {
                 try
                 {
-                    var result = await _laptopService.Update(id, laptop);
+                    var result = await _laptopService.Update(id, laptop, MainImage);
                     if(result)
                     {
                         return RedirectToAction(nameof(Index));
@@ -123,6 +126,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category", laptop.CategoryId);
             return View(laptop);
         }
 

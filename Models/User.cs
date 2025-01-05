@@ -12,15 +12,12 @@ public class User
     public string UserName { get; set; }
     
     [Required]
-    [EmailAddress]  // Đảm bảo rằng giá trị là một email hợp lệ
+    [EmailAddress]  
     public string Email { get; set; }
     [Required]
     [StringLength(100)]
     public string Password { get; set; }
 
-    public User()
-    {
-    }
     public User(string userName, string password, string email)
     {
         UserName = userName;

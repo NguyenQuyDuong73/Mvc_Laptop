@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+<nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3" aria-label="Main Navigation">
     <div class="container-fluid">
         <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Compute Zone</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -8,13 +8,13 @@
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
             <ul class="navbar-nav flex-grow-1">
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home Page</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                    <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
                 </li>
                 <!-- Kiểm tra nếu người dùng là admin -->
-                @if (ViewData["UserName"] != null && ViewData["UserName"].ToString() == "admin")
+                @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
                 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>
@@ -26,18 +26,18 @@
                 @if (string.IsNullOrEmpty(ViewData["UserName"] as string))
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login">Login</a>
+                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Login" rel="nofollow">Login</a>
                     </li>
                 }
                 else
                 {
                     <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="User Menu">
                             Hello, @ViewData["UserName"]
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="#">@ViewData["UserName"]</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Logout">Logout</a></li>
+                            <li><a class="dropdown-item" asp-area="" asp-controller="Home" asp-action="Logout" rel="nofollow">Logout</a></li>
                         </ul>
                     </li>
                 }
@@ -46,7 +46,7 @@
             <ul class="navbar-nav ml-auto">
                 <li class="nav-item">
                     <a class="nav-link" href="@Url.Action("Index", "Cart")">
-                        <i class="fas fa-shopping-cart"></i>
+                        <i class="fas fa-shopping-cart" aria-hidden="true" alt="Shopping Cart Icon"></i>
                         <span class="js-cart-count cart-count">0</span>
                     </a>
                 </li>

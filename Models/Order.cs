@@ -27,9 +27,9 @@ namespace MvcLaptop.Models
         [DataType(DataType.Currency)]
         [Column(TypeName = "decimal(18, 2)")]
         public decimal TotalPrice { get; set; }
-
-        // Thêm thông tin người dùng
-        public string? UserName { get; set; }
-        public string? Email { get; set; }
+    // Thêm khóa ngoại liên kết đến User
+        [ForeignKey("User")]
+        public int UserId { get; set; }
+        public User? User { get; set; }
     }
 }

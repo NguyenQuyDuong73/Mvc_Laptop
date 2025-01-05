@@ -20,8 +20,7 @@
             <thead class="text-center">
                 <tr>
                     <th>@Html.DisplayNameFor(model => model.Title)</th>
-                    <th>@Html.DisplayNameFor(model => model.Genre)</th>
-                    <th>@Html.DisplayNameFor(model => model.Description)</th>
+                    <th>@Html.DisplayNameFor(model => model.CategoryId)</th>
                     <th>@Html.DisplayNameFor(model => model.Quantity)</th>
                     <th>@Html.DisplayNameFor(model => model.Price)</th>
                     <th>@Html.DisplayNameFor(model => model.ImageUrl)</th>
@@ -33,11 +32,20 @@
                 {
                     <tr>
                         <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Genre)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Description)</td>
+                        <td>@Html.DisplayFor(modelItem => item.CategoryId)</td>
                         <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
                         <td>@Html.DisplayFor(modelItem => item.Price)</td>
-                        <td><img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px;" /></td>
+                        @* <td><img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px;" /></td> *@
+                        <td>
+                            @if (!string.IsNullOrEmpty(item.ImageUrl))
+                            {
+                                <img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px; height: auto;" />
+                            }
+                            else
+                            {
+                                <span>Không có ảnh</span>
+                            }
+                        </td>
                         <td>
                             <div class="action-buttons">
                                 <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-edit">Edit</a> |

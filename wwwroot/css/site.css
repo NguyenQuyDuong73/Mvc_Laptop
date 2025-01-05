@@ -388,6 +388,13 @@ body {
   background-color: white;
 }
 /* Hot New Section */
+.hot-new h1{
+  font-family: 'Rubik Bubbles', cursive; /* Kiểu chữ Rubik Bubbles */
+  color: #FF4500; /* Màu nổi bật */
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Hiệu ứng đổ bóng */
+  -webkit-text-stroke: 1px #e74c3c; /* Viền đen */
+  font-size: 3rem; /* Kích thước chữ */
+}
 .hot-new {
   margin-top: 1px;
   padding: 20px 10px;
@@ -496,4 +503,80 @@ body {
   font-size: 30px; /* Kích thước icon */
   color: yellow; /* Màu vàng cho tia sét */
   text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2); /* Tạo hiệu ứng ánh sáng */
+}
+/* Login */
+.login-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.login-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.register-link {
+  margin-top: 15px;
+  text-align: center;
+}
+/* Register */
+.register-container {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 20px;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  background: #fff;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+.register-container h1 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 24px;
+  color: #333;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-control {
+  width: 100%;
+  padding: 10px;
+  font-size: 14px;
+}
+
+.btn-primary {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+}
+
+.login-link {
+  margin-top: 15px;
+  text-align: center;
 }

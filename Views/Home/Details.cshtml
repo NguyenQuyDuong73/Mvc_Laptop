@@ -1,4 +1,4 @@
-@model MvcLaptop.Models.Laptop
+@model MvcLaptop.Models.Product
 
 @{
     ViewData["Title"] = Model.Title;
@@ -6,11 +6,14 @@
 <div class="container">
     <div class="details-container">
         <div class="details-image">
-            <img src="@Model.ImageUrl" alt="@Model.Title" />
+            @foreach (var image in Model.ProductImages!)
+            {
+                <img src="@image.ImageUrl" alt="@Model.Title" class="product-image" style="border: @(image.IsMainImage ? "2px solid red" : "none");" />
+            }
         </div>
         <div class="details-info">
             <h1>@Model.Title</h1>
-            <p><strong>Thể loại:</strong> @Model.Genre</p>
+            <p><strong>Danh mục:</strong> @Model.Category?.Name_Category</p>
             <p><strong>Giá sản phẩm:</strong> $@Model.Price</p>
             <p><strong>Thông tin sản phẩm:</strong></p>
             <p>@Model.Description</p>

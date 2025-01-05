@@ -1,9 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using MvcLaptop.Data;
-using System;
 using System.Linq;
-
 namespace MvcLaptop.Models;
 
 public static class SeedData
@@ -14,42 +12,83 @@ public static class SeedData
             serviceProvider.GetRequiredService<
                 DbContextOptions<MvcLaptopContext>>()))
         {
-            // Look for any Laptops.
-            if (context.Laptop.Any())
+            // Kiểm tra nếu bảng Category chưa có dữ liệu
+            if (context.Category == null || !context.Category.Any())
             {
-                return;   // DB has been seeded
+                context.Category!.AddRange(new List<Category>
+                {
+                    new Category { Name_Category = "Asus" },
+                    new Category { Name_Category = "Acer" },
+                    new Category { Name_Category = "Lenovo" }
+                });
+                context.SaveChanges();
             }
-            context.Laptop.AddRange(
-                new Laptop
+
+            // Kiểm tra nếu bảng Product chưa có dữ liệu
+            if (context.Product == null || !context.Product.Any())
+            {
+                var asusCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Asus")?.CategoryId ?? 0;
+                var acerCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Acer")?.CategoryId ?? 0;
+                var lenovoCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Lenovo")?.CategoryId ?? 0;
+
+                context.Product!.AddRange(new List<Product>
                 {
-                    Title = "Laptop Asus Vivobook 14 OLED",
-                    Genre = "Asus",
-                    Description = "Asus Vivobook 14 OLED là một dòng laptop tầm trung, nổi bật với màn hình OLED chất lượng cao, hiệu năng ổn định, và thiết kế mỏng nhẹ. Máy hướng đến đối tượng người dùng văn phòng, sinh viên hoặc những ai cần một thiết bị nhỏ gọn, mạnh mẽ để xử lý các tác vụ hàng ngày và giải trí đa phương tiện.",
-                    Quantity = 100,
-                    Price = 2500M,
-                    ImageUrl = "https://anphat.com.vn/media/product/44758_laptop_asus_vivobook_14_oled_a1405va_km095w__2_.jpg"
-                },
-                new Laptop
-                {
-                    Title = "Laptop Acer Predator",
-                    Genre = "Acer",
-                    Description = "Acer Predator PT515-51-731Z là một chiếc laptop gaming cao cấp thuộc dòng Predator Triton 500 của Acer. Máy được thiết kế cho game thủ chuyên nghiệp và người dùng yêu cầu hiệu năng cao, với cấu hình mạnh mẽ, màn hình tần số quét cao, và thiết kế mỏng nhẹ so với chuẩn laptop gaming.",
-                    Quantity = 100,
-                    Price = 1666.67M,
-                    ImageUrl = "https://anphat.com.vn/media/product/30547_laptop_acer_predator_pt515_51_731z_nh_q4xsv_006_1.jpg"
-                },
-                new Laptop
-                {
-                    Title = "Laptop Lenovo LOQ",
-                    Genre = "Lenovo",
-                    Description = "Lenovo LOV-15 (15.6 inch FHD IPS) là một chiếc laptop thông minh và hiệu năng cao của Lenovo với màn hình IPS 15.6 inch, hiệu năng ổn định, và thiết kế mỏng nhẹ.",
-                    Quantity = 100,
-                    Price = 1250.00M,
-                    ImageUrl = "https://anphat.com.vn/media/product/47499_laptop_lenovo_loq_15iax9_83gs001svn_anphatcomputer_1.jpg"
-                }
-                
-            );
-            context.SaveChanges();
+                    new Product
+                    {
+                        Title = "Laptop Asus Vivobook 14 OLED",
+                        CategoryId = asusCategory,
+                        Description = "Asus Vivobook 14 OLED là dòng laptop...",
+                        Quantity = 100,
+                        Price = 25000000M,
+                        ProductImages = new List<ProductImage>
+                        {
+                            new ProductImage
+                            {
+                                ImageUrl = "https://example.com/asus-main.jpg",
+                                IsMainImage = true
+                            },
+                            new ProductImage
+                            {
+                                ImageUrl = "https://example.com/asus-secondary.jpg",
+                                IsMainImage = false
+                            }
+                        }
+                    },
+                    new Product
+                    {
+                        Title = "Laptop Acer Predator",
+                        CategoryId = acerCategory,
+                        Description = "Acer Predator là dòng laptop gaming...",
+                        Quantity = 50,
+                        Price = 30000000M,
+                        ProductImages = new List<ProductImage>
+                        {
+                            new ProductImage
+                            {
+                                ImageUrl = "https://example.com/acer-main.jpg",
+                                IsMainImage = true
+                            }
+                        }
+                    },
+                    new Product
+                    {
+                        Title = "Laptop Lenovo LOQ",
+                        CategoryId = lenovoCategory,
+                        Description = "Lenovo LOQ là dòng laptop thông minh...",
+                        Quantity = 75,
+                        Price = 20000000M,
+                        ProductImages = new List<ProductImage>
+                        {
+                            new ProductImage
+                            {
+                                ImageUrl = "https://example.com/lenovo-main.jpg",
+                                IsMainImage = true
+                            }
+                        }
+                    }
+                });
+                context.SaveChanges();
+            }
         }
     }
 }

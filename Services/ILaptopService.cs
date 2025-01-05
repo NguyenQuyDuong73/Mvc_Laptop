@@ -6,8 +6,17 @@ public interface ILaptopService
 {
     Task<IEnumerable<LaptopViewModel>> GetLaptops(string? searchString = null);
     Task<LaptopViewModel> GetLaptopById(int id);
-    Task<Laptop> Create(LaptopRequest request);
-    Task<bool> Update(int id, LaptopViewModel laptop);
+    Task<Product> Create(LaptopRequest request,IFormFile mainImage);
+    Task<bool> Update(int id, LaptopViewModel laptop, IFormFile? MainImage);
     Task<bool> Delete(int id);
+    Task<IEnumerable<Category>> GetCategories();
     bool LaptopExists(int id);
+}
+public interface ICartService
+{
+    Dictionary<int, int> GetCartFromSession();
+    void SaveCartToSession(Dictionary<int, int> cartItems);
+    void AddToCart(int id, int quantity = 1);
+    void RemoveFromCart(int id);
+    decimal CalculateTotalPrice(Dictionary<int, int> cartItems);
 }
