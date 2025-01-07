@@ -77,7 +77,7 @@ public class LaptopService : ILaptopService
         return _mapper.Map<LaptopViewModel>(laptop);
     }
 
-    public async Task<IEnumerable<LaptopViewModel>> GetLaptops(string? sortOrder = null, string? currentFilter = null, string? searchString = null, int? pageNumber = null, int pageSize = 5)
+    public async Task<IEnumerable<LaptopViewModel>> GetLaptops(string? sortOrder = null, string? currentFilter = null, string? searchString = null, int? pageNumber = null, int pageSize = 3)
     {
         var laptops = from p in _context.Product
                         .Include(p => p.Category)
