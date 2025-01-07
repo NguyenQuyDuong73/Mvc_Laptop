@@ -77,26 +77,54 @@ public class LaptopService : ILaptopService
         return _mapper.Map<LaptopViewModel>(laptop);
     }
 
-    public async Task<IEnumerable<LaptopViewModel>> GetLaptops(string? searchString = null)
+    public async Task<IEnumerable<LaptopViewModel>> GetLaptops(string? sortOrder = null, string? currentFilter = null, string? searchString = null, int? pageNumber = null, int pageSize = 5)
     {
-        var laptops = await _context.Product
-        .Include(p => p.Category)
-        .Include(p => p.ProductImages) // Bao gồm danh sách ảnh
-        .Where(l => string.IsNullOrEmpty(searchString) ||
-                    (l.Title != null && l.Title.ToUpper().Contains(searchString.ToUpper())))
-        .ToListAsync();
-        // Map dữ liệu sang ViewModel, bao gồm URL ảnh chính
-        return laptops.Select(p => new LaptopViewModel
+        var laptops = from p in _context.Product
+                        .Include(p => p.Category)
+                        .Include(p => p.ProductImages) // Bao gồm danh sách ảnh
+                      select p;
+        // Lọc theo từ khóa tìm kiếm nếu có
+        if (!string.IsNullOrEmpty(searchString))
         {
-            Id = p.Id,
-            Title = p.Title,
-            CategoryId = p.CategoryId,
-            Name_Category = p.Category?.Name_Category,
-            Quantity = p.Quantity,
-            Price = p.Price,
-            ImageUrl = p.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl ?? "/images/default.jpg"
-        });
-        // return _mapper.Map<IEnumerable<LaptopViewModel>>(laptops);
+            laptops = laptops.Where(p => p.Title != null &&
+                                        p.Title.ToUpper().Contains(searchString.ToUpper()));
+        }
+        //Sắp xếp
+        switch (sortOrder)
+        {
+            case "name_desc":
+                laptops = laptops.OrderByDescending(p => p.Title);
+                break;
+            case "Price":
+                laptops = laptops.OrderBy(p => p.Price);
+                break;
+            case "price_desc":
+                laptops = laptops.OrderByDescending(p => p.Price);
+                break;
+            case "Quantity":
+                laptops = laptops.OrderBy(p => p.Quantity);
+                break;
+            case "Quantity_desc":
+                laptops = laptops.OrderByDescending(p => p.Quantity);
+                break;
+            default:
+                laptops = laptops.OrderBy(p => p.Title);
+                break;
+        }
+        // Chuyển đổi sang ViewModel
+        return await PaginatedList<LaptopViewModel>.CreateAsync(
+            laptops.Select(p => new LaptopViewModel
+            {
+                Id = p.Id,
+                Title = p.Title,
+                CategoryId = p.CategoryId,
+                Name_Category = p.Category!.Name_Category,
+                Quantity = p.Quantity,
+                Price = p.Price,
+                ImageUrl = p.ProductImages!.FirstOrDefault(img => img.IsMainImage)!.ImageUrl
+            }),
+        pageNumber ?? 1,
+        pageSize);
     }
 
     public bool LaptopExists(int id)
@@ -118,18 +146,6 @@ public class LaptopService : ILaptopService
         // Xử lý ảnh mới nếu có
         if (MainImage != null && MainImage.Length > 0)
         {
-            // Xóa ảnh cũ
-            var oldImage = product.ProductImages!.FirstOrDefault(img => img.IsMainImage);
-            if (oldImage != null)
-            {
-                var oldImagePath = Path.Combine("wwwroot", oldImage.ImageUrl!.TrimStart('/'));
-                if (System.IO.File.Exists(oldImagePath))
-                {
-                    System.IO.File.Delete(oldImagePath);
-                }
-                _context.ProductImage!.Remove(oldImage); // Xóa khỏi database
-            }
-
             // Lưu ảnh mới
             var fileName = Path.GetFileNameWithoutExtension(MainImage.FileName) + "_" + Guid.NewGuid() + Path.GetExtension(MainImage.FileName);
             var filePath = Path.Combine("wwwroot/images", fileName);
@@ -137,6 +153,18 @@ public class LaptopService : ILaptopService
             using (var stream = new FileStream(filePath, FileMode.Create))
             {
                 await MainImage.CopyToAsync(stream);
+            }
+
+            // Xóa ảnh cũ
+            var oldImage = product.ProductImages!.FirstOrDefault(img => img.IsMainImage);
+            if (oldImage != null)
+            {
+                var oldImagePath = Path.Combine("wwwroot", oldImage.ImageUrl!.TrimStart('/'));
+                if (File.Exists(oldImagePath))
+                {
+                    File.Delete(oldImagePath);
+                }
+                _context.ProductImage!.Remove(oldImage); // Xóa khỏi database
             }
 
             // Thêm ảnh mới

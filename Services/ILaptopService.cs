@@ -4,7 +4,7 @@ namespace MvcLaptop.Services;
 
 public interface ILaptopService
 {
-    Task<IEnumerable<LaptopViewModel>> GetLaptops(string? searchString = null);
+    Task<IEnumerable<LaptopViewModel>> GetLaptops(string? sortOrder = null,string? currentFilter = null,string? searchString = null,int? pageNumber = null,int pageSize = 5);
     Task<LaptopViewModel> GetLaptopById(int id);
     Task<Product> Create(LaptopRequest request,IFormFile mainImage);
     Task<bool> Update(int id, LaptopViewModel laptop, IFormFile? MainImage);
