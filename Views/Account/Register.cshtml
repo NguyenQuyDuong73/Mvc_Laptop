@@ -9,7 +9,7 @@
         <div class="form-group">
             <label asp-for="UserName" class="control-label">Tên đăng nhập</label>
             <input asp-for="UserName" class="form-control"id="UserName" />
-            <span asp-validation-for="UserName" class="text-danger" id="UserNameError"></span>
+            <span asp-validation-for="UserName" class="text-danger" ></span>
         </div>
         <div class="form-group">
             <label asp-for="Password" class="control-label">Mật khẩu</label>
@@ -31,6 +31,6 @@
         </div>
     </form>
     <div class="login-link text-center">
-        <p>Bạn đã có tài khoản? <a asp-controller="Home" asp-action="Login">Đăng nhập ngay</a></p>
+        <p>Bạn đã có tài khoản? <a asp-controller="Account" asp-action="Login">Đăng nhập ngay</a></p>
     </div>
 </div>

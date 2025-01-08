@@ -1,0 +1,64 @@
+@* @model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Danh sách vai trò";
+}
+
+<h1>Danh sách vai trò</h1>
+<a asp-action="Create" class="btn btn-primary">Tạo vai trò mới</a>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                <td>
+                    <a asp-action="AssignRole" asp-route-userId="@role.Id" class="btn btn-success">Gán vai trò</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table> *@
+@model IEnumerable<Microsoft.AspNetCore.Identity.IdentityRole>
+
+@{
+    ViewData["Title"] = "Danh sách vai trò";
+}
+
+<h1>@ViewData["Title"]</h1>
+<a asp-action="Create" class="btn btn-primary mb-3">Tạo vai trò mới</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Tên vai trò</th>
+            <th class="text-center">Số người dùng</th>
+            <th class="text-center">Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var role in Model)
+        {
+            <tr>
+                <td>@role.Name</td>
+                @* <td class="text-center">
+                    @{
+                        // Đếm số người dùng trong vai trò
+                        var userCount = Model.Where(r => r.Id == role.Id).Count();
+                    }
+                    @userCount
+                </td> *@
+                <td class="text-center">@ViewBag.RoleUserCounts[role.Name]</td>
+                <td class="text-center">
+                    <a asp-action="AssignRole" asp-route-roleName="@role.Name" class="btn btn-success btn-sm">Gán vai trò</a>
+                    <a asp-action="UserList" asp-route-roleName="@role.Name" class="btn btn-info btn-sm">Danh sách người dùng</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

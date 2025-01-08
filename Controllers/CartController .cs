@@ -155,7 +155,7 @@ namespace MvcLaptop.Controllers
                 }
 
                 // Xử lý thanh toán thông qua service
-                await _cartService.ProcessCheckoutAsync(order, userName, email, userId.Value);
+                await _cartService.ProcessCheckoutAsync(order, userName, email, userId.Value.ToString());
 
                 TempData["Message"] = "Đơn hàng của bạn đã được ghi nhận!";
                 return RedirectToAction("Confirmation");

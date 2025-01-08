@@ -82,24 +82,37 @@ public class OrderViewModel
 }
 public class UserViewModel
 {
-    public int Id { get; set; }
+    [Display(Name = "ID Người dùng")]
+    public string? Id { get; set; }
 
-    [Display(Name = "Tên người dùng")]
+    [Display(Name = "Tên Đăng nhập")]
     public string? UserName { get; set; }
 
-    [Display(Name = "Email")]
-    public string? Email { get; set; }
+    [Required(ErrorMessage = "Mật khẩu không được để trống.")]
+    [DataType(DataType.Password)]
+    [Display(Name = "Mật khẩu")]
+    public string? Password { get; set; }
+    
+    [Required]
+    [DataType(DataType.Text)]
+    [Display(Name = "Full name")]
+    public string? Name { get; set; }
 
-    [Display(Name = "Vai trò")]
-    public string? Role { get; set; }
+    [Required]
+    [Display(Name = "Birth Date")]
+    [DataType(DataType.Date)]
+    public DateTime DOB { get; set; }
+    [Display(Name = "Email")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
+    public string? Email { get; set; }
 
     [Display(Name = "Ngày tạo")]
     [DataType(DataType.DateTime)]
     public DateTime CreatedAt { get; set; }
 
-    [Display(Name = "Trạng thái")]
-    public bool IsActive { get; set; }
-
     [Display(Name = "Số lượng đơn hàng")]
-    public int OrderCount { get; set; } // Tổng số đơn hàng của người dùng
+    public int OrderCount { get; set; }
+
+    [Display(Name = "Danh sách vai trò")]
+    public List<string> Roles { get; set; } = new List<string>();
 }

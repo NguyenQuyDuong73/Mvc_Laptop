@@ -1,28 +1,24 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Identity;
 
 namespace MvcLaptop.Models;
 
-public class User
+public class User : IdentityUser
 {
-    public int Id { get; set; }
-
-    [Required]
-    [StringLength(100)]
-    public string? UserName { get; set; }
-    
-    [Required]
-    [EmailAddress]  
-    public string? Email { get; set; }
-    [Required]
-    [StringLength(100)]
+    [PersonalData]
+    public string? Name { get; set; }
+    [PersonalData]
+    public DateTime DOB { get; set; }
+    [Required(ErrorMessage = "Mật khẩu không được để trống.")]
+    [DataType(DataType.Password)]
     public string? Password { get; set; }
     public User()
-    {}
+    { }
     public User(string userName, string password, string email)
     {
         UserName = userName;
-        Email = email;        
+        Email = email;
         Password = password;
     }
 }

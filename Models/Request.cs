@@ -1,5 +1,5 @@
 using System.ComponentModel.DataAnnotations;
-
+using Microsoft.AspNetCore.Identity;
 namespace MvcLaptop.Models;
 
 public class LaptopRequest
@@ -12,7 +12,7 @@ public class LaptopRequest
     public string? Title { get; set; }
 
     [Display(Name = "Danh mục")]
-    public int CategoryId  { get; set; }
+    public int CategoryId { get; set; }
 
     [Display(Name = "Tên danh mục")]
     public string? Name_Category { get; set; }
@@ -21,12 +21,12 @@ public class LaptopRequest
     [Required(ErrorMessage = "Vui lòng nhập mô tả")]
     [Display(Name = "Mô tả")]
     public string? Description { get; set; }
-    
+
     [Range(1, 1000, ErrorMessage = "Số lượng phải nằm trong khoảng từ 1 đến 1000")]
     [Required(ErrorMessage = "Vui lòng nhập số lượng")]
     [Display(Name = "Số lượng")]
     public int Quantity { get; set; }
-    
+
     [Range(1000, 1000000000, ErrorMessage = "Giá phải nằm trong khoảng từ 1.000 VNĐ đến 1.000.000.000 VNĐ")]
     [DataType(DataType.Currency)]
     [Required(ErrorMessage = "Vui lòng nhập giá")]
@@ -77,27 +77,27 @@ public class OrderRequest
     [EmailAddress(ErrorMessage = "Email không hợp lệ")]
     public string? Email { get; set; }
 }
-public class UserRequest
+public class UserRequest : IdentityUser
 {
-    public int Id { get; set; }
+    [Required(ErrorMessage = "Tên đăng nhập không được để trống.")]
+    [StringLength(100, ErrorMessage = "Tên đăng nhập không được dài quá 100 ký tự.")]
+    public override string? UserName { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập tên người dùng")]
-    [StringLength(100, ErrorMessage = "Tên người dùng không được vượt quá 100 ký tự")]
-    public string? UserName { get; set; }
+    [Required]
+    [DataType(DataType.Text)]
+    [Display(Name = "Full name")]
+    public string? Name { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập email")]
-    [EmailAddress(ErrorMessage = "Email không hợp lệ")]
-    public string? Email { get; set; }
+    [Required]
+    [Display(Name = "Birth Date")]
+    [DataType(DataType.Date)]
+    public DateTime DOB { get; set; }
 
-    [Required(ErrorMessage = "Vui lòng nhập mật khẩu")]
-    [StringLength(100, ErrorMessage = "Mật khẩu không được vượt quá 100 ký tự")]
+    [Required(ErrorMessage = "Mật khẩu không được để trống.")]
     [DataType(DataType.Password)]
-    public string? Password { get; set; }
+    public string? Password { get; set; } 
 
-    [Required(ErrorMessage = "Vui lòng nhập vai trò")]
-    [StringLength(50)]
-    public string Role { get; set; } = "User";
-
-    [Display(Name = "Trạng thái tài khoản")]
-    public bool IsActive { get; set; } = true;
+    [Required(ErrorMessage = "Email không được để trống.")]
+    [EmailAddress(ErrorMessage = "Email không hợp lệ.")]
+    public override string? Email { get; set; }
 }

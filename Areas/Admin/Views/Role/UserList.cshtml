@@ -1,0 +1,26 @@
+@model IEnumerable<MvcLaptop.Models.UserViewModel>
+
+<h1>Danh sách người dùng</h1>
+<table class="table">
+    <thead>
+        <tr>
+            <th>Tên đăng nhập</th>
+            <th>Email</th>
+            <th>Vai trò</th>
+            <th>Hành động</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.UserName</td>
+                <td>@user.Email</td>
+                <td>@string.Join(", ", user.Roles)</td> <!-- Hiển thị vai trò -->
+                <td>
+                    <a asp-action="AssignRole" asp-route-userId="@user.Id" class="btn btn-primary">Gán vai trò</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

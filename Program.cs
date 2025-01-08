@@ -11,41 +11,70 @@ builder.Services.AddDbContext<MvcLaptopContext>(options =>
     options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext") ?? throw new InvalidOperationException("Connection string 'MvcLaptopContext' not found.")));
 
 builder.Services.AddDistributedMemoryCache();  // Sử dụng bộ nhớ để lưu trữ session
+
+builder.Services.AddControllersWithViews();
+builder.Services.AddScoped<ILaptopService, LaptopService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
     options.IdleTimeout = TimeSpan.FromMinutes(30);  // Thời gian hết hạn session
     options.Cookie.HttpOnly = true;  // Cookie chỉ có thể truy cập từ server
     options.Cookie.IsEssential = true;  // Làm cho cookie session là cần thiết
 });
-// Add services to the container.
-builder.Services.AddControllersWithViews();
-
-builder.Services.AddScoped<ILaptopService, LaptopService>();
-
-builder.Services.AddScoped<ICartService, CartService>();
-
-builder.Services.AddHttpContextAccessor();
+builder.Services.AddIdentity<User, IdentityRole>()
+    .AddEntityFrameworkStores<MvcLaptopContext>()
+    .AddDefaultTokenProviders();
 
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
-
 if (builder.Environment.IsDevelopment())
 {
     builder.Services.AddDbContext<MvcLaptopContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext")));
 }
-// else
-// {
-//     builder.Services.AddDbContext<MvcLaptopContext>(options =>
-//         options.UseSqlServer(builder.Configuration.GetConnectionString("ProductionMvcLaptopContext")));
-// }
+
+builder.Services.Configure<IdentityOptions>(options =>
+{
+    // Password settings.
+    options.Password.RequireDigit = false;
+    options.Password.RequireLowercase = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
+    options.Password.RequiredLength = 6;
+    options.Password.RequiredUniqueChars = 1;
+
+    // Cấu hình Lockout - khóa user
+    options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+    options.Lockout.MaxFailedAccessAttempts = 5;
+    options.Lockout.AllowedForNewUsers = true;
+
+    // User settings.
+    options.User.AllowedUserNameCharacters =
+    "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+    options.User.RequireUniqueEmail = false;
+
+    // Cấu hình đăng nhập.
+    options.SignIn.RequireConfirmedEmail = false;            
+    options.SignIn.RequireConfirmedPhoneNumber = false;    
+});
+
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.Cookie.HttpOnly = true;
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+
+    options.LoginPath = "/Identity/Account/Login";
+    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
+    options.SlidingExpiration = true;
+});
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
 
-    SeedData.Initialize(services);
+    await  SeedData.Initialize(services);
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

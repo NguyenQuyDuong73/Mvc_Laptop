@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MvcLaptop.Data;
 
@@ -11,9 +12,11 @@ using MvcLaptop.Data;
 namespace MvcLaptop.Data.Migrations
 {
     [DbContext(typeof(MvcLaptopContext))]
-    partial class MvcLaptopContextModelSnapshot : ModelSnapshot
+    [Migration("20250108161523_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

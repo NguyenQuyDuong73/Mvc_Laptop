@@ -1,0 +1,15 @@
+@model string
+
+@{
+    ViewData["Title"] = "Tạo vai trò mới";
+}
+
+<h1>Tạo vai trò mới</h1>
+
+<form asp-area="Admin" asp-action="Create" method="post">
+    <div class="form-group">
+        <label for="roleName">Tên vai trò</label>
+        <input type="text" class="form-control" id="roleName" name="roleName" required />
+    </div>
+    <button type="submit" class="btn btn-primary">Tạo</button>
+</form>
