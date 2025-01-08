@@ -13,7 +13,7 @@
                     <img src="@image.ImageUrl" 
                          alt="@Model.Title" 
                          class="product-image mb-3"
-                         style="max-width: 100%; height: 200px; border: @(image.IsMainImage ? "2px solid red" : "1px solid #ccc"); border-radius: 5px;" />
+                         style="max-width: 100%; height: 200px; border: @(image.IsMainImage ? "2px solid red" : "1px solid #ccc"); border-radius: 5px;" onerror="this.onerror=null; this.src='@Url.Content("~/images/default.jpg")'; "/>
                 }
             }
             else

@@ -96,6 +96,12 @@ public class HomeController : Controller
             .ToList();
         return View(laptop);
     }
+    public IActionResult About()
+    {
+        var userName = HttpContext.Session.GetString("UserName");
+        ViewData["UserName"] = userName;
+        return View();
+    }
     // Action trả về danh sách Genre
     public IActionResult PartialGenres()
     {

@@ -17,6 +17,7 @@ namespace MvcLaptop.Data
         public DbSet<Order>? Orders { get; set; }
         public DbSet<Category>? Category { get; set; }
         public DbSet<ProductImage>? ProductImage { get; set; }
+         public DbSet<OrderDetail>? OrderDetail { get; set; }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
