@@ -70,10 +70,10 @@ builder.Services.Configure<IdentityOptions>(options =>
 //     options.SlidingExpiration = true;
 // });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+.AddCookie(options => //CookieAuthenticationDefaults.AuthenticationScheme,
 {
-options.LoginPath = "/Account/Login"; 
-options.AccessDeniedPath = "/Account/AccessDenied"; 
+    options.LoginPath = "/Account/Login";
+    options.AccessDeniedPath = "/Account/AccessDenied";
 });
 var app = builder.Build();
 

@@ -8,7 +8,7 @@ using MvcLaptop.Models;
 namespace MvcLaptop.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Admin,Staff")]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -39,15 +39,6 @@ namespace MvcLaptop.Controllers
             // await SetUserViewDataAsync();
             // var roles = _roleManager.Roles.ToList();
             // return View(roles);
-            if (User.Identity!.IsAuthenticated)
-            {
-                Console.WriteLine($"Người dùng đã đăng nhập: {User.Identity.Name}");
-                Console.WriteLine($"Quyền: {string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
-            }
-            else
-            {
-                Console.WriteLine("Người dùng chưa đăng nhập.");
-            }
             var roles = _roleManager.Roles.ToList();
             var roleUserCounts = new Dictionary<string, int>();
 

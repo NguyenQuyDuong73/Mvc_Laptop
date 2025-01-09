@@ -46,6 +46,11 @@ public class AccountController : Controller
             return View();
         }
         var roles = await _userManager.GetRolesAsync(user); // Lấy vai trò của người dùng từ database
+
+        foreach (var role in roles) {
+            Console.WriteLine(role ?? "null e êy");
+        }
+
         // Tạo Claims cho người dùng
         var claims = new List<Claim>
         {
@@ -53,10 +58,13 @@ public class AccountController : Controller
             new Claim(ClaimTypes.Email, user.Email ?? "")
         };
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role))); // Thêm tất cả vai trò của user vào Claims
-        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        var principal = new ClaimsPrincipal(identity);
 
-        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        await _signInManager.SignInWithClaimsAsync(user, false, claims);
+
+        // var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        // var principal = new ClaimsPrincipal(identity);
+
+        // await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
         // await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
 
         // Lưu thông tin người dùng vào session
