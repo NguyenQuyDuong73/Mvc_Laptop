@@ -1,3 +1,4 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -33,9 +34,20 @@ namespace MvcLaptop.Controllers
         // Hiển thị danh sách vai trò
         public async Task<IActionResult> Index()
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
             // await SetUserViewDataAsync();
             // var roles = _roleManager.Roles.ToList();
             // return View(roles);
+            if (User.Identity!.IsAuthenticated)
+            {
+                Console.WriteLine($"Người dùng đã đăng nhập: {User.Identity.Name}");
+                Console.WriteLine($"Quyền: {string.Join(", ", User.Claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value))}");
+            }
+            else
+            {
+                Console.WriteLine("Người dùng chưa đăng nhập.");
+            }
             var roles = _roleManager.Roles.ToList();
             var roleUserCounts = new Dictionary<string, int>();
 

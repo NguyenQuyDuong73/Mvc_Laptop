@@ -5,7 +5,6 @@
 <div class="login-container">
     <h1>Đăng nhập</h1>
     <form asp-action="Login">
-         <input type="hidden" name="ReturnUrl" value="@ViewData["ReturnUrl"]" />
         <div asp-validation-summary="ModelOnly" class="text-danger"></div>
         <div class="form-group">
             <label asp-for="UserName" class="control-label">Tên đăng nhập</label>

@@ -6,10 +6,11 @@ using MvcLaptop.Data;
 using MvcLaptop.Models;
 using MvcLaptop.Services;
 var builder = WebApplication.CreateBuilder(args);
-
-builder.Services.AddDbContext<MvcLaptopContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext") ?? throw new InvalidOperationException("Connection string 'MvcLaptopContext' not found.")));
-
+if (builder.Environment.IsDevelopment())
+{
+    builder.Services.AddDbContext<MvcLaptopContext>(options =>
+        options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext") ?? throw new InvalidOperationException("Connection string 'MvcLaptopContext' not found.")));
+}
 builder.Services.AddDistributedMemoryCache();  // Sử dụng bộ nhớ để lưu trữ session
 
 builder.Services.AddControllersWithViews();
@@ -55,26 +56,31 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 
     // Cấu hình đăng nhập.
-    options.SignIn.RequireConfirmedEmail = false;            
-    options.SignIn.RequireConfirmedPhoneNumber = false;    
+    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedPhoneNumber = false;
 });
 
-builder.Services.ConfigureApplicationCookie(options =>
-{
-    options.Cookie.HttpOnly = true;
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
+// builder.Services.ConfigureApplicationCookie(options =>
+// {
+//     options.Cookie.HttpOnly = true;
+//     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
 
-    options.LoginPath = "/Identity/Account/Login";
-    options.AccessDeniedPath = "/Identity/Account/AccessDenied";
-    options.SlidingExpiration = true;
+//     options.LoginPath = "/Account/Login";
+//     options.AccessDeniedPath = "/Account/AccessDenied";
+//     options.SlidingExpiration = true;
+// });
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+{
+options.LoginPath = "/Account/Login"; 
+options.AccessDeniedPath = "/Account/AccessDenied"; 
 });
 var app = builder.Build();
 
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;
-
-    await  SeedData.Initialize(services);
+    await SeedData.Initialize(services);
 }
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 using MvcLaptop.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.AspNetCore.Authorization;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication;
 namespace MvcLaptop.Controllers;
 
 public class AccountController : Controller
@@ -35,22 +38,30 @@ public class AccountController : Controller
             ModelState.AddModelError(string.Empty, "Username Và password Không được để trống.");
             return View();
         }
-        if (_context?.Users == null)
-        {
-            ModelState.AddModelError(string.Empty, "Database connection error.");
-            return View();
-        }
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
 
+        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
         if (user == null)
         {
-            ModelState.AddModelError(string.Empty, "username Hoặc password không hợp lệ.");
+            ModelState.AddModelError(string.Empty, "username hoặc password không hợp lệ.");
             return View();
         }
+        var roles = await _userManager.GetRolesAsync(user); // Lấy vai trò của người dùng từ database
+        // Tạo Claims cho người dùng
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.UserName!),
+            new Claim(ClaimTypes.Email, user.Email ?? "")
+        };
+        claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role))); // Thêm tất cả vai trò của user vào Claims
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
+        // await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
 
         // Lưu thông tin người dùng vào session
         HttpContext.Session.SetString("UserName", user.UserName!);
-
+        // HttpContext.Session.SetString("Roles", string.Join(",", claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
         return RedirectToAction("Index", "Home");
     }
 
@@ -83,11 +94,13 @@ public class AccountController : Controller
         return View(user);
     }
     // GET: Logout
-    public IActionResult Logout()
+    public async Task<IActionResult> Logout()
     {
+        await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         HttpContext.Session.Clear();
-        return RedirectToAction(nameof(Login));
+        return RedirectToAction("Index", "Home");
     }
+    [Authorize]
     public async Task<IActionResult> Profile()
     {
         var user = await _userManager.GetUserAsync(User);
@@ -95,8 +108,13 @@ public class AccountController : Controller
         {
             return RedirectToAction(nameof(Login));
         }
-
-        return View(user);
+        var model = new UserViewModel
+        {
+            UserName = user.UserName,
+            Email = user.Email
+            // Bổ sung các trường khác nếu cần
+        };
+        return View(model);
     }
 
 

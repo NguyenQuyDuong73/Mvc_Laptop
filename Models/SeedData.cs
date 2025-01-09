@@ -108,9 +108,14 @@ namespace MvcLaptop.Models
                 serviceProvider.GetRequiredService<
                     DbContextOptions<MvcLaptopContext>>()))
             {
+
                 var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
                 var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-
+                // Tạo vai trò Admin nếu chưa tồn tại
+                if (!await roleManager.RoleExistsAsync("Admin"))
+                {
+                    await roleManager.CreateAsync(new IdentityRole("Admin"));
+                }
                 // Add roles
                 string[] roles = { "Admin", "Staff", "Guest" };
 
@@ -145,6 +150,19 @@ namespace MvcLaptop.Models
                     if (userManagerAdmin != null)
                     {
                         await userManager.AddToRoleAsync(userManagerAdmin, "Admin");
+                    }
+                }
+                else
+                {
+                    // Kiểm tra nếu tài khoản chưa được gán vai trò Admin
+                    if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
+                    {
+                        await userManager.AddToRoleAsync(adminUser, "Admin");
+                        Console.WriteLine("Vai trò Admin đã được gán cho tài khoản admin.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Tài khoản admin đã có vai trò Admin.");
                     }
                 }
 

@@ -9,7 +9,7 @@ using MvcLaptop.Models;
 
 namespace MvcLaptop.Data
 {
-    public class MvcLaptopContext : IdentityDbContext<User>
+    public class MvcLaptopContext : IdentityDbContext<User, IdentityRole, string>
     {
         public MvcLaptopContext(DbContextOptions<MvcLaptopContext> options) : base(options)
         {
