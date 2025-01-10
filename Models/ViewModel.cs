@@ -116,3 +116,15 @@ public class UserViewModel
     [Display(Name = "Danh sách vai trò")]
     public List<string> Roles { get; set; } = new List<string>();
 }
+public class EditRoleViewModel
+{
+    public string RoleId { get; set; } = null!;
+    public string RoleName { get; set; } = null!;
+    public List<UserRoleViewModel> Users { get; set; } = new();
+}
+public class UserRoleViewModel
+{
+    public string UserId { get; set; } = null!;
+    public string UserName { get; set; } = null!;
+    public bool IsSelected { get; set; }
+}

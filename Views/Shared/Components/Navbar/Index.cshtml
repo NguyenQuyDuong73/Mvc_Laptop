@@ -1,3 +1,4 @@
+@using System.Security.Claims
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
     <div class="container-fluid">
         <h1><a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Compute Zone</a></h1>
@@ -14,11 +15,29 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                 </li>
                 <!-- Kiểm tra nếu người dùng là admin -->
-                @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
+                @* @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
+                { *@
+               @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
+                    if (User.Claims.Any(c => c.Type == ClaimTypes.Role && (c.Value == "Admin" || c.Value == "Staff")))
+                    {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>
                     </li>
+                    }
+                }
+                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                {
+                    <ul>
+                        @foreach (var claim in User.Claims)
+                        {
+                            <li>@claim.Type: @claim.Value</li>
+                        }
+                    </ul>
+                }
+                else
+                {
+                    <p>Chưa đăng nhập</p>
                 }
             </ul>         
             <ul class="navbar-nav ml-auto">

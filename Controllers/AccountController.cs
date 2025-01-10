@@ -39,35 +39,32 @@ public class AccountController : Controller
             return View();
         }
 
-        var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
+        // var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
+        var user = await _userManager.FindByNameAsync(userName);
         if (user == null)
         {
             ModelState.AddModelError(string.Empty, "username hoặc password không hợp lệ.");
             return View();
         }
-        var roles = await _userManager.GetRolesAsync(user); // Lấy vai trò của người dùng từ database
+        var roles = await _userManager.GetRolesAsync(user);
 
-        foreach (var role in roles) {
-            Console.WriteLine(role ?? "null e êy");
-        }
-
-        // Tạo Claims cho người dùng
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.UserName!),
             new Claim(ClaimTypes.Email, user.Email ?? "")
         };
         claims.AddRange(roles.Select(role => new Claim(ClaimTypes.Role, role))); // Thêm tất cả vai trò của user vào Claims
-
+        foreach (var role in roles)
+        {
+            Console.WriteLine($"User Role: {role}");
+        }
         await _signInManager.SignInWithClaimsAsync(user, false, claims);
 
-        // var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-        // var principal = new ClaimsPrincipal(identity);
+        var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var principal = new ClaimsPrincipal(identity);
 
-        // await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
-        // await HttpContext.SignInAsync(IdentityConstants.ApplicationScheme, principal);
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal);
 
-        // Lưu thông tin người dùng vào session
         HttpContext.Session.SetString("UserName", user.UserName!);
         // HttpContext.Session.SetString("Roles", string.Join(",", claims.Where(c => c.Type == ClaimTypes.Role).Select(c => c.Value)));
         return RedirectToAction("Index", "Home");
@@ -89,7 +86,6 @@ public class AccountController : Controller
             var existingUser = await _context.Users!.FirstOrDefaultAsync(u => u.UserName == user.UserName);
             if (existingUser != null)
             {
-                // Nếu tên người dùng đã tồn tại, thêm lỗi vào ModelState
                 ModelState.AddModelError("UserName", "Tên tài khoản này đã tồn tại. Vui lòng chọn tên khác.");
                 return View(user);  // Trả về view đăng ký với thông báo lỗi
             }
@@ -106,6 +102,7 @@ public class AccountController : Controller
     {
         await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         HttpContext.Session.Clear();
+        Response.Cookies.Delete(".AspNetCore.Identity.Application");
         return RedirectToAction("Index", "Home");
     }
     [Authorize]

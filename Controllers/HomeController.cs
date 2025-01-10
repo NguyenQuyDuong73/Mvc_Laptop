@@ -8,20 +8,39 @@ using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Authentication;
 namespace MvcLaptop.Controllers;
+using Microsoft.AspNetCore.Identity;
 
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger; //Dependency Injection
 
     private readonly MvcLaptopContext _context; //Dependency Injection
-
-    public HomeController(MvcLaptopContext context, ILogger<HomeController> logger)
+    private readonly UserManager<User> _userManager;
+    public HomeController(MvcLaptopContext context, ILogger<HomeController> logger, UserManager<User> userManager)
     {
         _context = context;
         _logger = logger;
+        _userManager = userManager;
     }
     public async Task<IActionResult> Index(int? categoryId, string searchString)
-    {
+    {     
+        if (!User.Identity?.IsAuthenticated ?? true)
+        {
+            Console.WriteLine("Người dùng chưa đăng nhập. Claims sau khi xóa:");
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Claim tồn tại: {claim.Type} - {claim.Value}");
+            }
+        }
+        else
+        {
+            Console.WriteLine("Người dùng đã đăng nhập. Claims hợp lệ:");
+            foreach (var claim in User.Claims)
+            {
+                Console.WriteLine($"Claim: {claim.Type} - {claim.Value}");
+            }
+        }
+        await SetUserRolesViewDataAsync();
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
         ViewData["Categories"] = _context.Category!
@@ -46,15 +65,16 @@ public class HomeController : Controller
     }
     public async Task<IActionResult> Product(int? categoryId, string searchString)
     {
+        await SetUserRolesViewDataAsync();
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
         ViewData["Categories"] = _context.Category!
             .OrderBy(c => c.Name_Category)
             .ToList();
-          var products = _context.Product
-          .Include(p => p.ProductImages)
-          .Include(p => p.Category)
-          .AsQueryable();
+        var products = _context.Product
+        .Include(p => p.ProductImages)
+        .Include(p => p.Category)
+        .AsQueryable();
 
         if (categoryId.HasValue)
         {
@@ -74,12 +94,14 @@ public class HomeController : Controller
 
     public IActionResult Privacy()
     {
+        _ = SetUserRolesViewDataAsync();
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
         return View();
     }
     public IActionResult Details(int id)
     {
+        _ = SetUserRolesViewDataAsync();
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
         var laptop = _context.Product
@@ -98,6 +120,7 @@ public class HomeController : Controller
     }
     public IActionResult About()
     {
+        _ = SetUserRolesViewDataAsync();
         var userName = HttpContext.Session.GetString("UserName");
         ViewData["UserName"] = userName;
         return View();
@@ -111,72 +134,26 @@ public class HomeController : Controller
 
         return PartialView("_CategoryMenu", categories);
     }
-    // public IActionResult Login()
-    // {
-    //     return View();
-    // }
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> Login(string userName, string password)
-    // {
-    //     if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
-    //     {
-    //         ModelState.AddModelError(string.Empty, "Username Và password Không được để trống.");
-    //         return View();
-    //     }
-    //     if (_context?.Users == null)
-    //     {
-    //         ModelState.AddModelError(string.Empty, "Database connection error.");
-    //         return View();
-    //     }
-    //     var user = await _context.Users.FirstOrDefaultAsync(u => u.UserName == userName && u.Password == password);
-
-    //     if (user == null)
-    //     {
-    //         ModelState.AddModelError(string.Empty, "username Hoặc password không hợp lệ.");
-    //         return View();
-    //     }
-
-    //     // Lưu thông tin người dùng vào session
-    //     HttpContext.Session.SetString("UserName", user.UserName!);
-
-    //     return RedirectToAction(nameof(Index));
-    // }
-    // public IActionResult Logout()
-    // {
-    //     HttpContext.Session.Clear();
-    //     return RedirectToAction(nameof(Login));
-    // }
-    // [HttpGet]
-    // public IActionResult Register()
-    // {
-    //     return View();
-    // }
-    // [HttpPost]
-    // [ValidateAntiForgeryToken]
-    // public async Task<IActionResult> Register([Bind("UserName,Email,Password")] User user)
-    // {
-    //     if (ModelState.IsValid)
-    //     {
-    //         // Kiểm tra xem tên người dùng đã tồn tại trong cơ sở dữ liệu chưa
-    //         var existingUser = await _context.Users!.FirstOrDefaultAsync(u => u.UserName == user.UserName);
-    //         if (existingUser != null)
-    //         {
-    //             // Nếu tên người dùng đã tồn tại, thêm lỗi vào ModelState
-    //             ModelState.AddModelError("UserName", "Tên tài khoản này đã tồn tại. Vui lòng chọn tên khác.");
-    //             return View(user);  // Trả về view đăng ký với thông báo lỗi
-    //         }
-    //         // Nếu tên người dùng chưa tồn tại, thêm người dùng mới vào cơ sở dữ liệu
-    //         _context.Add(user);
-    //         await _context.SaveChangesAsync();
-    //         // Đăng ký thành công, chuyển hướng tới trang đăng nhập
-    //         return RedirectToAction(nameof(Login));
-    //     }
-    //     return View(user);
-    // }
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public IActionResult Error()
     {
         return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
     }
+    private async Task SetUserRolesViewDataAsync()
+    {
+        if (User.Identity != null && User.Identity.IsAuthenticated)
+        {
+            var user = await _userManager.GetUserAsync(User);
+            if (user != null)
+            {
+                var roles = await _userManager.GetRolesAsync(user);
+                ViewData["UserRoles"] = roles;
+            }
+        }
+        else
+        {
+            ViewData["UserRoles"] = new List<string>();
+        }
+    }
+
 }

@@ -14,7 +14,9 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy Policy</a>
                 </li>
                 <!-- Kiểm tra nếu người dùng là admin -->
-                @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
+                @* @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
+                { *@
+                @if (User.Identity!.IsAuthenticated && ViewData["UserRoles"] != null && ((List<string>)ViewData["UserRoles"]!).Any(role => role == "Admin" || role == "Staff"))
                 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>

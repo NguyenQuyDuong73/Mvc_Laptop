@@ -11318,3 +11318,27 @@ footer {
   bottom: -18px;
   left: 20px;
 }
+/* ManagerRole */
+.btn-back {
+  display: inline-block;
+  color: white;
+  background-color: #6c757d; /* Màu xám (Bootstrap secondary) */
+  padding: 10px 20px;
+  text-decoration: none;
+  border-radius: 5px;
+  font-size: 14px;
+  font-weight: bold;
+  text-align: center;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.btn-back:hover {
+  background-color: #5a6268; /* Màu xám đậm hơn khi hover */
+  transform: scale(1.05); /* Phóng to nhẹ khi hover */
+  text-decoration: none; /* Đảm bảo không có gạch chân */
+}
+
+.btn-back:active {
+  background-color: #545b62; /* Màu đậm hơn khi click */
+  transform: scale(0.98); /* Co lại nhẹ khi click */
+}

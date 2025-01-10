@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -70,13 +72,32 @@ builder.Services.Configure<IdentityOptions>(options =>
 //     options.SlidingExpiration = true;
 // });
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie(options => //CookieAuthenticationDefaults.AuthenticationScheme,
+.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => //CookieAuthenticationDefaults.AuthenticationScheme,
 {
+    // options.Cookie.HttpOnly = true;
+    // options.Cookie.Name = "AuthCookie";
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
     options.LoginPath = "/Account/Login";
+    options.LogoutPath = "/Account/Logout";
     options.AccessDeniedPath = "/Account/AccessDenied";
 });
 var app = builder.Build();
+app.Use(async (context, next) =>
+{
+    if (!context.User.Identity?.IsAuthenticated ?? true)
+    {
+        Console.WriteLine("Người dùng chưa đăng nhập. Đang xóa claims...");
+        
+        // Xóa tất cả claims
+        context.User = new ClaimsPrincipal(new ClaimsIdentity());
+        
+        // Xóa cookie liên quan
+        context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
+    }
 
+    // Tiếp tục xử lý request
+    await next();
+});
 using (var scope = app.Services.CreateScope())
 {
     var services = scope.ServiceProvider;

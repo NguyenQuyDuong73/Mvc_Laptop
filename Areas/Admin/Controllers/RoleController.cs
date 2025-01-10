@@ -58,7 +58,7 @@ namespace MvcLaptop.Controllers
         {
             return View();
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> Create(string roleName)
         {
@@ -76,6 +76,65 @@ namespace MvcLaptop.Controllers
                 }
             }
             return View(roleName);
+        }
+        [HttpGet]
+        public async Task<IActionResult> EditRole(string roleId)
+        {
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
+            if (string.IsNullOrEmpty(roleId))
+            {
+                return BadRequest("Id vai trò không hợp lệ.");
+            }
+
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                return NotFound("Không tìm thấy vai trò.");
+            }
+
+            var model = new EditRoleViewModel
+            {
+                RoleId = role.Id,
+                RoleName = role.Name!
+            };
+
+            return View(model);
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> EditRole(EditRoleViewModel model)
+        {
+            if (!ModelState.IsValid)
+            {
+                return View(model); // Trả về view nếu dữ liệu không hợp lệ
+            }
+            var role = await _roleManager.FindByIdAsync(model.RoleId);
+            if (role == null)
+            {
+                return NotFound("Không tìm thấy vai trò.");
+            }
+
+            if (string.IsNullOrEmpty(model.RoleName))
+            {
+                ModelState.AddModelError("", "Tên vai trò không được để trống.");
+                return View(model);
+            }
+
+            role.Name = model.RoleName;
+            var result = await _roleManager.UpdateAsync(role);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index));
+            }
+
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
+            return View(model);
         }
 
         // Gán vai trò cho người dùng
@@ -125,9 +184,11 @@ namespace MvcLaptop.Controllers
         [HttpGet]
         public async Task<IActionResult> UserList()
         {
+            var userName = HttpContext.Session.GetString("UserName");
+            ViewData["UserName"] = userName;
             var users = _userManager.Users.ToList();
             var userViewModels = new List<UserViewModel>();
-
+            var allRoles = _roleManager.Roles.Select(r => r.Name).ToList();
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
@@ -139,10 +200,12 @@ namespace MvcLaptop.Controllers
                     Roles = roles.ToList() // Gắn danh sách vai trò
                 });
             }
+            // Truyền danh sách tất cả các vai trò vào ViewBag
 
+            ViewBag.AllRoles = allRoles ?? new List<string>()!; // Đảm bảo không null
             return View(userViewModels);
         }
-
+        [Authorize(Roles = "Admin")]
         [HttpPost]
         public async Task<IActionResult> RemoveRole(string userId, string role)
         {
@@ -160,6 +223,57 @@ namespace MvcLaptop.Controllers
 
             ModelState.AddModelError(string.Empty, "Không thể xóa vai trò.");
             return RedirectToAction(nameof(UserList));
+        }
+        [Authorize(Roles = "Admin")]
+        [HttpPost]
+        public async Task<IActionResult> UpdateUserRoles(Dictionary<string, string[]> userRoles)
+        {
+            foreach (var userId in userRoles.Keys)
+            {
+                var user = await _userManager.FindByIdAsync(userId);
+                if (user == null) continue;
+
+                // Lấy tất cả vai trò hiện tại của người dùng
+                var currentRoles = await _userManager.GetRolesAsync(user);
+
+                // Vai trò mới được chọn
+                var selectedRoles = userRoles[userId];
+
+                // Xóa vai trò không được chọn
+                var rolesToRemove = currentRoles.Except(selectedRoles).ToList();
+                await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+
+                // Thêm vai trò mới
+                var rolesToAdd = selectedRoles.Except(currentRoles).ToList();
+                await _userManager.AddToRolesAsync(user, rolesToAdd);
+            }
+
+            return RedirectToAction(nameof(UserList));
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteRole(string roleId)
+        {
+            // Tìm vai trò cần xóa
+            var role = await _roleManager.FindByIdAsync(roleId);
+            if (role == null)
+            {
+                return NotFound(); // Trả về lỗi nếu vai trò không tồn tại
+            }
+
+            // Xóa vai trò khỏi hệ thống
+            var result = await _roleManager.DeleteAsync(role);
+            if (result.Succeeded)
+            {
+                return RedirectToAction(nameof(Index)); // Chuyển hướng về danh sách vai trò
+            }
+
+            // Nếu không thể xóa, thêm lỗi vào ModelState
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError(string.Empty, error.Description);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
 
     }
