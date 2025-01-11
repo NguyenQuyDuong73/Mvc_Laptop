@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Authentication;
 namespace MvcLaptop.Controllers;
 using Microsoft.AspNetCore.Identity;
 
+
 public class HomeController : Controller
 {
     private readonly ILogger<HomeController> _logger; //Dependency Injection

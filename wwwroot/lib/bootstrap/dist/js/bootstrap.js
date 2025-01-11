@@ -74,7 +74,7 @@
 
       if (!hrefAttr || !hrefAttr.includes('#') && !hrefAttr.startsWith('.')) {
         return null;
-      } // Just in case some CMS puts out a full URL with the anchor appended
+      } // Just in case some MvcLaptop puts out a full URL with the anchor appended
 
 
       if (hrefAttr.includes('#') && !hrefAttr.startsWith('#')) {

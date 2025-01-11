@@ -9,10 +9,12 @@ using MvcLaptop.Data;
 using MvcLaptop.Models;
 using AutoMapper;
 using MvcLaptop.Services;
+using Microsoft.AspNetCore.Authorization;
 
 namespace MvcLaptop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize(Roles ="Admin,Staff")]
     public class LaptopsController : Controller
     {
         private readonly ILaptopService _laptopService;

@@ -8,7 +8,7 @@ using MvcLaptop.Models;
 namespace MvcLaptop.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles = "Admin,Staff")]
+    [Authorize(Roles = "Admin")]
     public class RoleController : Controller
     {
         private readonly RoleManager<IdentityRole> _roleManager;
@@ -20,6 +20,7 @@ namespace MvcLaptop.Controllers
             _userManager = userManager;
             _context = context;
         }
+        
         // Phương thức lấy thông tin người dùng và vai trò
         private async Task SetUserViewDataAsync()
         {
@@ -36,7 +37,7 @@ namespace MvcLaptop.Controllers
         {
             var userName = HttpContext.Session.GetString("UserName");
             ViewData["UserName"] = userName;
-            // await SetUserViewDataAsync();
+            await SetUserViewDataAsync();
             // var roles = _roleManager.Roles.ToList();
             // return View(roles);
             var roles = _roleManager.Roles.ToList();

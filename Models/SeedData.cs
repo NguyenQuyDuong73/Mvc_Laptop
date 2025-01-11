@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using MvcLaptop.Data;   
+using MvcLaptop.Data;
 using System.Linq;
 
 namespace MvcLaptop.Models
@@ -11,69 +11,93 @@ namespace MvcLaptop.Models
         public static async Task Initialize(IServiceProvider serviceProvider)
         {
             using (var context = new MvcLaptopContext(
-                serviceProvider.GetRequiredService<
-                    DbContextOptions<MvcLaptopContext>>()))
+                           serviceProvider.GetRequiredService<DbContextOptions<MvcLaptopContext>>()))
             {
-
-                var roleManager = serviceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+                var roleManager = serviceProvider.GetRequiredService<RoleManager<Role>>();
                 var userManager = serviceProvider.GetRequiredService<UserManager<User>>();
-                // Tạo vai trò Admin nếu chưa tồn tại
-                if (!await roleManager.RoleExistsAsync("Admin"))
-                {
-                    await roleManager.CreateAsync(new IdentityRole("Admin"));
-                }
-                // Add roles
+
+                // Danh sách vai trò
                 string[] roles = { "Admin", "Staff", "Guest" };
 
-                foreach (var role in roles)
+                foreach (var roleName in roles)
                 {
-                    if (!await roleManager.RoleExistsAsync(role))
+                    // Kiểm tra trong RoleManager
+                    if (!await roleManager.RoleExistsAsync(roleName))
                     {
-                        await roleManager.CreateAsync(new IdentityRole(role));
+                        // Kiểm tra trùng lặp trực tiếp trong cơ sở dữ liệu
+                        var existingRole = await context.Roles.AnyAsync(r => r.Name == roleName);
+                        if (!existingRole)
+                        {
+                            var result = await roleManager.CreateAsync(new Role { Name = roleName });
+                            if (result.Succeeded)
+                            {
+                                Console.WriteLine($"Vai trò {roleName} đã được tạo.");
+                            }
+                            else
+                            {
+                                Console.WriteLine($"Không thể tạo vai trò {roleName}:");
+                                foreach (var error in result.Errors)
+                                {
+                                    Console.WriteLine($"- {error.Description}");
+                                }
+                            }
+                        }
+                        else
+                        {
+                            Console.WriteLine($"Vai trò {roleName} đã tồn tại trong cơ sở dữ liệu.");
+                        }
+                    }
+                    else
+                    {
+                        Console.WriteLine($"Vai trò {roleName} đã tồn tại.");
                     }
                 }
 
-                // Add Admin user
+                // Tạo tài khoản Admin nếu chưa tồn tại
                 var adminEmail = "admin@example.com";
-                var adminUser = await context.Users!.FirstOrDefaultAsync(u => u.Email == adminEmail);
+                var adminPassword = "Admin@123";
 
+                var adminUser = await userManager.FindByEmailAsync(adminEmail);
                 if (adminUser == null)
                 {
                     var admin = new User
                     {
                         UserName = "admin",
                         Email = adminEmail,
-                        Password = "Admin@123", // Gán mật khẩu trực tiếp
                         Name = "Administrator",
-                        DOB = DateTime.Now.AddYears(-30)
+                        DOB = DateTime.Now.AddYears(-30),
+                        EmailConfirmed = true
                     };
 
-                    context.Users.Add(admin);
-                    await context.SaveChangesAsync();
-
-                    // Gán vai trò cho Admin
-                    var userManagerAdmin = await userManager.FindByEmailAsync(adminEmail);
-                    if (userManagerAdmin != null)
+                    var result = await userManager.CreateAsync(admin, adminPassword);
+                    if (result.Succeeded)
                     {
-                        await userManager.AddToRoleAsync(userManagerAdmin, "Admin");
+                        await userManager.AddToRoleAsync(admin, "Admin");
+                        Console.WriteLine("Tài khoản Admin đã được tạo và gán vai trò Admin.");
+                    }
+                    else
+                    {
+                        Console.WriteLine("Không thể tạo tài khoản Admin:");
+                        foreach (var error in result.Errors)
+                        {
+                            Console.WriteLine($"- {error.Description}");
+                        }
                     }
                 }
                 else
                 {
-                    // Kiểm tra nếu tài khoản chưa được gán vai trò Admin
                     if (!await userManager.IsInRoleAsync(adminUser, "Admin"))
                     {
                         await userManager.AddToRoleAsync(adminUser, "Admin");
-                        Console.WriteLine("Vai trò Admin đã được gán cho tài khoản admin.");
+                        Console.WriteLine("Vai trò Admin đã được gán cho tài khoản Admin.");
                     }
                     else
                     {
-                        Console.WriteLine("Tài khoản admin đã có vai trò Admin.");
+                        Console.WriteLine("Tài khoản Admin đã có vai trò Admin.");
                     }
                 }
-
-                // Add Categories
-                if (context.Category == null || !context.Category.Any())
+                // Thêm danh mục sản phẩm nếu chưa tồn tại
+                if (!context.Category!.Any())
                 {
                     context.Category!.AddRange(new List<Category>
                     {
@@ -82,16 +106,17 @@ namespace MvcLaptop.Models
                         new Category { Name_Category = "Lenovo" }
                     });
                     await context.SaveChangesAsync();
+                    Console.WriteLine("Danh mục sản phẩm đã được thêm.");
                 }
 
-                // Add Products
-                if (context.Product == null || !context.Product.Any())
+                // Thêm sản phẩm nếu chưa tồn tại
+                if (!context.Product.Any())
                 {
-                    var asusCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Asus")?.CategoryId ?? 0;
-                    var acerCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Acer")?.CategoryId ?? 0;
-                    var lenovoCategory = context.Category.FirstOrDefault(c => c.Name_Category == "Lenovo")?.CategoryId ?? 0;
+                    var asusCategory = context.Category!.FirstOrDefault(c => c.Name_Category == "Asus")?.CategoryId ?? 0;
+                    var acerCategory = context.Category!.FirstOrDefault(c => c.Name_Category == "Acer")?.CategoryId ?? 0;
+                    var lenovoCategory = context.Category!.FirstOrDefault(c => c.Name_Category == "Lenovo")?.CategoryId ?? 0;
 
-                    context.Product!.AddRange(new List<Product>
+                    context.Product.AddRange(new List<Product>
                     {
                         new Product
                         {
@@ -148,6 +173,7 @@ namespace MvcLaptop.Models
                         }
                     });
                     await context.SaveChangesAsync();
+                    Console.WriteLine("Sản phẩm đã được thêm.");
                 }
             }
         }

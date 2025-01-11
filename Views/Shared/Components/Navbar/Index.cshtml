@@ -17,16 +17,10 @@
                 <!-- Kiểm tra nếu người dùng là admin -->
                 @* @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
                 { *@
-               @if (User.Identity != null && User.Identity.IsAuthenticated)
-                {
-                    if (User.Claims.Any(c => c.Type == ClaimTypes.Role && (c.Value == "Admin" || c.Value == "Staff")))
-                    {
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>
-                    </li>
-                    }
-                }
-                @if (User.Identity != null && User.Identity.IsAuthenticated)
+                <li class="nav-item">
+                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>
+                </li>
+                @* @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     <ul>
                         @foreach (var claim in User.Claims)
@@ -38,14 +32,15 @@
                 else
                 {
                     <p>Chưa đăng nhập</p>
-                }
+                } *@
             </ul>         
             <ul class="navbar-nav ml-auto">
                 <!-- Nếu người dùng chưa đăng nhập, hiển thị Login và Register -->
-                @if (string.IsNullOrEmpty(ViewData["UserName"] as string))
+                @await Html.PartialAsync("_LoginPartial")
+                @* @if (string.IsNullOrEmpty(ViewData["UserName"] as string))
                 {
                     <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">Login</a>
+                        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
                     </li>
                 }
                 else
@@ -56,10 +51,10 @@
                         </a>
                         <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                             <li><a class="dropdown-item" href="#">@ViewData["UserName"]</a></li>
-                            <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
+                            <li><a class="dropdown-item" asp-area="Identity"  asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">Logout</a></li>
                         </ul>
                     </li>
-                }
+                } *@
             </ul>
             <!-- Thêm biểu tượng giỏ hàng vào đây -->
             <ul class="navbar-nav ml-auto">

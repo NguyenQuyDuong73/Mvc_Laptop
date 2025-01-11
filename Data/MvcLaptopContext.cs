@@ -9,7 +9,7 @@ using MvcLaptop.Models;
 
 namespace MvcLaptop.Data
 {
-    public class MvcLaptopContext : IdentityDbContext<User, IdentityRole, string>
+    public class MvcLaptopContext : IdentityDbContext<User, Role, string>
     {
         public MvcLaptopContext(DbContextOptions<MvcLaptopContext> options) : base(options)
         {
@@ -19,58 +19,35 @@ namespace MvcLaptop.Data
         public DbSet<Category>? Category { get; set; }
         public DbSet<ProductImage>? ProductImage { get; set; }
         public DbSet<OrderDetail>? OrderDetail { get; set; }
+        public DbSet<Function> Functions { set; get; } = default!;
+        public DbSet<Command> Commands { set; get; } = default!;
+        public DbSet<Permission> Permissions { set; get; } = default!;
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
-
-
-            // if (!modelBuilder.Model.GetEntityTypes().Any(t => t.Name == "Category"))
-            // {
-            //     modelBuilder.Entity<Category>().ToTable("Category");
-            // }
-            // if (!modelBuilder.Model.GetEntityTypes().Any(t => t.Name == "Product"))
-            // {
-            //     modelBuilder.Entity<Product>().ToTable("Product");
-            // }if (!modelBuilder.Model.GetEntityTypes().Any(t => t.Name == "ProductImage"))
-            // {
-            //     modelBuilder.Entity<ProductImage>().ToTable("ProductImage");
-            // }
-            // Đặt tên bảng
+            modelBuilder.Entity<Role>().ToTable("Roles").Property(x => x.Id).HasMaxLength(50).IsUnicode(false);
+            modelBuilder.Entity<User>().ToTable("Users").Property(x => x.Id).HasMaxLength(50).IsUnicode(false);
+            modelBuilder.Entity<IdentityUserClaim<string>>().ToTable("UserClaims");
+            modelBuilder.Entity<IdentityUserRole<string>>().ToTable("UserRoles");
+            modelBuilder.Entity<IdentityUserLogin<string>>().ToTable("UserLogins");
+            modelBuilder.Entity<IdentityRoleClaim<string>>().ToTable("RoleClaims");
+            modelBuilder.Entity<IdentityUserToken<string>>().ToTable("UserTokens");
             modelBuilder.Entity<Product>().ToTable("Product");
             modelBuilder.Entity<Category>().ToTable("Category");
             modelBuilder.Entity<ProductImage>().ToTable("ProductImage");
-            modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<Category>()
                 .HasKey(c => c.CategoryId);
+            modelBuilder.Entity<Permission>()
+                .HasKey(c => new { c.RoleId, c.FunctionId, c.CommandId });
 
-            modelBuilder.Entity<ProductImage>()
-                .HasKey(pi => pi.Id);
-
-            // Thiết lập quan hệ 1-nhiều giữa Category và Product
-            modelBuilder.Entity<Product>()
-                .HasOne(p => p.Category) // Product có một Category
-                .WithMany(c => c.Products) // Category có nhiều Product
-                .HasForeignKey(p => p.CategoryId);
-
-            // Thiết lập quan hệ 1-nhiều giữa Product và ProductImage
-            modelBuilder.Entity<ProductImage>()
-                .HasOne(pi => pi.Product)
-                .WithMany(p => p.ProductImages) //có nhiều ProductImage
-                .HasForeignKey(pi => pi.ProductId)
-                .OnDelete(DeleteBehavior.Cascade); // Xóa Product sẽ xóa ProductImage liên quan
-            modelBuilder.Entity<Order>()
-                .HasOne(o => o.User)
-                .WithMany()
-                .HasForeignKey(o => o.UserId)
-                .IsRequired();
-            foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            {
-                var tableName = entityType.GetTableName();
-                if (tableName!.StartsWith("AspNet"))
-                {
-                    entityType.SetTableName(tableName.Substring(6));
-                }
-            }
+            // foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+            // {
+            //     var tableName = entityType.GetTableName();
+            //     if (tableName!.StartsWith("AspNet"))
+            //     {
+            //         entityType.SetTableName(tableName.Substring(6));
+            //     }
+            // }
         }
 
     }

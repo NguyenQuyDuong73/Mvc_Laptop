@@ -1,23 +1,41 @@
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection;
+using Mvclaptop.Repositories;
+using MvcLaptop.Authorization;
 using MvcLaptop.Data;
 using MvcLaptop.Models;
 using MvcLaptop.Services;
+using Serilog;
+
 var builder = WebApplication.CreateBuilder(args);
-if (builder.Environment.IsDevelopment())
+
+int optionDatabases = 1;
+switch (optionDatabases)
 {
-    builder.Services.AddDbContext<MvcLaptopContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext") ?? throw new InvalidOperationException("Connection string 'MvcLaptopContext' not found.")));
+    case 1:
+        {
+            var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+            builder.Services.AddDbContext<MvcLaptopContext>(options =>
+                options.UseSqlite(connectionString));
+        }
+        break;
+    case 2:
+        {
+            var connectionString = builder.Configuration.GetConnectionString("SQLServerConnection") ?? throw new InvalidOperationException("Connection string 'SQLServerConnection' not found.");
+            builder.Services.AddDbContext<MvcLaptopContext>(options =>
+                options.UseSqlServer(connectionString));
+        }
+        break;
 }
-builder.Services.AddDistributedMemoryCache();  // Sử dụng bộ nhớ để lưu trữ session
+RouteRazerPage();
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+    .AddRoles<Role>()
+    .AddEntityFrameworkStores<MvcLaptopContext>();
 
 builder.Services.AddControllersWithViews();
-builder.Services.AddScoped<ILaptopService, LaptopService>();
-builder.Services.AddScoped<ICartService, CartService>();
+
+builder.Services.AddDistributedMemoryCache();  // Sử dụng bộ nhớ để lưu trữ session
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSession(options =>
 {
@@ -25,17 +43,10 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;  // Cookie chỉ có thể truy cập từ server
     options.Cookie.IsEssential = true;  // Làm cho cookie session là cần thiết
 });
-builder.Services.AddIdentity<User, IdentityRole>()
-    .AddEntityFrameworkStores<MvcLaptopContext>()
-    .AddDefaultTokenProviders();
 
+AddScoped();
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
-if (builder.Environment.IsDevelopment())
-{
-    builder.Services.AddDbContext<MvcLaptopContext>(options =>
-        options.UseSqlServer(builder.Configuration.GetConnectionString("MvcLaptopContext")));
-}
 
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -62,47 +73,9 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.SignIn.RequireConfirmedPhoneNumber = false;
 });
 
-// builder.Services.ConfigureApplicationCookie(options =>
-// {
-//     options.Cookie.HttpOnly = true;
-//     options.ExpireTimeSpan = TimeSpan.FromMinutes(30);
-
-//     options.LoginPath = "/Account/Login";
-//     options.AccessDeniedPath = "/Account/AccessDenied";
-//     options.SlidingExpiration = true;
-// });
-builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
-.AddCookie(CookieAuthenticationDefaults.AuthenticationScheme,options => //CookieAuthenticationDefaults.AuthenticationScheme,
-{
-    // options.Cookie.HttpOnly = true;
-    // options.Cookie.Name = "AuthCookie";
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(5);
-    options.LoginPath = "/Account/Login";
-    options.LogoutPath = "/Account/Logout";
-    options.AccessDeniedPath = "/Account/AccessDenied";
-});
 var app = builder.Build();
-app.Use(async (context, next) =>
-{
-    if (!context.User.Identity?.IsAuthenticated ?? true)
-    {
-        Console.WriteLine("Người dùng chưa đăng nhập. Đang xóa claims...");
-        
-        // Xóa tất cả claims
-        context.User = new ClaimsPrincipal(new ClaimsIdentity());
-        
-        // Xóa cookie liên quan
-        context.Response.Cookies.Delete(".AspNetCore.Identity.Application");
-    }
 
-    // Tiếp tục xử lý request
-    await next();
-});
-using (var scope = app.Services.CreateScope())
-{
-    var services = scope.ServiceProvider;
-    await SeedData.Initialize(services);
-}
+
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())
 {
@@ -125,5 +98,75 @@ app.MapControllerRoute(
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+app.MapRazorPages();
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<MvcLaptopContext>();
+    db.Database.Migrate();
+    var serviceProvider = scope.ServiceProvider;
+    try
+    {
+        Log.Information("Seeding data...");
+        var dbInitializer = serviceProvider.GetService<DbInitializer>();
+        if (dbInitializer != null)
+            dbInitializer.Seed()
+                         .Wait();
+    }
+    catch (Exception ex)
+    {
+        var logger = serviceProvider.GetRequiredService<ILogger<Program>>();
+        logger.LogError(ex, "An error occurred while seeding the database.");
+    }
+}
 
 app.Run();
+
+void AddScoped()
+{
+    builder.Services.AddScoped<IUserClaimsPrincipalFactory<User>, CustomUserClaimsPrincipalFactory>();
+
+    builder.Services.AddTransient<DbInitializer>();
+    builder.Services.AddTransient<UnitOfWork>();
+    builder.Services.AddTransient<IUserRepository, UserRepository>();
+    builder.Services.AddScoped<IRoleRepository, RoleRepository>();
+    builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
+    builder.Services.AddScoped<IFunctionRepository, FunctionRepository>();
+    builder.Services.AddScoped<ILaptopService, LaptopService>();
+    builder.Services.AddScoped<ICartService, CartService>();
+}
+void RouteRazerPage()
+{
+    builder.Services.ConfigureApplicationCookie(options =>
+    {
+        options.LoginPath = "/login";
+        options.LogoutPath = "/logout";
+        options.AccessDeniedPath = "/access-denied";
+    });
+    builder.Services.AddRazorPages(options =>
+    {
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Login", "login");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Logout", "logout");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/AccessDenied", "access-denied");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Register", "register");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/ForgotPassword", "forgot-password");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/ResetPassword", "reset-password");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/ConfirmEmail", "confirm-email");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/ResetPasswordConfirmation", "reset-password-confirmation");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/LogoutConfirmation", "logout-confirmation");
+
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/ChangePassword", "manager/change-password");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/DeletePersonalData", "manager/delete-personal-data");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/Disable2fa", "manager/disable2fa");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/DownloadPersonalData", "manager/download-personal-data");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/Email", "manager/email");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/EnableAuthenticator", "manager/enable-authenticator");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/ExternalLogins", "manager/external-logins");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/GenerateRecoveryCodes", "manager/generate-recovery-codes");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/Index", "manager");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/PersonalData", "manager/personal-data");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/ResetAuthenticator", "manager/reset-authenticator");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/SetPassword", "manager/set-password");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/ShowRecoveryCodes", "manager/show-recovery-codes");
+        options.Conventions.AddAreaPageRoute("Identity", "/Account/Manage/TwoFactorAuthentication", "manager/two-factor-authentication");
+    });
+}

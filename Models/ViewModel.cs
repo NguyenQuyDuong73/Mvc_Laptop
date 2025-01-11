@@ -91,7 +91,7 @@ public class UserViewModel
     [Required(ErrorMessage = "Mật khẩu không được để trống.")]
     [DataType(DataType.Password)]
     [Display(Name = "Mật khẩu")]
-    public string? Password { get; set; }
+    public string? PasswordHash { get; set; }
     
     [Required]
     [DataType(DataType.Text)]
