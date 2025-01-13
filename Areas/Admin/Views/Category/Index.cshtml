@@ -1,0 +1,45 @@
+    @model IEnumerable<MvcLaptop.Models.Category>
+
+    @{
+        ViewData["Title"] = "Categories";
+    }
+
+    <h2>Categories</h2>
+
+    <p>
+        <a href="@Url.Action("Create")" class="btn btn-primary">Create New Category</a>
+    </p>
+    
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var category in Model)
+            {
+                <tr>
+                    <td style="font-weight: bold; color: #130f40;">@category.Name_Category</td>
+                    <td>
+                        @if (!string.IsNullOrEmpty(category.Description) && category.Description.Length > 100)
+                        {
+                            @category.Description.Substring(0, 100)
+                            @:...
+                        }
+                        else
+                        {
+                            @category.Description
+                        }
+                    </td>
+                    <td style="white-space: nowrap;">
+                        <a href="@Url.Action("Edit", new { id = category.CategoryId })" class="btn btn-warning">Edit</a>
+                        <a href="@Url.Action("Details", new { id = category.CategoryId })" class="btn btn-info">Details</a>
+                        <a href="@Url.Action("Delete", new { id = category.CategoryId })" class="btn btn-danger">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>

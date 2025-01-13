@@ -10,11 +10,12 @@ using MvcLaptop.Models;
 using AutoMapper;
 using MvcLaptop.Services;
 using Microsoft.AspNetCore.Authorization;
+using MvcLaptop.Authorization;
+using MvcLaptop.Utils.Constants;
 
 namespace MvcLaptop.Areas.Admin.Controllers
 {
     [Area("Admin")]
-    [Authorize(Roles ="Admin,Staff")]
     public class LaptopsController : Controller
     {
         private readonly ILaptopService _laptopService;
@@ -24,6 +25,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         }
 
         // GET: Laptops
+        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.VIEW)]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
         {
             var userName = HttpContext.Session.GetString("UserName");
@@ -42,10 +44,18 @@ namespace MvcLaptop.Areas.Admin.Controllers
             }
             ViewData["CurrentFilter"] = searchString;
             // Lấy danh sách laptop
+            var laptops = await _laptopService.GetLaptops(sortOrder, currentFilter, searchString, pageNumber);
+
+            // Kiểm tra nếu không có sản phẩm
+            if (laptops == null || !laptops.Any())
+            {
+                ViewBag.NoResultsMessage = "Không có sản phẩm hoặc không tìm thấy sản phẩm";
+            }
             return View(await _laptopService.GetLaptops(sortOrder, currentFilter, searchString, pageNumber));
         }
 
         // GET: Laptops/Details/5
+        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.VIEW)]
         public async Task<IActionResult> Details(int? id)
         {
             var userName = HttpContext.Session.GetString("UserName");
@@ -64,11 +74,12 @@ namespace MvcLaptop.Areas.Admin.Controllers
         }
 
         // GET: Laptops/Create
+        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.CREATE)]
         public async Task<IActionResult> Create()
         {
             var userName = HttpContext.Session.GetString("UserName");
             ViewData["UserName"] = userName;
-            ViewBag.SuccessMessage = null; 
+            ViewBag.SuccessMessage = null;
             ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category");
             return View(new LaptopRequest());
             // ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category");
@@ -94,6 +105,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         }
 
         // GET: Laptops/Edit/5
+        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.UPDATE)]
         public async Task<IActionResult> Edit(int? id)
         {
             var laptop = await _laptopService.GetLaptopById(id!.Value);
@@ -135,6 +147,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         }
 
         // GET: Laptops/Delete/5
+        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.DELETE)]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)

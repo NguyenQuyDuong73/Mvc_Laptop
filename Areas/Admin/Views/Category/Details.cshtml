@@ -1,0 +1,27 @@
+@model MvcLaptop.Models.Category
+
+@{
+    ViewData["Title"] = "Category Details";
+}
+
+<div class="container mt-4">
+    <h2 class="text-center text-primary">Category Details</h2>
+    <hr>
+
+    <div class="row">
+        <!-- Thông tin Category -->
+        <div class="col-md-8 offset-md-2">
+            <div class="card shadow-lg">
+                <div class="card-header bg-primary text-white">
+                    <h4>@Model.Name_Category</h4>
+                </div>
+                <div class="card-body">
+                    <p>@Model.Description</p>
+                </div>
+                <div class="card-footer text-center">
+                    <a href="@Url.Action("Index", "Category", new { area = "Admin" })" class="btn btn-secondary">Back to List</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -11,7 +11,7 @@ using MvcLaptop.Data;
 namespace MvcLaptop.Data.Migrations
 {
     [DbContext(typeof(MvcLaptopContext))]
-    [Migration("20250111170120_InitialCreate")]
+    [Migration("20250113070631_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -131,6 +131,10 @@ namespace MvcLaptop.Data.Migrations
                     b.Property<int>("CategoryId")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
+
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
 
                     b.Property<string>("Name_Category")
                         .HasColumnType("TEXT");

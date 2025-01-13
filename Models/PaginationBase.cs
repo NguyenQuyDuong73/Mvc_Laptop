@@ -1,4 +1,4 @@
-namespace Mvclaptop.Models
+namespace MvcLaptop.Models
 {
     public class PaginationBase
     {

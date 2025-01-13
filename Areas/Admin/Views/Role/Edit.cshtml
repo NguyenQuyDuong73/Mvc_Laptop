@@ -1,0 +1,73 @@
+@* @model EditRoleViewModel
+
+<h1>Sửa vai trò</h1>
+
+<form asp-action="EditRole" method="post">
+    <input type="hidden" asp-for="RoleId" />
+    <div class="form-group">
+        <label for="RoleName">Tên vai trò</label>
+        <input type="text" class="form-control" asp-for="RoleName" />
+        <span asp-validation-for="RoleName" class="text-danger"></span>
+    </div>
+    <button type="submit" class="btn btn-success">Lưu thay đổi</button>
+</form> *@
+@model EditRoleViewModel
+
+@{
+    ViewData["Title"] = "Edit Role";
+}
+
+<form method="post" asp-action="Edit">
+    <h2 class="text-center mb-4">Edit Role: @Model.Role?.Name</h2>
+
+    <!-- Include Role ID in the form -->
+    <input type="hidden" asp-for="Role!.Id" />
+
+    <div class="form-group">
+        <label asp-for="Role!.Name" class="font-weight-bold">Role Name:</label>
+        <input type="text" asp-for="Role!.Name" class="form-control" placeholder="Enter role name" />
+    </div>
+
+    <div class="permissions-section mt-4">
+        <h3 class="mb-3">Permissions</h3>
+
+        <!-- Group permissions by FunctionId and display in cards -->
+        <div class="row">
+            @foreach (var functionGroup in Model.Permissions!.GroupBy(p => p.FunctionId))
+            {
+                <div class="col-md-6 mb-4">
+                    <div class="card shadow-sm">
+                        <div class="card-header bg-primary text-white d-flex align-items-center">
+                            <i class="@functionGroup.FirstOrDefault()?.FunctionIcon me-2" style="font-size: 1.5rem;"></i>
+                            <!-- Increased icon size and made bold -->
+                            <h5 class="mb-0">@functionGroup.FirstOrDefault()?.FunctionName</h5>
+                        </div>
+                        <div class="card-body">
+                            <ul class="list-unstyled">
+                                @foreach (var permission in functionGroup)
+                                {
+                                    <li class="mb-2">
+                                        <div class="form-check">
+                                            <input type="checkbox" id="@permission.FunctionId-@permission.CommandId"
+                                                name="SelectedPermissions"
+                                                value="@($"{permission.FunctionId}-{permission.CommandId}")"
+                                                class="form-check-input" @(permission.IsAssigned ? "checked" : "") />
+                                            <label for="@permission.FunctionId-@permission.CommandId"
+                                                class="form-check-label ml-2">
+                                                <i class="@permission.CommandIcon"></i>
+                                                @permission.CommandName
+                                            </label>
+                                            <!-- Display Command Name -->
+                                        </div>
+                                    </li>
+                                }
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+
+    <button class="btn btn-success mt-3" type="submit">Save Changes</button>
+</form>

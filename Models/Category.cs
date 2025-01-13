@@ -7,6 +7,7 @@ public class Category
     public int CategoryId { get; set; }
     public string? Name_Category { get; set; }
 
+    public string? Description { get; set; }
     // Quan hệ 1-nhiều với Product
     public ICollection<Product>? Products { get; set; }
 }

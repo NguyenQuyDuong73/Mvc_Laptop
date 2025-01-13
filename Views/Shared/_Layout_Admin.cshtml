@@ -1,3 +1,5 @@
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<User> UserManager
 <!DOCTYPE html>
 <html lang="en">
 
@@ -37,7 +39,7 @@
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle" id="navbarDropdown" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false"><i class="fas fa-user fa-fw"></i>Hello, @ViewData["UserName"]</a>
                 <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
-                    <li><a class="dropdown-item" href="#">@ViewData["UserName"]</a></li>
+                    <li><a class="dropdown-item" href="#">@UserManager.GetUserName(User)</a></li>
                     <li><hr class="dropdown-divider" /></li>
                     <li><a class="dropdown-item" asp-area="" asp-controller="Account" asp-action="Logout">Logout</a></li>
                 </ul>

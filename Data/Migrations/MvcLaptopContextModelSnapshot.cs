@@ -129,6 +129,10 @@ namespace MvcLaptop.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<string>("Description")
+                        .HasMaxLength(500)
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Name_Category")
                         .HasColumnType("TEXT");
 

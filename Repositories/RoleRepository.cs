@@ -1,4 +1,3 @@
-using Mvclaptop.Models;
 using MvcLaptop.Models;
 
 namespace Mvclaptop.Repositories

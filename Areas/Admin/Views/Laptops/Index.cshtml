@@ -3,7 +3,6 @@
 @{
     ViewData["Title"] = "Index";
 }
-
 <div class="container-fluid">
     <h1 class="mt-4">Danh sách sản phẩm</h1>
     <form class="d-none d-md-inline-block form-inline ms-auto me-0 me-md-3 my-2 my-md-0" style="float: right"
@@ -33,39 +32,48 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach (var item in Model)
+                @if (Model == null || !Model.Any())
                 {
                     <tr>
-                        <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                        <td>@Html.DisplayFor(modelItem => item.CategoryId)</td>
-                        <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
-                        <td>@Html.DisplayFor(modelItem => item.FormattedPrice)</td>
-                        @* <td><img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px;" /></td> *@
-                        <td>
-                            @if (!string.IsNullOrEmpty(item.ImageUrl))
-                            {
-                                <img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px; height: auto;" />
-                            }
-                            else
-                            {
-                                <span>Không có ảnh</span>
-                            }
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-edit">Edit</a> |
-                                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-details">Details</a> |
-                                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-delete">Delete</a>
-                            </div>
-                        </td>
+                        <td colspan="6" class="text-center">Không có sản phẩm hoặc không tìm thấy sản phẩm</td>
                     </tr>
+                }
+                else
+                {
+                    @foreach (var item in Model)
+                    {
+                        <tr>
+                            <td>@Html.DisplayFor(modelItem => item.Title)</td>
+                            <td>@Html.DisplayFor(modelItem => item.CategoryId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                            <td>@Html.DisplayFor(modelItem => item.FormattedPrice)</td>
+                            @* <td><img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px;" /></td> *@
+                            <td>
+                                @if (!string.IsNullOrEmpty(item.ImageUrl))
+                                {
+                                    <img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px; height: auto;" />
+                                }
+                                else
+                                {
+                                    <span>Không có ảnh</span>
+                                }
+                            </td>
+                            <td>
+                                <div class="action-buttons">
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-edit">Edit</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-details">Details</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-delete">Delete</a>
+                                </div>
+                            </td>
+                        </tr>
+                    }
                 }
             </tbody>
         </table>
     </div>
     <!-- Điều hướng phân trang -->
     @{
-        var prevDisabled = !Model.HasPreviousPage ? "disabled" : "";
+        var prevDisabled = !Model!.HasPreviousPage ? "disabled" : "";
         var nextDisabled = !Model.HasNextPage ? "disabled" : "";
     }
     <div class="pagination-container">
