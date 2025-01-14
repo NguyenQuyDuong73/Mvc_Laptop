@@ -1,6 +1,6 @@
 using MvcLaptop.Models;
 
-namespace Mvclaptop.Models
+namespace MvcLaptop.Models
 {
     public class CommandInFunctionViewModel
     {

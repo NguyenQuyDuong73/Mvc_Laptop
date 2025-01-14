@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using Mvclaptop.Repositories;
+using MvcLaptop.Repositories;
 using MvcLaptop.Authorization;
 using MvcLaptop.Data;
 using MvcLaptop.Models;

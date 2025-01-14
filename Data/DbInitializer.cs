@@ -41,7 +41,6 @@ public class DbInitializer
                 var result = await _userManager.CreateAsync(userModel.User, userModel.Password);
                 if (result.Succeeded)
                 {
-                    userModel.User.Id = userModel.User.Id;
                     await _context.SaveChangesAsync();
                     var user = await _userManager.FindByNameAsync(userModel.User.UserName!);
                     if (user != null)

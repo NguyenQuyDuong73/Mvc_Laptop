@@ -1,6 +1,6 @@
 using System.Security.Claims;
 using MvcLaptop.Models;
-using Mvclaptop.Repositories;
+using MvcLaptop.Repositories;
 using MvcLaptop.Utils.Constants;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;

@@ -1,8 +1,9 @@
 using MvcLaptop.Models;
 using Microsoft.EntityFrameworkCore.Storage;
 using MvcLaptop.Data;
+using Microsoft.AspNetCore.Identity;
 
-namespace Mvclaptop.Repositories
+namespace MvcLaptop.Repositories
 {
     public class UnitOfWork : IDisposable
     {
@@ -13,7 +14,6 @@ namespace Mvclaptop.Repositories
         public IRepository<Permission> _permissionRepository { get; }
         public IRepository<Function> _functionRepository { get; }
         public IRepository<Command> _commandRepository { get; }
-
         private bool _disposed = false; // To track whether the object has been disposed
 
         /// <summary>

@@ -41,7 +41,7 @@
                     <td class="text-center">
                         <a asp-controller="Role" asp-action="Edit" asp-route-id="@role.Id"
                             class="btn btn-warning btn-sm">Sửa vai trò</a>
-                        <form asp-action="DeleteRole" asp-route-roleId="@role.Id" method="post" class="d-inline">
+                        <form asp-action="DeleteRole" asp-route-id="@role.Id" method="post" class="d-inline">
                             <button type="submit" class="btn btn-danger btn-sm"
                                 onclick="return confirm('Bạn có chắc chắn muốn xóa vai trò này?');">Xóa vai trò</button>
                         </form>

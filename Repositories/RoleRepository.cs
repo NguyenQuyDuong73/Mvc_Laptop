@@ -1,6 +1,6 @@
 using MvcLaptop.Models;
 
-namespace Mvclaptop.Repositories
+namespace MvcLaptop.Repositories
 {
     public interface IRoleRepository
     {

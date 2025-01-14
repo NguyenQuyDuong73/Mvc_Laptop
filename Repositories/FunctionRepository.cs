@@ -1,7 +1,6 @@
-using Mvclaptop.Models;
 using MvcLaptop.Models;
 
-namespace Mvclaptop.Repositories
+namespace MvcLaptop.Repositories
 {
     public interface IFunctionRepository
     {

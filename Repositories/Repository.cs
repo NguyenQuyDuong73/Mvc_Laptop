@@ -3,7 +3,7 @@ using MvcLaptop.Models;
 using Microsoft.EntityFrameworkCore;
 using MvcLaptop.Data;
 
-namespace Mvclaptop.Repositories
+namespace MvcLaptop.Repositories
 {
     /// <summary>
     /// Interface for a generic repository pattern.

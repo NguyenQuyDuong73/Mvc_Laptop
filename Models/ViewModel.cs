@@ -1,5 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using Microsoft.AspNetCore.Mvc.Rendering;
+using MvcLaptop.Utils.Constants;
 
 namespace MvcLaptop.Models;
 
@@ -118,8 +120,8 @@ public class UserViewModel
 }
 public class EditRoleViewModel
 {
-    public string RoleId { get; set; } = null!;
-    public string RoleName { get; set; } = null!;
+    // public string RoleId { get; set; } = null!;
+    // public string RoleName { get; set; } = null!;
     public List<UserRoleViewModel> Users { get; set; } = new();
     public Role? Role { get; set; } // Holds the role being edited
 
@@ -142,7 +144,7 @@ public class PermissionViewModel
 
     public void AssignCommandIcon()
     {
-        if (Utils.Constants.IconMapping.ActionIcons.TryGetValue(CommandId ?? string.Empty, out var icon))
+        if (IconMapping.ActionIcons.TryGetValue(CommandId ?? string.Empty, out var icon))
         {
             CommandIcon = icon;
         }
@@ -158,3 +160,9 @@ public class UserRoleViewModel
     public string UserName { get; set; } = null!;
     public bool IsSelected { get; set; }
 }
+public class EditUserViewModel
+    {
+        public User? User { get; set; }
+
+        public IList<SelectListItem>? Roles { get; set; }
+    }

@@ -1,8 +1,7 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
-using Mvclaptop.Repositories;
+using MvcLaptop.Repositories;
 using MvcLaptop.Authorization;
 using MvcLaptop.Data;
 using MvcLaptop.Models;
@@ -11,6 +10,7 @@ using MvcLaptop.Utils.Constants;
 namespace MvcLaptop.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class RoleController : Controller
     {
         private readonly RoleManager<Role> _roleManager;
@@ -63,7 +63,6 @@ namespace MvcLaptop.Controllers
 
         // Tạo vai trò mới
         [HttpGet]
-
         public IActionResult Create()
         {
             return View();
@@ -183,13 +182,12 @@ namespace MvcLaptop.Controllers
                     FunctionIcon = p.Function?.Icon,
                     FunctionParentId = p.Function?.ParentId,
                 }).ToList(),
-                SelectedPermissions = assignedPermissions.Select(ap => $"{ap.FunctionId} - {ap.CommandId}").ToList() // Gán SelectedPermissions cho ViewModel
             };
 
-            // foreach (var permission in viewModel.Permissions)
-            // {
-            //     permission.AssignCommandIcon();
-            // }
+            foreach (var permission in viewModel.Permissions)
+            {
+                permission.AssignCommandIcon();
+            }
 
             return View(viewModel);
         }
@@ -202,69 +200,19 @@ namespace MvcLaptop.Controllers
             {
                 return View(model);
             }
-            if (model.SelectedPermissions == null || !model.SelectedPermissions.Any())
-            {
-                ModelState.AddModelError("SelectedPermissions", "Vui lòng chọn ít nhất một quyền.");
-                return View(model);
-            }
             var role = await _roleRepository.GetRoleByIdAsync(model.Role!.Id);
             if (role == null)
             {
                 return NotFound();
             }
-
             // Cập nhật thông tin của role
             role.Name = model.Role.Name;
             await _roleRepository.UpdateRoleAsync(role);
 
             // Cập nhật quyền cho role
-            await _permissionRepository.UpdateRolePermissionsAsync(model.Role.Id, model.SelectedPermissions);
+            await _permissionRepository.UpdateRolePermissionsAsync(model.Role.Id, model.SelectedPermissions!);
 
-            return RedirectToAction(nameof(Index));
-        }
-        // Gán vai trò cho người dùng
-        [HttpGet]
-        public async Task<IActionResult> AssignRole(string userId)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            ViewBag.Roles = _roleManager.Roles.ToList();
-            ViewBag.UserId = userId;
-
-            return View(user);
-        }
-
-        [HttpPost]
-        public async Task<IActionResult> AssignRole(string userId, string role)
-        {
-            var user = await _userManager.FindByIdAsync(userId);
-            if (user == null)
-            {
-                return NotFound();
-            }
-
-            if (!await _roleManager.RoleExistsAsync(role))
-            {
-                ModelState.AddModelError(string.Empty, "Role không tồn tại.");
-                return View(user);
-            }
-
-            var result = await _userManager.AddToRoleAsync(user, role);
-            if (result.Succeeded)
-            {
-                return RedirectToAction(nameof(Index));
-            }
-
-            foreach (var error in result.Errors)
-            {
-                ModelState.AddModelError(string.Empty, error.Description);
-            }
-
-            return View(user);
+            return RedirectToAction(nameof(Edit), new { id = model.Role.Id });
         }
         [HttpGet]
         [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.VIEW)]
@@ -319,7 +267,10 @@ namespace MvcLaptop.Controllers
             {
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null) continue;
-
+                if (user.UserName == "trungnguyen7358@gmail.com") // Thay thế bằng tên tài khoản mặc định của bạn
+                {
+                    continue; // Bỏ qua tài khoản mặc định, không thay đổi vai trò
+                }
                 // Lấy tất cả vai trò hiện tại của người dùng
                 var currentRoles = await _userManager.GetRolesAsync(user);
 
@@ -335,14 +286,16 @@ namespace MvcLaptop.Controllers
                 await _userManager.AddToRolesAsync(user, rolesToAdd);
             }
 
-            return RedirectToAction(nameof(UserList));
+            return RedirectToAction(nameof(UserList)); // Chuyển hướng lại danh sách người dùng
+
         }
+
         [HttpPost]
         [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.DELETE)]
-        public async Task<IActionResult> DeleteRole(string roleId)
+        public async Task<IActionResult> DeleteRole(string id)
         {
             // Tìm vai trò cần xóa
-            var role = await _roleManager.FindByIdAsync(roleId);
+            var role = await _roleManager.FindByIdAsync(id);
             if (role == null)
             {
                 return NotFound(); // Trả về lỗi nếu vai trò không tồn tại

@@ -16,6 +16,7 @@ using MvcLaptop.Utils.Constants;
 namespace MvcLaptop.Areas.Admin.Controllers
 {
     [Area("Admin")]
+    [Authorize]
     public class LaptopsController : Controller
     {
         private readonly ILaptopService _laptopService;
@@ -23,7 +24,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         {
             _laptopService = laptopService;
         }
-
+        
         // GET: Laptops
         [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.VIEW)]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
