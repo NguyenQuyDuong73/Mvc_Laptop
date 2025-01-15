@@ -4,7 +4,7 @@ using System.Text;
 
 namespace MvcLaptop.Utils
 {
-    public class VNPayLibrary
+    public class VnPayLibrary
     {
         private readonly SortedList<string, string> _requestData = new SortedList<string, string>(new VNPayCompare());
         private readonly SortedList<string, string> _responseData = new SortedList<string, string>(new VNPayCompare());

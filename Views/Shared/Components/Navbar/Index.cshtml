@@ -2,8 +2,8 @@
 <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow">
     <div class="container-fluid">
         <h1><a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">Compute Zone</a></h1>
-        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
-                aria-expanded="false" aria-label="Toggle navigation">
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
@@ -15,11 +15,13 @@
                     <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="About">About</a>
                 </li>
                 <!-- Kiểm tra nếu người dùng là admin -->
-                @* @if (ViewData["UserName"] != null && ViewData["UserName"]!.ToString() == "admin")
-                { *@
-                <li class="nav-item">
-                    <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop Management</a>
-                </li>
+                @if (User.IsInRole("Administrator") || User.IsInRole("Manager"))
+                {
+                    <li class="nav-item">
+                        <a class="nav-link text-dark" asp-area="Admin" asp-controller="Laptops" asp-action="Index">Laptop
+                            Management</a>
+                    </li>
+                }
                 @* @if (User.Identity != null && User.Identity.IsAuthenticated)
                 {
                     <ul>
@@ -33,7 +35,7 @@
                 {
                     <p>Chưa đăng nhập</p>
                 } *@
-            </ul>         
+            </ul>
             <ul class="navbar-nav ml-auto">
                 <!-- Nếu người dùng chưa đăng nhập, hiển thị Login và Register -->
                 @await Html.PartialAsync("_LoginPartial")

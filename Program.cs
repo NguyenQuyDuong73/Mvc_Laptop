@@ -7,7 +7,7 @@ using MvcLaptop.Data;
 using MvcLaptop.Models;
 using MvcLaptop.Services;
 using Serilog;
-
+using MvcLaptop.Utils.ConfigOptions.VNPay;
 var builder = WebApplication.CreateBuilder(args);
 
 int optionDatabases = 1;
@@ -128,11 +128,13 @@ void AddScoped()
     builder.Services.AddTransient<DbInitializer>();
     builder.Services.AddTransient<UnitOfWork>();
     builder.Services.AddTransient<IUserRepository, UserRepository>();
+    builder.Services.AddTransient<IVnPayService, VnPayService>();
     builder.Services.AddScoped<IRoleRepository, RoleRepository>();
     builder.Services.AddScoped<IPermissionRepository, PermissionRepository>();
     builder.Services.AddScoped<IFunctionRepository, FunctionRepository>();
     builder.Services.AddScoped<ILaptopService, LaptopService>();
     builder.Services.AddScoped<ICartService, CartService>();
+    builder.Services.Configure<VnPayConfigOptions>(builder.Configuration.GetSection("VnPay"));
 }
 void RouteRazerPage()
 {

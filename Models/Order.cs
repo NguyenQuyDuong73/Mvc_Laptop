@@ -24,12 +24,15 @@ namespace MvcLaptop.Models
 
         public DateTime OrderDate { get; set; }
         
+        public string? Status { get; set; } = "Đang chờ";
+
         [DataType(DataType.Currency)]
-        [Column(TypeName = "decimal(18, 2)")]
+        [Column(TypeName = "decimal(18, 0)")]
         public decimal TotalPrice { get; set; }
     // Thêm khóa ngoại liên kết đến User
         [ForeignKey("User")]
         public string?  UserId { get; set; }
         public User? User { get; set; }
+        public ICollection<OrderDetail> orderDetails = default!;
     }
 }

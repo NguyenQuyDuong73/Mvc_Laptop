@@ -1,6 +1,6 @@
 namespace MvcLaptop.Utils.ConfigOptions.VNPay
 {
-    public class VNPayConfigOptions
+    public class VnPayConfigOptions
     {
         public string? TmnCode { get; set; }
         public string? HashSecret { get; set; }

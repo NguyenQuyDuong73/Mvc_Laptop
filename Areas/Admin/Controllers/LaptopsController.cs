@@ -24,7 +24,7 @@ namespace MvcLaptop.Areas.Admin.Controllers
         {
             _laptopService = laptopService;
         }
-        
+
         // GET: Laptops
         [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.VIEW)]
         public async Task<IActionResult> Index(string sortOrder, string currentFilter, string searchString, int? pageNumber)
@@ -97,12 +97,22 @@ namespace MvcLaptop.Areas.Admin.Controllers
             if (ModelState.IsValid)
             {
                 var result = await _laptopService.Create(request, MainImage);
-                if (result == null)
-                    return RedirectToAction(nameof(Index));
+                if (result != null)
+                {
+                    // Nếu sản phẩm được tạo thành công, chuyển hướng về trang Index
+                    TempData["SuccessMessage"] = "Sản phẩm đã được tạo thành công!";
+                    return RedirectToAction(nameof(Index));  // Điều hướng về trang Index
+                }
+                else
+                {
+                    // Nếu có lỗi trong quá trình tạo, hiển thị lại trang tạo sản phẩm
+                    TempData["ErrorMessage"] = "Có lỗi xảy ra khi tạo sản phẩm. Vui lòng thử lại.";
+                    ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category", request.CategoryId);
+                    return View(request);
+                }
             }
             ViewBag.Categories = new SelectList(await _laptopService.GetCategories(), "CategoryId", "Name_Category", request.CategoryId);
             return View(request);
-
         }
 
         // GET: Laptops/Edit/5

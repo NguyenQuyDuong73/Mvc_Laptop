@@ -17,4 +17,5 @@ public class User : IdentityUser
         UserName = userName;
         Email = email;
     }
+    public ICollection<Order>? Orders {get ; set;} = default!;
 }

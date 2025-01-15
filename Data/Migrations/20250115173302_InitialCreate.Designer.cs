@@ -11,7 +11,7 @@ using MvcLaptop.Data;
 namespace MvcLaptop.Data.Migrations
 {
     [DbContext(typeof(MvcLaptopContext))]
-    [Migration("20250114021842_InitialCreate")]
+    [Migration("20250115173302_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -216,8 +216,11 @@ namespace MvcLaptop.Data.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Status")
+                        .HasColumnType("TEXT");
+
                     b.Property<decimal>("TotalPrice")
-                        .HasColumnType("decimal(18, 2)");
+                        .HasColumnType("decimal(18, 0)");
 
                     b.Property<string>("UserId")
                         .HasColumnType("TEXT");
@@ -483,7 +486,7 @@ namespace MvcLaptop.Data.Migrations
             modelBuilder.Entity("MvcLaptop.Models.Order", b =>
                 {
                     b.HasOne("MvcLaptop.Models.User", "User")
-                        .WithMany()
+                        .WithMany("Orders")
                         .HasForeignKey("UserId");
 
                     b.Navigation("User");
@@ -541,7 +544,7 @@ namespace MvcLaptop.Data.Migrations
             modelBuilder.Entity("OrderDetail", b =>
                 {
                     b.HasOne("MvcLaptop.Models.Order", "Order")
-                        .WithMany()
+                        .WithMany("orderDetails")
                         .HasForeignKey("OrderId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -572,6 +575,11 @@ namespace MvcLaptop.Data.Migrations
                     b.Navigation("Permissions");
                 });
 
+            modelBuilder.Entity("MvcLaptop.Models.Order", b =>
+                {
+                    b.Navigation("orderDetails");
+                });
+
             modelBuilder.Entity("MvcLaptop.Models.Product", b =>
                 {
                     b.Navigation("ProductImages");
@@ -580,6 +588,11 @@ namespace MvcLaptop.Data.Migrations
             modelBuilder.Entity("MvcLaptop.Models.Role", b =>
                 {
                     b.Navigation("Permissions");
+                });
+
+            modelBuilder.Entity("MvcLaptop.Models.User", b =>
+                {
+                    b.Navigation("Orders");
                 });
 #pragma warning restore 612, 618
         }

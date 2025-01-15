@@ -39,7 +39,14 @@ namespace MvcLaptop.Data
                 .HasKey(c => c.CategoryId);
             modelBuilder.Entity<Permission>()
                 .HasKey(c => new { c.RoleId, c.FunctionId, c.CommandId });
-
+             modelBuilder.Entity<Order>()
+            .HasOne(e => e.User)
+            .WithMany(e => e.Orders)
+            .HasForeignKey(e => e.UserId);
+            modelBuilder.Entity<OrderDetail>()
+            .HasOne(e => e.Order)
+            .WithMany(e => e.orderDetails)
+            .HasForeignKey(e => e.OrderId);
             // foreach (var entityType in modelBuilder.Model.GetEntityTypes())
             // {
             //     var tableName = entityType.GetTableName();

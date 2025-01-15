@@ -1,4 +1,5 @@
 using AutoMapper;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MvcLaptop.Data;
 using MvcLaptop.Models;
@@ -96,10 +97,10 @@ public class LaptopService : ILaptopService
                 laptops = laptops.OrderByDescending(p => p.Title);
                 break;
             case "Price":
-                laptops = laptops.OrderBy(p => p.Price);
+                laptops = laptops.OrderBy(p => (double)p.Price);
                 break;
             case "price_desc":
-                laptops = laptops.OrderByDescending(p => p.Price);
+                laptops = laptops.OrderByDescending(p => (double)p.Price);
                 break;
             case "Quantity":
                 laptops = laptops.OrderBy(p => p.Quantity);
@@ -185,11 +186,18 @@ public class CartService : ICartService
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
     private readonly MvcLaptopContext _context;
-
-    public CartService(IHttpContextAccessor httpContextAccessor, MvcLaptopContext context)
+    private readonly UserManager<User> _userManager;
+    public CartService(IHttpContextAccessor httpContextAccessor, MvcLaptopContext context, UserManager<User> userManager)
     {
         _httpContextAccessor = httpContextAccessor;
         _context = context;
+        _userManager = userManager;
+    }
+    // Phương thức lấy thông tin người dùng
+    public async Task<User> GetCurrentUserAsync()
+    {
+        var user = await _userManager.GetUserAsync(_httpContextAccessor.HttpContext!.User);
+        return user!;
     }
 
     // Lấy giỏ hàng từ Session
@@ -247,13 +255,6 @@ public class CartService : ICartService
     // Tính tổng tiền giỏ hàng
     public decimal CalculateTotalPrice(Dictionary<int, int> cartItems)
     {
-        // var cartProducts = cartItems.Select(ci => new
-        // {
-        //     Products = _context.Product.FirstOrDefault(l => l.Id == ci.Key),
-        //     Quantity = ci.Value
-        // }).Where(cp => cp.Products != null).ToList();
-
-        // return cartProducts.Sum(item => Convert.ToDecimal(item.Products!.Price) * Convert.ToDecimal(item.Quantity));
         return cartItems.Sum(ci =>
         {
             var product = _context.Product.AsNoTracking().FirstOrDefault(p => p.Id == ci.Key);
@@ -333,21 +334,88 @@ public class CartService : ICartService
         // Xóa giỏ hàng
         _httpContextAccessor.HttpContext?.Session.Remove("CartItems");
     }
-    public async Task<bool> ProcessCheckoutAsync(Order order, string userName, string email, string userId)
-    {
-        var cartItems = GetCartFromSession();
+    // public async Task<bool> ProcessCheckoutAsync(Order order, string userName, string email, string userId)
+    // {
+    //     var cartItems = GetCartFromSession();
 
-        if (!cartItems.Any())
-            throw new InvalidOperationException("Giỏ hàng của bạn trống.");
+    //     if (!cartItems.Any())
+    //         throw new InvalidOperationException("Giỏ hàng của bạn trống.");
+
+    //     using var transaction = await _context.Database.BeginTransactionAsync();
+    //     try
+    //     {
+    //         // Thiết lập thông tin đơn hàng
+    //         order.UserId = userId;
+    //         order.OrderDate = DateTime.Now;
+    //         order.TotalPrice = CalculateTotalPrice(cartItems);
+
+    //         // Lưu đơn hàng
+    //         _context.Orders!.Add(order);
+    //         await _context.SaveChangesAsync();
+
+    //         // Lưu thông tin chi tiết đơn hàng và giảm số lượng sản phẩm
+    //         foreach (var item in cartItems)
+    //         {
+    //             var productId = item.Key;
+    //             var quantity = item.Value;
+
+    //             // Lấy sản phẩm từ cơ sở dữ liệu
+    //             var product = await _context.Product.FindAsync(productId);
+
+    //             if (product == null)
+    //                 throw new InvalidOperationException($"Không tìm thấy sản phẩm với ID {productId}.");
+
+    //             // Kiểm tra số lượng tồn kho
+    //             if (product.Quantity < quantity)
+    //                 throw new InvalidOperationException($"Sản phẩm {product.Title} không đủ số lượng trong kho.");
+
+    //             // Giảm số lượng sản phẩm
+    //             product.Quantity -= quantity;
+
+    //             // Lưu thông tin chi tiết đơn hàng
+    //             var orderDetail = new OrderDetail
+    //             {
+    //                 OrderId = order.Id,
+    //                 ProductId = productId,
+    //                 Quantity = quantity,
+    //                 UnitPrice = product.Price
+    //             };
+    //             _context.OrderDetail!.Add(orderDetail);
+    //         }
+
+    //         // Lưu thay đổi vào cơ sở dữ liệu
+    //         await _context.SaveChangesAsync();
+
+    //         // Hoàn tất giao dịch
+    //         await transaction.CommitAsync();
+
+    //         // Xóa giỏ hàng
+    //         _httpContextAccessor.HttpContext?.Session.Remove("CartItems");
+
+    //         return true;
+    //     }
+    //     catch
+    //     {
+    //         await transaction.RollbackAsync();
+    //         throw;
+    //     }
+    // }
+    // Xử lý thanh toán giỏ hàng
+    public async Task<bool> ProcessCheckoutAsync(Order order, Dictionary<int, int> cartItems, string paymentMethod)
+    {
+        var user = await GetCurrentUserAsync();
+        if (user == null)
+        {
+            throw new InvalidOperationException("Không thấy tài khoản đăng nhập");
+        }
 
         using var transaction = await _context.Database.BeginTransactionAsync();
         try
         {
             // Thiết lập thông tin đơn hàng
-            order.UserId = userId;
+            order.UserId = user.Id;
             order.OrderDate = DateTime.Now;
             order.TotalPrice = CalculateTotalPrice(cartItems);
-
             // Lưu đơn hàng
             _context.Orders!.Add(order);
             await _context.SaveChangesAsync();
@@ -366,9 +434,9 @@ public class CartService : ICartService
 
                 // Kiểm tra số lượng tồn kho
                 if (product.Quantity < quantity)
-                    throw new InvalidOperationException($"Sản phẩm {product.Title} không đủ số lượng trong kho.");
+                    throw new InvalidOperationException($"Sản phẩm {product.Title} không đủ số lượng.");
 
-                // Giảm số lượng sản phẩm
+                // Giảm số lượng sản phẩm trong kho
                 product.Quantity -= quantity;
 
                 // Lưu thông tin chi tiết đơn hàng
@@ -399,4 +467,25 @@ public class CartService : ICartService
             throw;
         }
     }
+    public async Task UpdateProductStockAsync(Dictionary<int, int> cartItems)
+    {
+        foreach (var item in cartItems)
+        {
+            var product = await _context.Product.FirstOrDefaultAsync(p => p.Id == item.Key);
+            if (product != null)
+            {
+                if (product.Quantity < item.Value)
+                {
+                    throw new InvalidOperationException($"Sản phẩm {product.Title} không đủ số lượng trong kho.");
+                }
+
+                // Giảm số lượng sản phẩm
+                product.Quantity -= item.Value;
+            }
+        }
+
+        // Lưu thay đổi vào cơ sở dữ liệu
+        await _context.SaveChangesAsync();
+    }
+
 }

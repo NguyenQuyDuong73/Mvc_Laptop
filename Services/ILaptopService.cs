@@ -14,6 +14,7 @@ public interface ILaptopService
 }
 public interface ICartService
 {
+    Task<User> GetCurrentUserAsync();
     Dictionary<int, int> GetCartFromSession();
     void SaveCartToSession(Dictionary<int, int> cartItems);
     void AddToCart(int id, int quantity = 1);
@@ -22,5 +23,6 @@ public interface ICartService
     Task<IEnumerable<dynamic>> GetCartProductsAsync();
     Task<bool> CheckProductStockAsync(Dictionary<int, int> quantities);
     Task ProcessOrderAsync(Order order, Dictionary<int, int> cartItems, string userName, string email);
-    Task<bool> ProcessCheckoutAsync(Order order, string userName, string email, string userId);
+    Task<bool> ProcessCheckoutAsync(Order order, Dictionary<int, int> cartItems,string paymentMethod);
+    Task UpdateProductStockAsync(Dictionary<int, int> cartItems);
 }

@@ -180,7 +180,8 @@ namespace MvcLaptop.Data.Migrations
                     Address = table.Column<string>(type: "TEXT", nullable: false),
                     PaymentMethod = table.Column<string>(type: "TEXT", nullable: false),
                     OrderDate = table.Column<DateTime>(type: "TEXT", nullable: false),
-                    TotalPrice = table.Column<decimal>(type: "decimal(18, 2)", nullable: false),
+                    Status = table.Column<string>(type: "TEXT", nullable: true),
+                    TotalPrice = table.Column<decimal>(type: "decimal(18, 0)", nullable: false),
                     UserId = table.Column<string>(type: "TEXT", nullable: true)
                 },
                 constraints: table =>
