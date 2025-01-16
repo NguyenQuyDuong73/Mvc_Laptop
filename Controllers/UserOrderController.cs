@@ -50,7 +50,7 @@ namespace MvcLaptop.Controllers
             }
 
             // Lấy chi tiết đơn hàng của người dùng
-            var order = await _context.Orders
+            var order = await _context.Orders!
                 .Include(o => o.orderDetails)
                 .ThenInclude(od => od.Product) // Bao gồm sản phẩm
                 .FirstOrDefaultAsync(o => o.Id == id && o.UserId == userId); // Lọc theo UserId và OrderId

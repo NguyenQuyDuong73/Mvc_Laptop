@@ -47,14 +47,6 @@ namespace MvcLaptop.Data
             .HasOne(e => e.Order)
             .WithMany(e => e.orderDetails)
             .HasForeignKey(e => e.OrderId);
-            // foreach (var entityType in modelBuilder.Model.GetEntityTypes())
-            // {
-            //     var tableName = entityType.GetTableName();
-            //     if (tableName!.StartsWith("AspNet"))
-            //     {
-            //         entityType.SetTableName(tableName.Substring(6));
-            //     }
-            // }
         }
 
     }

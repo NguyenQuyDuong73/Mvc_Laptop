@@ -145,6 +145,7 @@ namespace MvcLaptop.Controllers
                 }
                 else if (paymentMethod == "COD")
                 {
+                    order.Status = "Thanh toán khi nhận hàng";
                     // Xử lý thanh toán COD
                     var isSuccess = await _cartService.ProcessCheckoutAsync(order, cartItems, paymentMethod);
 
@@ -178,16 +179,24 @@ namespace MvcLaptop.Controllers
             {"05","VNPAY đang xử lý giao dịch này (GD hoàn tiền)" },
             {"06","VNPAY đã gửi yêu cầu hoàn tiền sang Ngân hàng (GD hoàn tiền)" },
             {"07","Giao dịch bị nghi ngờ gian lận" },
-            {"09","GD Hoàn trả bị từ chối" }
+            {"09","GD Hoàn trả bị từ chối" },
+            {"24","Giao dịch bị từ chối" }
         };
         public async Task<IActionResult> PaymentCallBack()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
             try
             {
-                // Xử lý phản hồi từ VNPay
-                await _cartService.HandlePaymentCallbackAsync(response.OrderId!, response.VNPayResponseCode!);
+                Console.WriteLine($"[PaymentCallBack] OrderId from response: {response.OrderId}");
+                // Kiểm tra OrderId hợp lệ
+                if (string.IsNullOrEmpty(response.OrderId) || !int.TryParse(response.OrderId, out var orderId))
+                {
+                    TempData["Error"] = $"ID đơn hàng không hợp lệ: {response.OrderId ?? "null"}";
+                    return RedirectToAction(nameof(Confirmation));
+                }
 
+                // Gọi phương thức xử lý callback
+                await _cartService.HandlePaymentCallbackAsync(orderId, response.VNPayResponseCode!);
                 if (response.VNPayResponseCode == "00")
                 {
                     TempData["Message"] = "Thanh toán thành công. Đơn hàng của bạn đã được ghi nhận!";

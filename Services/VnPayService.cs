@@ -46,7 +46,7 @@ namespace MvcLaptop.Services
             vnPay.AddRequestData("vnp_OrderType", "other");
             vnPay.AddRequestData("vnp_ReturnUrl", _options.PaymentBackReturnUrl!);
 
-            vnPay.AddRequestData("vnp_TxnRef", tick);
+            vnPay.AddRequestData("vnp_TxnRef", model.Id.ToString());
 
             var paymentUrl = vnPay.CreateRequestUrl(_options.BaseUrl!, _options.HashSecret!);
             // Ghi log URL
@@ -67,12 +67,6 @@ namespace MvcLaptop.Services
             }
             var vnp_orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnp_TransactionId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
-            // Lấy giá trị trực tiếp dưới dạng chuỗi
-            // string? vnp_orderId = vnPay.GetResponseData("vnp_TxnRef");
-            // string? vnp_TransactionId = vnPay.GetResponseData("vnp_TransactionNo");
-            // string? vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
-            // string? vnp_ResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            // string? vnp_OrderInfo = vnPay.GetResponseData("vnp_OrderInfo");
             var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             var vnp_ResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
             var vnp_OrderInfo = vnPay.GetResponseData("vnp_OrderInfo");

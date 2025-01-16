@@ -504,7 +504,7 @@ public class CartService : ICartService
         // Lưu thay đổi vào cơ sở dữ liệu
         await _context.SaveChangesAsync();
     }
-    public async Task HandlePaymentCallbackAsync(string orderId, string responseCode)
+    public async Task HandlePaymentCallbackAsync(int orderId, string responseCode)
     {
         var order = await _context.Orders!.FirstOrDefaultAsync(o => o.Id == orderId);
         if (order == null)
@@ -538,11 +538,16 @@ public class CartService : ICartService
         }
         else if (responseCode == "02") // Giao dịch thất bại
         {
+            Console.WriteLine("Test: Giao dịch thất bại."); // Test log
             order.Status = "Đã hủy thanh toán";
         }
         else if (responseCode == "01" || responseCode == "07") // Giao dịch nghi ngờ hoặc chưa hoàn tất
         {
             order.Status = "Chờ xử lý";
+        }
+        else if (responseCode == "24")
+        {
+            order.Status = "Giao dịch bị từ chối.";
         }
         else // Các lỗi khác
         {
