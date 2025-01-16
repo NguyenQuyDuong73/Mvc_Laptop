@@ -16,7 +16,6 @@ namespace MvcLaptop.Controllers
     {
         private readonly ICartService _cartService;
         private readonly IVnPayService _vnPayService;
-        
         // Constructor để inject DbContext
         public CartController(ICartService cartService, IVnPayService vnPayService)
         {
@@ -98,22 +97,31 @@ namespace MvcLaptop.Controllers
         [HttpPost]
         public async Task<IActionResult> ProcessCheckout(Order order, string paymentMethod)
         {
-
             try
             {
+                // Log phương thức thanh toán
+                Console.WriteLine($"[CartController] PaymentMethod: {paymentMethod}");
                 // Lấy giỏ hàng từ session
                 var cartItems = _cartService.GetCartFromSession();
+                Console.WriteLine($"[CartController] CartItems Count: {cartItems.Count}");
                 if (!cartItems.Any())
                 {
                     TempData["Error"] = "Giỏ hàng của bạn trống.";
                     return RedirectToAction("Index");
                 }
-                // Lưu tạm đơn hàng và chuyển hướng đến trang thanh toán
+                // Tính tổng tiền
                 var totalPrice = _cartService.CalculateTotalPrice(cartItems);
+                Console.WriteLine($"[CartController] TotalPrice: {totalPrice}");
+
                 // Kiểm tra phương thức thanh toán
                 if (paymentMethod == "Banking")
                 {
+                    // Tạo đơn hàng với trạng thái "Đang chờ thanh toán"
                     order.TotalPrice = totalPrice;
+                    order.PaymentMethod = paymentMethod;
+                    order.Status = "Đang chờ thanh toán";
+                    await _cartService.ProcessCheckoutAsync(order, cartItems, paymentMethod);
+                    // Tạo URL thanh toán VNPay
                     var vnPayModel = new VnPaymentRequestModel
                     {
                         Id = order.Id,
@@ -123,30 +131,37 @@ namespace MvcLaptop.Controllers
                         Address = order.Address,
                         PaymentMethod = paymentMethod,
                         UserId = order.UserId,
-                        Status = "Pending",
-                        Amount = totalPrice,
+                        Amount = order.TotalPrice,
                         CreatedDate = DateTime.Now,
                         Description = $"{order.FullName} {order.PhoneNumber}",
                         FullName = order.FullName,
                     };
+                    Console.WriteLine($"[CartController] VnPayModel Amount: {vnPayModel.Amount}");
                     Console.WriteLine($"[Controller] TotalPrice received: {totalPrice}");
 
                     var paymentUrl = _vnPayService.CreatePaymentUrl(HttpContext, vnPayModel);
+                    Console.WriteLine($"[CartController] Redirecting to VNPay: {paymentUrl}");
                     return Redirect(paymentUrl); // Chuyển hướng đến trang thanh toán
                 }
-                // Xử lý thanh toán giỏ hàng qua service
-                var isSuccess = await _cartService.ProcessCheckoutAsync(order, cartItems, paymentMethod);
+                else if (paymentMethod == "COD")
+                {
+                    // Xử lý thanh toán COD
+                    var isSuccess = await _cartService.ProcessCheckoutAsync(order, cartItems, paymentMethod);
 
-                if (isSuccess)
-                {
-                    TempData["Message"] = "Đơn hàng của bạn đã được ghi nhận!";
-                    return RedirectToAction("Confirmation");
+                    if (isSuccess)
+                    {
+                        TempData["Message"] = "Đơn hàng của bạn đã được ghi nhận!";
+                        return RedirectToAction("Confirmation");
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Có lỗi xảy ra trong quá trình thanh toán.";
+                        return RedirectToAction("Index");
+                    }
                 }
-                else
-                {
-                    TempData["Error"] = "Có lỗi xảy ra trong quá trình thanh toán.";
-                    return RedirectToAction("Index");
-                }
+
+                TempData["Error"] = "Phương thức thanh toán không hợp lệ.";
+                return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
@@ -168,39 +183,32 @@ namespace MvcLaptop.Controllers
         public async Task<IActionResult> PaymentCallBack()
         {
             var response = _vnPayService.PaymentExecute(Request.Query);
-            if (response.VNPayResponseCode == "00")
+            try
             {
+                // Xử lý phản hồi từ VNPay
+                await _cartService.HandlePaymentCallbackAsync(response.OrderId!, response.VNPayResponseCode!);
 
-                // TempData["Message"] = "Thanh toán thành công. Đơn hàng của bạn đã được ghi nhận!";
-                // return RedirectToAction(nameof(Confirmation));
-                try
+                if (response.VNPayResponseCode == "00")
                 {
-                    // Lấy giỏ hàng từ session
-                    var cartItems = _cartService.GetCartFromSession();
-
-                    // Cập nhật số lượng sản phẩm trong kho
-                    await _cartService.UpdateProductStockAsync(cartItems);
-
-                    // Xóa giỏ hàng sau khi giảm số lượng
-                    HttpContext.Session.Remove("CartItems");
-
                     TempData["Message"] = "Thanh toán thành công. Đơn hàng của bạn đã được ghi nhận!";
                 }
-                catch (Exception ex)
+                else
                 {
-                    TempData["Error"] = $"Lỗi trong quá trình xử lý: {ex.Message}";
+                    if (vnp_TransactionStatus.TryGetValue(response.VNPayResponseCode!, out var message))
+                    {
+                        TempData["Error"] = $"Lỗi thanh toán: {message}";
+                    }
+                    else
+                    {
+                        TempData["Error"] = $"Lỗi không xác định: {response.VNPayResponseCode}";
+                    }
                 }
-                return RedirectToAction(nameof(Confirmation));
             }
-            // Nếu giao dịch thất bại
-            if (vnp_TransactionStatus.TryGetValue(response.VNPayResponseCode!, out var message))
+            catch (Exception ex)
             {
-                TempData["Error"] = $"Lỗi thanh toán: {message}";
+                TempData["Error"] = $"Lỗi trong quá trình xử lý thanh toán: {ex.Message}";
             }
-            else
-            {
-                TempData["Error"] = $"Lỗi không xác định: {response.VNPayResponseCode}";
-            }
+
             return RedirectToAction(nameof(Confirmation));
         }
         public IActionResult Confirmation()

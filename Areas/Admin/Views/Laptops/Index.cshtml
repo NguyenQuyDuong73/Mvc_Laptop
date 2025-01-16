@@ -45,7 +45,16 @@
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Title)</td>
                             <td>@Html.DisplayFor(modelItem => item.CategoryId)</td>
-                            <td>@Html.DisplayFor(modelItem => item.Quantity)</td>
+                            <td>
+                                @if (item.Quantity == 0)
+                                {
+                                    <span class="text-danger">Đã hết hàng</span>
+                                }
+                                else
+                                {
+                                    @item.Quantity
+                                }
+                            </td>
                             <td>@Html.DisplayFor(modelItem => item.FormattedPrice)</td>
                             @* <td><img src="@item.ImageUrl" alt="@item.Title" style="max-width: 100px;" /></td> *@
                             <td>

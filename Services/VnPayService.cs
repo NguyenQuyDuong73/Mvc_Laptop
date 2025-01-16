@@ -8,7 +8,7 @@ namespace MvcLaptop.Services
 {
     public interface IVnPayService
     {
-        string  CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model);
+        string CreatePaymentUrl(HttpContext context, VnPaymentRequestModel model);
         VnPaymentResponseModel PaymentExecute(IQueryCollection collections);
     }
     public class VnPayService : IVnPayService
@@ -32,7 +32,7 @@ namespace MvcLaptop.Services
             // Ghi log để kiểm tra
             Console.WriteLine($"[VnPayService] Original Amount (decimal): {model.Amount}");
             Console.WriteLine($"[VnPayService] Converted Amount (long): {amountInVnd}");
-            vnPay.AddRequestData("vnp_Amount", amountInVnd.ToString()); // Số tiền phải là số nguyên
+            vnPay.AddRequestData("vnp_Amount", amountInVnd.ToString());
 
 
             // vnPay.AddRequestData("vnp_Amount", (model.Amount * 100).ToString());
@@ -65,15 +65,24 @@ namespace MvcLaptop.Services
                     vnPay.AddResponseData(key, value.ToString());
                 }
             }
-
             var vnp_orderId = Convert.ToInt64(vnPay.GetResponseData("vnp_TxnRef"));
             var vnp_TransactionId = Convert.ToInt64(vnPay.GetResponseData("vnp_TransactionNo"));
+            // Lấy giá trị trực tiếp dưới dạng chuỗi
+            // string? vnp_orderId = vnPay.GetResponseData("vnp_TxnRef");
+            // string? vnp_TransactionId = vnPay.GetResponseData("vnp_TransactionNo");
+            // string? vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
+            // string? vnp_ResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
+            // string? vnp_OrderInfo = vnPay.GetResponseData("vnp_OrderInfo");
             var vnp_SecureHash = collections.FirstOrDefault(p => p.Key == "vnp_SecureHash").Value;
             var vnp_ResponseCode = vnPay.GetResponseData("vnp_ResponseCode");
-            Console.WriteLine($"[VnPayService] VNPay Response Code: {vnp_ResponseCode}");
             var vnp_OrderInfo = vnPay.GetResponseData("vnp_OrderInfo");
-
+            Console.WriteLine($"[VnPayService] vnp_TxnRef: {vnp_orderId}");
+            Console.WriteLine($"[VnPayService] vnp_TransactionNo: {vnp_TransactionId}");
+            Console.WriteLine($"[VnPayService] vnp_ResponseCode: {vnp_ResponseCode}");
+            Console.WriteLine($"[VnPayService] vnp_OrderInfo: {vnp_OrderInfo}");
+            Console.WriteLine($"[VnPayService] vnp_SecureHash: {vnp_SecureHash}");
             bool checkSignature = vnPay.ValidateSignature(vnp_SecureHash!, _options.HashSecret!);
+            Console.WriteLine($"[VnPayService] Signature validation result: {checkSignature}");
             if (!checkSignature)
             {
                 return new VnPaymentResponseModel

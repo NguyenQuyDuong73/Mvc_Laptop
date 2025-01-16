@@ -25,9 +25,5 @@ public interface ICartService
     Task ProcessOrderAsync(Order order, Dictionary<int, int> cartItems, string userName, string email);
     Task<bool> ProcessCheckoutAsync(Order order, Dictionary<int, int> cartItems,string paymentMethod);
     Task UpdateProductStockAsync(Dictionary<int, int> cartItems);
-}
-public interface IOrderService
-{
-    Task<Order> CreateOrderAsync(Order order, Dictionary<int, int> cartItems, string paymentMethod);
-    Task UpdateOrderStatusAsync(int orderId, string status);
+    Task HandlePaymentCallbackAsync(string orderId, string responseCode);
 }
