@@ -1,0 +1,43 @@
+@model IEnumerable<MvcLaptop.Models.Order>
+
+@{
+    ViewData["Title"] = "Danh sách đơn hàng";
+}
+
+<div class="container">
+    <h1>Danh sách đơn hàng của bạn</h1>
+    @if (!Model.Any())
+    {
+        <p>Bạn chưa có đơn hàng nào.</p>
+    }
+    else
+    {
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Ngày đặt</th>
+                    <th>Phương thức thanh toán</th>
+                    <th>Tổng tiền</th>
+                    <th>Trạng thái</th>
+                    <th>Hành động</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var order in Model)
+                {
+                    <tr>
+                        <td>@order.Id</td>
+                        <td>@order.OrderDate.ToString("dd/MM/yyyy HH:mm")</td>
+                        <td>@order.PaymentMethod</td>
+                        <td>@string.Format("{0:C0}", order.TotalPrice)</td>
+                        <td>@order.Status</td>
+                        <td>
+                            <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Chi tiết</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    }
+</div>

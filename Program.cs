@@ -134,6 +134,7 @@ void AddScoped()
     builder.Services.AddScoped<IFunctionRepository, FunctionRepository>();
     builder.Services.AddScoped<ILaptopService, LaptopService>();
     builder.Services.AddScoped<ICartService, CartService>();
+    builder.Services.AddScoped<IOrderService, OrderService>();
     builder.Services.Configure<VnPayConfigOptions>(builder.Configuration.GetSection("VnPay"));
 }
 void RouteRazerPage()

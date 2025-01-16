@@ -1,0 +1,45 @@
+@model MvcLaptop.Models.Order
+
+@{
+    ViewData["Title"] = "Chi tiết đơn hàng";
+}
+
+<div class="container">
+    <h1>Chi tiết đơn hàng</h1>
+
+    <div class="card mb-3">
+        <div class="card-header">
+            <h5>Đơn hàng: @Model.Id</h5>
+            <p>Ngày đặt hàng: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
+            <p>Người nhận: @Model.FullName</p>
+            <p>Số điện thoại: @Model.PhoneNumber</p>
+            <p>Địa chỉ: @Model.Address</p>
+            <p>Tổng tiền: @string.Format("{0:N0}", Model.TotalPrice)</p>
+            <p>Trạng thái: @Model.Status</p>
+        </div>
+        <div class="card-body">
+            <h4>Danh sách sản phẩm</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Sản phẩm</th>
+                        <th>Số lượng</th>
+                        <th>Đơn giá</th>
+                        <th>Thành tiền</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var detail in Model.orderDetails)
+                    {
+                        <tr>
+                            <td>@detail.Product?.Title</td>
+                            <td>@detail.Quantity</td>
+                            <td>@string.Format("{0:N0}", detail.UnitPrice)</td>
+                            <td>@string.Format("{0:N0}", Model.TotalPrice)</td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

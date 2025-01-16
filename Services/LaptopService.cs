@@ -489,3 +489,61 @@ public class CartService : ICartService
     }
 
 }
+
+public class OrderService : IOrderService
+{
+    private readonly MvcLaptopContext _context;
+
+    public OrderService(MvcLaptopContext context)
+    {
+        _context = context;
+    }
+
+    // Tạo đơn hàng và lưu vào cơ sở dữ liệu
+    public async Task<Order> CreateOrderAsync(Order order, Dictionary<int, int> cartItems, string paymentMethod)
+    {
+        order.PaymentMethod = paymentMethod;
+        order.OrderDate = DateTime.Now;
+        order.TotalPrice = cartItems.Sum(ci =>
+        {
+            var product = _context.Product.AsNoTracking().FirstOrDefault(p => p.Id == ci.Key);
+            return product?.Price * ci.Value ?? 0;
+        });
+
+        // Lưu đơn hàng
+        _context.Orders!.Add(order);
+        await _context.SaveChangesAsync();
+
+        // Lưu chi tiết đơn hàng
+        foreach (var item in cartItems)
+        {
+            var product = await _context.Product.FirstOrDefaultAsync(p => p.Id == item.Key);
+            if (product != null)
+            {
+                var orderDetail = new OrderDetail
+                {
+                    OrderId = order.Id,
+                    ProductId = product.Id,
+                    Quantity = item.Value,
+                    UnitPrice = product.Price
+                };
+                _context.OrderDetail!.Add(orderDetail);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return order;
+    }
+
+    // Cập nhật trạng thái đơn hàng
+    public async Task UpdateOrderStatusAsync(int orderId, string status)
+    {
+        var order = await _context.Orders!.FirstOrDefaultAsync(o => o.Id == orderId);
+        if (order != null)
+        {
+            order.Status = status;
+            _context.Orders!.Update(order);
+            await _context.SaveChangesAsync();
+        }
+    }
+}
