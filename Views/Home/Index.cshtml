@@ -40,7 +40,9 @@
             <div class="hot-new-card">
                 <a asp-action="Details" asp-route-id="@item.Id" class="hot-new-link">
                     @* <img src="@item.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl ?? Url.Content("~/images/default.jpg")" alt="@item.Title" class="hot-new-image" /> *@
-                    <img src="@item.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl" alt="@item.Title" class="hot-new-image" onerror="this.onerror=null; this.src='@Url.Content("~/images/default.jpg")'; this.classList.add('hot-new-image');"/>
+                    <img src="@item.ProductImages!.FirstOrDefault(img => img.IsMainImage)?.ImageUrl" alt="@item.Title"
+                        class="hot-new-image"
+                        onerror="this.onerror=null; this.src='@Url.Content("~/images/default.jpg")'; this.classList.add('hot-new-image');" />
                     <div class="hot-new-info">
                         <h3 class="hot-new-title">@item.Title</h3>
                         <p class="hot-new-price">@item.FormattedPrice</p>
@@ -50,3 +52,298 @@
         }
     </div>
 </section>
+<section class="technology-news">
+    <div class="container">
+        <div class="block-title">
+            <h2>Tin Tức Công Nghệ</h2>
+        </div>
+        <div class="news-grid">
+            <div class="news-item">
+                <a href="https://vti-solutions.vn/top-10-ung-dung-ai-thu-hut-ca-the-gioi/" target="_blank">
+                    <img src="https://vti-solutions.vn/wp-content/uploads/2021/10/ung-dung-ai-1-1024x683.jpg"
+                        alt="Tin tức 1" class="news-image">
+                </a>
+                <div class="news-content">
+                    <h3>
+                        <a href="https://vti-solutions.vn/top-10-ung-dung-ai-thu-hut-ca-the-gioi/" target="_blank">Ứng
+                            dụng AI trong lĩnh vực công nghệ</a>
+                    </h3>
+                    <div class="news-meta">
+                        <span>Tác giả: Nhóm Công Nghệ</span> |
+                        <span>20/01/2025</span>
+                    </div>
+                    <p>
+                        Tính năng AI đang được áp dụng trong nhiều lĩnh vực như y tế, giáo dục và giao thông...
+                    </p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <a href="https://dantri.com.vn/suc-manh-so/loat-robot-doc-la-va-an-tuong-trinh-dien-tai-ces-2025-20250110005111296.htm"
+                    target="_blank">
+                    <img src="https://cdnphoto.dantri.com.vn/NH5fNokrW2uXIS1JzF4KWSUhoJg=/2025/01/10/robot-ces-2025-av-1736444158511.jpg"
+                        alt="Tin tức 2" class="news-image">
+                </a>
+                <div class="news-content">
+                    <h3>
+                        <a href="https://dantri.com.vn/suc-manh-so/loat-robot-doc-la-va-an-tuong-trinh-dien-tai-ces-2025-20250110005111296.htm"
+                            target="_blank">Robot tương lai: Câu chuyện thú vị tại CES 2025</a>
+                    </h3>
+                    <div class="news-meta">
+                        <span>Tác giả: CES Team</span> |
+                        <span>18/01/2025</span>
+                    </div>
+                    <p>
+                        CES 2025 mang đến nhiều sản phẩm robot đột phá, đánh dấu xu hướng tương lai...
+                    </p>
+                </div>
+            </div>
+
+            <div class="news-item">
+                <a href="https://solarbatterymanufacturer.com/vi/tuong-lai-cua-pin-xanh/" target="_blank">
+                    <img src="https://solarbatterymanufacturer.com/wp-content/uploads/2024/06/Your-Name-12.jpg"
+                        alt="Tin tức 3" class="news-image">
+                </a>
+                <div class="news-content">
+                    <h3>
+                        <a href="https://solarbatterymanufacturer.com/vi/tuong-lai-cua-pin-xanh/" target="_blank">Những
+                            bước tiến trong pin năng lượng xanh</a>
+                    </h3>
+                    <div class="news-meta">
+                        <span>Tác giả: Green Energy</span> |
+                        <span>15/01/2025</span>
+                    </div>
+                    <p>
+                        Pin năng lượng xanh đã được cải thiện đáng kể về hiệu suất và giá thành...
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+<section class="customer-contribution">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-12 text-center">
+                <div class="module-heading">
+                    <p>Chia sẻ những đóng góp và ý tưởng về công nghệ</p>
+                    <h2 class="module-title">
+                        <span>Đóng Góp & Ý Tưởng Công Nghệ</span>
+                    </h2>
+                </div>
+                <div class="row">
+                    <div class="col-lg-9 col-md-8">
+                        <div class="row">
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="testimonial-card">
+                                        <img class="img-responsive lazyload"
+                                            src="https://cdn-media.sforum.vn/storage/app/media/uploaded-files/1715608269732.jpeg"
+                                            alt="Khách hàng 1">
+                                        <p class="customer-content">“ Tôi đã đóng góp ý tưởng về ứng dụng AI trong giáo
+                                            dục. Hy vọng công nghệ này sẽ giúp ích cho nhiều người! ”</p>
+                                        <p class="customer-name">Bae Suzy</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="testimonial-card">
+                                        <img class="img-responsive lazyload"
+                                            src="https://cdn-media.sforum.vn/storage/app/media/uploaded-files/1715608269687.jpeg"
+                                            alt="Khách hàng 2">
+                                        <p class="customer-content">“ Công nghệ năng lượng xanh là xu hướng tương lai.
+                                            Tôi mong muốn góp sức vào những dự án này. ”</p>
+                                        <p class="customer-name">Jun Ji Hyun</p>
+                                    </div>
+                                </div>
+                                <div class="col-lg-4 col-md-6 mb-4">
+                                    <div class="testimonial-card">
+                                        <img class="img-responsive lazyload"
+                                            src="https://cdn-media.sforum.vn/storage/app/media/uploaded-files/1715608269590.jpeg"
+                                            alt="Khách hàng 3">
+                                        <p class="customer-content">“ Tôi đã đề xuất một dự án robot giúp đỡ người cao
+                                            tuổi. Công nghệ này thực sự cần thiết. ”</p>
+                                        <p class="customer-name">Kim Ji Won</p>
+                                    </div>
+                                </div>
+                        </div>
+                    </div>
+                    <!-- Form Section -->
+                    <div class="col-lg-3 col-md-4">
+                        <div class="form-section">
+                            <p>Hãy nhập ý tưởng và địa chỉ email của bạn. Chúng tôi sẽ xem xét và gửi phản hồi về
+                                các dự án công nghệ.</p>
+                            <form action="#" method="post" id="idea-submit-form" name="idea-submit-form">
+                                <textarea name="idea" rows="3" placeholder="Ý tưởng của bạn"></textarea>
+                                <input id="email" name="email" type="email" placeholder="Email của bạn">
+                                <button class="btn-submit">Gửi</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    .technology-news {
+        padding: 30px 0;
+        background-color: #f9f9f9;
+    }
+
+    .block-title h2 {
+        text-align: center;
+        font-size: 28px;
+        margin-bottom: 20px;
+    }
+
+    .news-grid {
+        display: flex;
+        gap: 20px;
+        justify-content: center;
+    }
+
+    .news-item {
+        background: #fff;
+        border: 1px solid #e0e0e0;
+        border-radius: 8px;
+        overflow: hidden;
+        max-width: 300px;
+    }
+
+    .news-image {
+        width: 100%;
+        height: 200px;
+        object-fit: cover;
+    }
+
+    .news-content {
+        padding: 15px;
+    }
+
+    .news-content h3 {
+        font-size: 18px;
+        margin: 10px 0;
+    }
+
+    .news-meta {
+        font-size: 14px;
+        color: #666;
+        margin-bottom: 10px;
+    }
+
+    .news-content p {
+        font-size: 16px;
+        color: #333;
+    }
+
+
+    @* Ý Kiến *@
+    .customer-contribution {
+    background-color: #f9f9f9;
+    padding: 50px 0;
+    user-select: none; /* Prevent text selection */
+    }
+
+    .module-heading p {
+        font-size: 18px;
+        color: #555;
+        margin-bottom: 10px;
+    }
+
+    .module-heading h2 {
+        font-size: 28px;
+        font-weight: bold;
+        color: #333;
+        position: relative;
+        display: inline-block;
+        padding-bottom: 5px;
+        margin: 0;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .module-heading h2::after {
+        content: '';
+        display: block;
+        width: 50px;
+        height: 3px;
+        background-color: #3498db;
+        margin: 10px auto 0;
+    }
+
+    .testimonial-card {
+        background: #fff;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border-radius: 8px;
+        padding: 15px;
+        text-align: center;
+        height: 100%;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .testimonial-card img {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        object-fit: cover;
+        margin-bottom: 15px;
+        user-select: none; /* Prevent image selection */
+    }
+
+    .testimonial-content {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 10px;
+        line-height: 1.6;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .customer-name {
+        font-weight: bold;
+        color: #3498db;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .form-section {
+        background: #fff;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .form-section p {
+        font-size: 16px;
+        color: #555;
+        margin-bottom: 15px;
+        line-height: 1.6;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .form-section textarea,
+    .form-section input {
+        width: calc(100% - 20px);
+        padding: 10px;
+        margin-bottom: 10px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        font-size: 14px;
+        user-select: none; /* Prevent text selection */
+    }
+
+    .form-section .btn-submit {
+        background-color: #3498db;
+        color: #fff;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        font-size: 14px;
+        cursor: pointer;
+        display: inline-block;
+        user-select: none; /* Prevent button text selection */
+    }
+
+    .form-section .btn-submit:hover {
+        background-color: #217dbb;
+    }
+</style>
