@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Compute Zone</title>
+    <title>@ViewData["Title"] - Computer Zone</title>
     <meta name="description" content="Compute Zone - Nơi cung cấp các sản phẩm laptop chất lượng cao, phù hợp cho mọi nhu cầu công việc và giải trí." />
     <meta name="keywords" content="Laptop, Máy tính, Mua laptop, Compute Zone" />
     <meta name="robots" content="index, follow" />
@@ -24,28 +24,32 @@
     <div class="genre-menu">
         @if (ViewData["Categories"] != null)
         {
-            <ul class="genre-menu-list">
-                <li class="genre-menu-item"><a asp-action="Product" asp-route-genre="" class="genre-menu-link">All</a></li>
-                @* @foreach (var genre in (IEnumerable<string>)ViewData["Genres"]!)
-                {
-                    <li class="genre-menu-item">
-                        <a asp-controller="Home" asp-action="Product" asp-route-genre="@genre" class="genre-menu-link" title="Hãng sản phẩm của @genre">
-                            @genre
-                        </a>
-                    </li>
-                } *@
-                 @foreach (var category in (IEnumerable<MvcLaptop.Models.Category>)ViewData["Categories"]!)
-                {
-                    <li>
-                        <a asp-action="Product" asp-route-categoryId="@category.CategoryId" class="genre-menu-link" >
-                            @category.Name_Category
-                        </a>
-                    </li>
-                }
+            <ul class="nav genre-menu-list">
+                <li class="nav-item">
+                    <a asp-action="Product" asp-route-genre="" class="nav-link genre-menu-link">Tất cả sản phẩm</a>
+                </li>
+
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle" id="brandDropdown" data-bs-toggle="dropdown" role="button" aria-expanded="false">
+                        @(ViewData["SelectedBrandName"] ?? "Hãng")
+                    </a>
+                    <ul class="dropdown-menu">
+                        @foreach (var category in (IEnumerable<MvcLaptop.Models.Category>)ViewData["Categories"]!)
+                        {
+                            <li>
+                                <a class="dropdown-item" asp-action="Product" asp-route-categoryId="@category.CategoryId">
+                                    @category.Name_Category
+                                </a>
+                            </li>
+                        }
+                    </ul>
+                </li>
             </ul>
+
         }
     </div>
-        <main role="main" >
+
+        <main style="min-height: 700px;" role="main" >
             @RenderBody()
         </main>        
     @(await Component.InvokeAsync("Footer"))

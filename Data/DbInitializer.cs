@@ -100,8 +100,8 @@ public class DbInitializer
                 new User
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = "trungnguyen7358@gmail.com",
-                    Email = "trungnguyen7358@gmail.com",
+                    UserName = "admin@gmail.com",
+                    Email = "admin@gmail.com",
                     LockoutEnabled = false,
                     EmailConfirmed = true,
                     PhoneNumber = "0976982240"
@@ -113,8 +113,8 @@ public class DbInitializer
                 new User
                 {
                     Id = Guid.NewGuid().ToString(),
-                    UserName = "trungnguyen7358@gmail.com",
-                    Email = "trungnguyen7358@gmail.com",
+                    UserName = "admin@gmail.com",
+                    Email = "admin@gmail.com",
                     EmailConfirmed = false,
                     LockoutEnabled = false,
                     PhoneNumber = "0976982240"

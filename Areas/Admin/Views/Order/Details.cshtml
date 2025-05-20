@@ -9,13 +9,25 @@
 
     <div class="card mb-3">
         <div class="card-header">
-            <h5>Đơn hàng: @Model.Id</h5>
+            <h5>Mã đơn hàng: @Model.Id</h5>
             <p>Ngày đặt hàng: @Model.OrderDate.ToString("dd/MM/yyyy HH:mm")</p>
             <p>Người đặt: @Model.FullName</p>
             <p>Số điện thoại: @Model.PhoneNumber</p>
             <p>Địa chỉ: @Model.Address</p>
             <p>Tổng tiền: @string.Format("{0:N0}", Model.TotalPrice)</p>
-            <p>Trạng thái: @Model.Status</p>
+            <form asp-action="UpdateStatus" asp-controller="Order" method="post" class="form-inline mt-2">
+                <input type="hidden" name="id" value="@Model.Id" />
+                <div class="form-group">
+                    <label for="statusSelect" class="mr-2">Trạng thái:</label>
+                    <select id="statusSelect" name="status" class="form-control mr-2">
+                        <option value="Đã thanh toán" selected="@(Model.Status == "Đã thanh toán" ? "selected" : null)">Đã thanh toán</option>
+                        <option value="Thanh toán khi nhận hàng" selected="@(Model.Status == "Thanh toán khi nhận hàng" ? "selected" : null)">Thanh toán khi nhận hàng</option>
+                        <option value="Đã nhận hàng" selected="@(Model.Status == "Đã nhận hàng" ? "selected" : null)">Đã nhận hàng</option>
+                        <option value="Đã bị hủy" selected="@(Model.Status == "Đã bị hủy" ? "selected" : null)">Đã bị hủy</option>
+                    </select>
+                    <button type="submit" class="btn btn-success">Cập nhật</button>
+                </div>
+            </form>
         </div>
         <div class="card-body">
             <h4>Danh sách sản phẩm</h4>

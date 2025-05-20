@@ -6,7 +6,6 @@
         <thead>
             <tr>
                 <th>Tên đăng nhập</th>
-                <th>Email</th>
                 <th>Vai trò</th>
                 <th>Cập nhật vai trò</th>
             </tr>
@@ -16,7 +15,6 @@
             {
                 <tr>
                     <td>@user.UserName</td>
-                    <td>@user.Email</td>
                     <td>@string.Join(", ", user.Roles ?? new List<string>())</td>
                     <td>
                         @foreach (var role in ViewBag.AllRoles as List<string> ?? new List<string>())

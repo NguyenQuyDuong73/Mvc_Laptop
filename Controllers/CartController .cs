@@ -180,6 +180,7 @@ namespace MvcLaptop.Controllers
             {"06","VNPAY đã gửi yêu cầu hoàn tiền sang Ngân hàng (GD hoàn tiền)" },
             {"07","Giao dịch bị nghi ngờ gian lận" },
             {"09","GD Hoàn trả bị từ chối" },
+            {"05","Quá thời gian GD" },
             {"24","Giao dịch bị từ chối" }
         };
         public async Task<IActionResult> PaymentCallBack()

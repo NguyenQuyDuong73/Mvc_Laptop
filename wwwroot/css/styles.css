@@ -11342,3 +11342,23 @@ footer {
   background-color: #545b62; /* Màu đậm hơn khi click */
   transform: scale(0.98); /* Co lại nhẹ khi click */
 }
+.year-dropdown {
+  width: 200px;
+  padding: 8px 12px;
+  font-size: 16px;
+  background-color: #f8f9fa;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  transition: all 0.3s ease;
+}
+
+.year-dropdown:hover {
+  border-color: #007bff;
+}
+
+.year-dropdown:focus {
+  outline: none;
+  border-color: #007bff;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}

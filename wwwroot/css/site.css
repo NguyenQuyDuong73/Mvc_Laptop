@@ -127,7 +127,7 @@ body {
   display: flex;              /* Sắp xếp các mục nằm ngang */
   justify-content: center;    /* Căn giữa menu */
   gap: 15px;                  /* Khoảng cách giữa các mục */
-  background-color: #2d3436;
+  background-color: #121212;
   padding: 15px 20px;        /* Khoảng cách bên trong */
 }
 
@@ -388,17 +388,17 @@ body {
 }
 /* Hot New Section */
 .hot-new h1{
-  font-family: 'Rubik Bubbles', cursive; /* Kiểu chữ Rubik Bubbles */
-  color: #FF4500; /* Màu nổi bật */
+  font-family: 'Times New Roman', cursive; /* Kiểu chữ Rubik Bubbles */
+  color: #000000; /* Màu nổi bật */
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); /* Hiệu ứng đổ bóng */
-  -webkit-text-stroke: 1px #e74c3c; /* Viền đen */
+  -webkit-text-stroke: 1px #000000; /* Viền đen */
   font-size: 3rem; /* Kích thước chữ */
 }
 .hot-new {
   margin-top: 1px;
   padding: 20px 10px;
   text-align: center;
-  background-color: #2980b9;
+  background-color: #dcedff;
 }
 
 .hot-new-title {
@@ -580,4 +580,60 @@ body {
 .login-link {
   margin-top: 15px;
   text-align: center;
+}
+.genre-menu {
+  background-color: #121212;
+  padding: 12px 30px;
+  font-family: 'Segoe UI', sans-serif;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+.genre-menu-list {
+  display: flex;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  gap: 40px;
+  align-items: center;
+}
+
+.genre-menu .nav-link {
+  color: #e0e0e0;
+  border: 1px solid white;
+  font-size: 16px;
+  font-weight: 500;
+  position: relative;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.genre-menu .nav-link:hover {
+  color: #ffffff;
+}
+
+.genre-menu .dropdown-menu {
+  background-color: #1f1f1f;
+  border: none;
+  padding: 8px 0;
+  min-width: 180px;
+  border-radius: 6px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.4);
+  animation: fadeIn 0.2s ease-in-out;
+}
+
+.genre-menu .dropdown-item {
+  color: #e0e0e0;
+  padding: 10px 20px;
+  font-size: 15px;
+  transition: background-color 0.2s ease;
+}
+
+.genre-menu .dropdown-item:hover {
+  background-color: #2a2a2a;
+  color: #ffffff;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(5px); }
+  to { opacity: 1; transform: translateY(0); }
 }

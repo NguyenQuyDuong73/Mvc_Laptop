@@ -80,6 +80,15 @@ public class HomeController : Controller
         if (categoryId.HasValue)
         {
             products = products.Where(p => p.CategoryId == categoryId.Value);
+            var category = await _context.Category!
+                .Where(c => c.CategoryId == categoryId.Value)
+                .FirstOrDefaultAsync();
+
+            ViewData["SelectedBrandName"] = category?.Name_Category ?? "Hãng";
+        }
+        else
+        {
+           ViewData["SelectedBrandName"] = "Hãng";
         }
 
         if (!string.IsNullOrEmpty(searchString))

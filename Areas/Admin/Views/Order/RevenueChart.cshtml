@@ -1,0 +1,112 @@
+@model List<MvcLaptop.Models.RevenueByMonth>
+@using Microsoft.AspNetCore.Mvc.Rendering
+
+@{
+    ViewData["Title"] = "Biểu đồ doanh thu theo tháng";
+    var selectedYear = ViewBag.SelectedYear;
+    var years = (SelectList)ViewBag.Years;
+}
+
+<h2>Biểu đồ doanh thu năm @selectedYear</h2>
+
+<form asp-action="RevenueChart" method="get" style="margin-bottom: 20px;">
+    <label for="selectedYear">Chọn năm:</label>
+    <select id="selectedYear" name="selectedYear" onchange="this.form.submit()" class="year-dropdown">
+        @foreach (var year in years)
+        {
+            if (year.Value == selectedYear.ToString())
+            {
+                <option value="@year.Value" selected>@year.Text</option>
+            }
+            else
+            {
+                <option value="@year.Value">@year.Text</option>
+            }
+        }
+    </select>
+</form>
+
+<button onclick="exportChartToPDF()" class="btn btn-primary" style="margin-bottom: 20px;">Xuất biểu đồ thành PDF</button>
+
+<!-- Canvas biểu đồ -->
+<canvas id="revenueChart" width="900" height="400"></canvas>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script>
+    const ctx = document.getElementById('revenueChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(m => m.MonthLabel))),
+            datasets: [{
+                label: 'Doanh thu (VND)',
+                data: @Html.Raw(Json.Serialize(Model.Select(m => m.TotalRevenue))),
+                backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                borderColor: 'rgba(54, 162, 235, 1)',
+                borderWidth: 1
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                tooltip: {
+                    callbacks: {
+                        label: function(context) {
+                            let value = context.parsed.y;
+                            return value.toLocaleString('vi-VN') + ' ₫';
+                        }
+                    }
+                }
+            },
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    ticks: {
+                        callback: function(value) {
+                            return value.toLocaleString('vi-VN') + ' ₫';
+                        }
+                    }
+                }
+            }
+        }
+    });
+</script>
+<!-- html2canvas: chụp canvas thành ảnh -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+<!-- jsPDF: tạo file PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- JavaScript xuất biểu đồ thành PDF -->
+<script>
+    const selectedYear = @ViewBag.SelectedYear;
+
+</script>
+<script>
+    async function exportChartToPDF() {
+        const canvas = document.getElementById('revenueChart');
+
+        // Chụp ảnh canvas bằng html2canvas
+        const canvasImage = await html2canvas(canvas);
+        const imageData = canvasImage.toDataURL('image/png');
+
+        // Khởi tạo PDF (khổ ngang)
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape');
+
+        // Kích thước ảnh theo tỉ lệ
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const pageHeight = pdf.internal.pageSize.getHeight();
+        const imgProps = pdf.getImageProperties(imageData);
+        const imgWidth = pageWidth - 20;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+        // Thêm ảnh biểu đồ vào PDF
+        pdf.addImage(imageData, 'PNG', 10, 20, imgWidth, imgHeight);
+        pdf.setFontSize(14);
+        pdf.text("Biểu đồ doanh thu theo tháng - Năm " + selectedYear, 10, 15);
+        // Tải về
+        pdf.save("DoanhThu_Thang_" + selectedYear + ".pdf");
+    }
+</script>

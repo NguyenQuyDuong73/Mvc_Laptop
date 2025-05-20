@@ -4,9 +4,9 @@
     ViewData["Title"] = "Create";
 }
 
-<h1>Create</h1>
+<h1>Thêm mới</h1>
 
-<h4>Laptop</h4>
+
 <hr />
 <div class="row">
     <div class="col-md-12">
@@ -19,12 +19,12 @@
         }
         <form asp-action="Create" enctype="multipart/form-data" method="post">
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
+                <label asp-for="Title" class="control-label">Tên sản phẩm</label>
                 <input asp-for="Title" class="form-control" />
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
+                <label asp-for="CategoryId" class="control-label">Hãng</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories ?? new SelectList(new List<Category>())"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
@@ -39,16 +39,16 @@
                 <span asp-validation-for="Quantity" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Price" class="control-label"></label>
+                <label asp-for="Price" class="control-label">Đơn giá (VNĐ)</label>
                 <input asp-for="Price" class="form-control" value="@Model.Price.ToString("#,0")" />
                 <span asp-validation-for="Price" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label for="MainImage">Upload Main Image</label>
+                <label for="MainImage">Tải hình ảnh</label>
                 <input type="file" asp-validation-for="ImageUrl" name="MainImage" id="MainImage" class="form-control" />
             </div>
             <div class="form-group">
-                <button type="submit" class="btn btn-primary">Create</button>
+                <button type="submit" class="btn btn-primary">Thêm mới</button>
             </div>
         </form>
 
@@ -56,7 +56,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Quay lại</a>
 </div>
 
 @section Scripts {

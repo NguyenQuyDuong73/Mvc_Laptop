@@ -9,13 +9,13 @@ public class LaptopViewModel
 {
     public int Id { get; set; }
 
-    [Display(Name = "Tiêu đề")]
+    [Display(Name = "Tên sản phẩm")]
     public string? Title { get; set; }
 
     [Display(Name = "Mã danh mục")]
     public int CategoryId { get; set; }
 
-    [Display(Name = "Danh mục")]
+    [Display(Name = "Hãng")]
     public string? Name_Category { get; set; }
 
     [Display(Name = "Mô tả")]
@@ -26,7 +26,7 @@ public class LaptopViewModel
     public int Quantity { get; set; }
 
     [DataType(DataType.Currency)]
-    [Display(Name = "Giá")]
+    [Display(Name = "Đơn giá")]
     public decimal Price { get; set; }
 
     [NotMapped]
@@ -38,7 +38,7 @@ public class LaptopViewModel
             return string.Format(System.Globalization.CultureInfo.GetCultureInfo("vi-VN"), "{0:C0}", Price);
         }
     }
-    [Display(Name = "URL hình ảnh")]
+    [Display(Name = "Hình ảnh")]
     public string? ImageUrl { get; set; }
 
     [Display(Name = "Hình ảnh chính")]

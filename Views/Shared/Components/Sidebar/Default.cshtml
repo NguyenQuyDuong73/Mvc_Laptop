@@ -2,40 +2,59 @@
     <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
         <div class="sb-sidenav-menu">
             <div class="nav">
-                <div class="sb-sidenav-menu-heading">Core</div>
-                <a class="nav-link" asp-area="Admin" asp-controller="Laptops" asp-action="Index">
+                <div class="sb-sidenav-menu-heading">Quản lý</div>
+                @* <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="RevenueChart">
                     <div class="sb-nav-link-icon"><i class="fas fa-tachometer-alt"></i></div>
-                    Dashboard
+                    Thống kê
+                    <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
+                </a> *@
+                <a class="nav-link chart" href="#" data-bs-toggle="chart" data-bs-target="#chartPages"
+                    aria-expanded="false" aria-controls="chartPages">
+                    <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
+                    Thống kê
+                    @* <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div> *@
                 </a>
+                <div class="chart" id="chartPages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
+                    <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
+                        <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="OrderStatsChart">
+                            <div class="sb-nav-link-icon"><i class="fas fa-user-tag"></i></div>
+                            Thống kê đơn hàng
+                        </a>
+                        <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="RevenueChart">
+                            <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
+                            Thống kê doanh thu
+                        </a>
+                    </nav>
+                </div>
                 <a class="nav-link" asp-area="Admin" asp-controller="Laptops" asp-action="Index">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-laptop"></i></div>
-                    Laptop Management
+                    Sản phẩm
                 </a>
                 <a class="nav-link collapsed" href="#" data-bs-toggle="collapse" data-bs-target="#collapsePages"
                     aria-expanded="false" aria-controls="collapsePages">
                     <div class="sb-nav-link-icon"><i class="fas fa-book-open"></i></div>
-                    User
+                    Người dùng
                     <div class="sb-sidenav-collapse-arrow"><i class="fas fa-angle-down"></i></div>
                 </a>
                 <div class="collapse" id="collapsePages" aria-labelledby="headingTwo" data-bs-parent="#sidenavAccordion">
                     <nav class="sb-sidenav-menu-nested nav accordion" id="sidenavAccordionPages">
                         <a class="nav-link" asp-area="Admin" asp-controller="Role" asp-action="Index">
                             <div class="sb-nav-link-icon"><i class="fas fa-user-tag"></i></div>
-                            Manage Roles
+                            Quyền vai trò
                         </a>
                         <a class="nav-link" asp-area="Admin" asp-controller="Role" asp-action="UserList">
                             <div class="sb-nav-link-icon"><i class="fas fa-users"></i></div>
-                            User List
+                            Danh sách người dùng 
                         </a>
                     </nav>
                 </div>
                  <a class="nav-link" asp-area="Admin" asp-controller="Category" asp-action="Index">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-circle-info"></i></div>
-                    Category
+                    Hãng
                 </a>
                 <a class="nav-link" asp-area="Admin" asp-controller="Order" asp-action="Index">
                     <div class="sb-nav-link-icon"><i class="fa-solid fa-circle-info"></i></div>
-                    Order
+                    Đơn hàng
                 </a>
 
             </div>

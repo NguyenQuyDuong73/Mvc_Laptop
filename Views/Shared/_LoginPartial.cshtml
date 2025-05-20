@@ -9,20 +9,20 @@
         <li class="nav-item dropdown">
             <a class="nav-link dropdown-toggle text-dark" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown"
                 aria-expanded="false">
-                Hello, @UserManager.GetUserName(User)
+                @UserManager.GetUserName(User)
             </a>
             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="userDropdown">
                 <li><a id="manage" class="dropdown-item" asp-area="Identity" asp-page="/Account/Manage/Index"
-                        title="Manage">Hello @UserManager.GetUserName(User)!</a></li>
+                        title="Trang cá nhân">@UserManager.GetUserName(User)</a></li>
                 <li>
-                    <form class="dropdown-item form-inline" asp-controller="UserOrder" asp-action="Index">
-                        <button class="nav-link btn btn-link text-dark border-0" type="submit">Order</button>
-                    </form>
+                    <a id="order" class="dropdown-item form-inline" asp-controller="UserOrder" asp-action="Index">
+                        <button class="nav-link btn btn-link text-dark border-0" id="order" type="submit">Lịch sử mua hàng</button>
+                    </a>
                 </li>
                 <li>
                     <form id="logoutForm" class="dropdown-item form-inline" asp-area="Identity" asp-page="/Account/Logout"
                         asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-                        <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Logout</button>
+                        <button id="logout" type="submit" class="nav-link btn btn-link text-dark border-0">Đăng xuất</button>
                     </form>
                 </li>
             </ul>
@@ -31,7 +31,7 @@
     else
     {
         <li class="nav-item">
-            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Login</a>
+            <a class="nav-link text-dark" id="login" asp-area="Identity" asp-page="/Account/Login">Đăng nhập</a>
         </li>
     }
 </ul>

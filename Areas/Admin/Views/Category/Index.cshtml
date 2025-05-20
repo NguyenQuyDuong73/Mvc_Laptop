@@ -4,18 +4,18 @@
         ViewData["Title"] = "Categories";
     }
 
-    <h2>Categories</h2>
+    <h2>Hãng sản phẩm</h2>
 
     <p>
-        <a href="@Url.Action("Create")" class="btn btn-primary">Create New Category</a>
+        <a href="@Url.Action("Create")" class="btn btn-primary">Thêm mới</a>
     </p>
     
     <table class="table">
         <thead>
             <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Actions</th>
+                <th>Tên hãng</th>
+                <th>Giới thiệu </th>
+                <th>Hành động</th>
             </tr>
         </thead>
         <tbody>
@@ -35,9 +35,9 @@
                         }
                     </td>
                     <td style="white-space: nowrap;">
-                        <a href="@Url.Action("Edit", new { id = category.CategoryId })" class="btn btn-warning">Edit</a>
-                        <a href="@Url.Action("Details", new { id = category.CategoryId })" class="btn btn-info">Details</a>
-                        <a href="@Url.Action("Delete", new { id = category.CategoryId })" class="btn btn-danger">Delete</a>
+                        <a href="@Url.Action("Edit", new { id = category.CategoryId })" class="btn btn-warning">Chỉnh sửa</a>
+                        <a href="@Url.Action("Details", new { id = category.CategoryId })" class="btn btn-info">Giới thiệu</a>
+                        <a href="@Url.Action("Delete", new { id = category.CategoryId })" class="btn btn-danger">Xóa</a>
                     </td>
                 </tr>
             }

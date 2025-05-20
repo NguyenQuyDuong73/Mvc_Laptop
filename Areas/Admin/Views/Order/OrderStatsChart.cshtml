@@ -1,0 +1,72 @@
+@model List<MvcLaptop.Models.OrderStatsByMonth>
+
+@{
+    ViewData["Title"] = "Thống kê số lượng đơn hàng theo tháng";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<!-- Nút xuất PDF -->
+<button onclick="exportOrderChartToPDF()" class="btn btn-primary" style="margin-bottom: 20px;">
+    Xuất biểu đồ thành PDF
+</button>
+
+<canvas id="orderChart" width="900" height="400"></canvas>
+
+<!-- Thư viện Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- html2canvas: chụp canvas thành ảnh -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+
+<!-- jsPDF: tạo file PDF -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+<script>
+    // Biểu đồ đơn hàng
+    const ctx = document.getElementById('orderChart').getContext('2d');
+    const chart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: @Html.Raw(Json.Serialize(Model.Select(m => m.MonthYear))),
+            datasets: [{
+                label: 'Số lượng đơn hàng',
+                data: @Html.Raw(Json.Serialize(Model.Select(m => m.OrderCount))),
+                backgroundColor: 'rgba(255, 159, 64, 0.6)',
+                borderColor: 'rgba(255, 159, 64, 1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.3
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true,
+                    precision: 0
+                }
+            }
+        }
+    });
+
+    // Hàm xuất PDF từ canvas
+    async function exportOrderChartToPDF() {
+        const canvas = document.getElementById('orderChart');
+        const canvasImage = await html2canvas(canvas);
+        const imageData = canvasImage.toDataURL('image/png');
+
+        const { jsPDF } = window.jspdf;
+        const pdf = new jsPDF('landscape');
+
+        const pageWidth = pdf.internal.pageSize.getWidth();
+        const imgProps = pdf.getImageProperties(imageData);
+        const imgWidth = pageWidth - 20;
+        const imgHeight = (imgProps.height * imgWidth) / imgProps.width;
+
+        pdf.addImage(imageData, 'PNG', 10, 20, imgWidth, imgHeight);
+        pdf.setFontSize(14);
+        pdf.text("Biểu đồ thống kê số lượng đơn hàng theo tháng", 10, 15);
+        pdf.save("ThongKeDonHang_TheoThang.pdf");
+    }
+</script>

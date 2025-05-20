@@ -536,7 +536,7 @@ public class CartService : ICartService
             // Cập nhật trạng thái đơn hàng
             order.Status = "Đã thanh toán";
         }
-        else if (responseCode == "02") // Giao dịch thất bại
+        else if (responseCode == "02" || responseCode == "15") // Giao dịch thất bại
         {
             Console.WriteLine("Test: Giao dịch thất bại."); // Test log
             order.Status = "Đã hủy thanh toán";

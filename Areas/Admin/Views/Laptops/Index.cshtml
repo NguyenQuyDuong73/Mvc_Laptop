@@ -14,7 +14,7 @@
         </div>
     </form>
     <p>
-        <a asp-action="Create" class="btn btn-primary">Create New</a>
+        <a asp-action="Create" class="btn btn-primary">Thêm mới</a>
     </p>
     <div class="table-responsive">
         <table class="table table-striped" border="1">
@@ -22,13 +22,13 @@
                 <tr>
                     <th><a asp-route-sortOrder="@ViewData["NameSortParm"]">@Html.DisplayNameFor(model =>
                             model.First().Title)</a></th>
-                    <th>@Html.DisplayNameFor(model => model.First().CategoryId)</th>
+                    <th>@Html.DisplayNameFor(model => model.First().Name_Category)</th>
                     <th><a asp-route-sortOrder="@ViewData["QuantitySortParm"]">@Html.DisplayNameFor(model =>
                             model.First().Quantity)</a></th>
                     <th><a asp-route-sortOrder="@ViewData["PriceSortParm"]">@Html.DisplayNameFor(model =>
                             model.First().Price)</a></th>
                     <th>@Html.DisplayNameFor(model => model.First().ImageUrl)</th>
-                    <th>Actions</th>
+                    <th>Hành động</th>
                 </tr>
             </thead>
             <tbody>
@@ -44,7 +44,7 @@
                     {
                         <tr>
                             <td>@Html.DisplayFor(modelItem => item.Title)</td>
-                            <td>@Html.DisplayFor(modelItem => item.CategoryId)</td>
+                            <td>@Html.DisplayFor(modelItem => item.Name_Category)</td>
                             <td>
                                 @if (item.Quantity == 0)
                                 {
@@ -69,9 +69,9 @@
                             </td>
                             <td>
                                 <div class="action-buttons">
-                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-edit">Edit</a> |
-                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-details">Details</a> |
-                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-delete">Delete</a>
+                                    <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-edit">Chỉnh sửa</a> |
+                                    <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-details">Chi tiết</a> |
+                                    <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-delete">Xóa</a>
                                 </div>
                             </td>
                         </tr>

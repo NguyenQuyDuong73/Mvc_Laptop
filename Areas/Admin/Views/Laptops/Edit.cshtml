@@ -4,9 +4,8 @@
     ViewData["Title"] = "Edit";
 }
 
-<h1>Edit</h1>
+<h1>Chỉnh sửa</h1>
 
-<h4>Laptop</h4>
 <hr />
 <div class="row">
     <div class="col-md-12">
@@ -19,7 +18,7 @@
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="CategoryId" class="control-label"></label>
+                <label asp-for="CategoryId" class="control-label">Hãng</label>
                 <select asp-for="CategoryId" class="form-control" asp-items="ViewBag.Categories"></select>
                 <span asp-validation-for="CategoryId" class="text-danger"></span>
             </div>
@@ -40,7 +39,7 @@
             </div>
             <!-- Hiển thị ảnh cũ -->
             <div class="form-group">
-                <label>Current Image</label><br />
+                <label>Hình ảnh hiện tại</label><br />
                 @if (!string.IsNullOrEmpty(Model.ImageUrl))
                 {
                     <div  class="image-frame">
@@ -55,19 +54,19 @@
 
             <!-- Thêm ảnh mới -->
             <div class="form-group">
-                <label for="MainImage">Upload New Image</label>
+                <label for="MainImage">Tải ảnh mới</label>
                 <input type="file" name="MainImage" id="MainImage" class="form-control" />
             </div>
             <br />
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Lưu" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Quay lại</a>
 </div>
 
 @section Scripts {

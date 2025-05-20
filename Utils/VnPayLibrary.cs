@@ -31,6 +31,7 @@ namespace MvcLaptop.Utils
         }
 
         #region Request
+
         public string CreateRequestUrl(string baseUrl, string vnpHashSecret)
         {
             var data = new StringBuilder();

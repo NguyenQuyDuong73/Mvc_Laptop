@@ -240,7 +240,7 @@ namespace MvcLaptop.Controllers
             return View(userViewModels);
         }
         [HttpPost]
-        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.DELETE)]
+        [ClaimRequirement(FunctionCode.SYSTEM_ROLE, CommandCode.DELETE)]
         public async Task<IActionResult> RemoveRole(string userId, string role)
         {
             var user = await _userManager.FindByIdAsync(userId);
@@ -260,14 +260,14 @@ namespace MvcLaptop.Controllers
         }
 
         [HttpPost]
-        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.UPDATE)]
+        [ClaimRequirement(FunctionCode.SYSTEM_ROLE, CommandCode.UPDATE)]
         public async Task<IActionResult> UpdateUserRoles(Dictionary<string, string[]> userRoles)
         {
             foreach (var userId in userRoles.Keys)
             {
                 var user = await _userManager.FindByIdAsync(userId);
                 if (user == null) continue;
-                if (user.UserName == "trungnguyen7358@gmail.com") // Thay thế bằng tên tài khoản mặc định của bạn
+                if (user.UserName == "admin@gmail.com") // Thay thế bằng tên tài khoản mặc định của bạn
                 {
                     continue; // Bỏ qua tài khoản mặc định, không thay đổi vai trò
                 }
@@ -291,7 +291,7 @@ namespace MvcLaptop.Controllers
         }
 
         [HttpPost]
-        [ClaimRequirement(FunctionCode.SYSTEM_USER, CommandCode.DELETE)]
+        [ClaimRequirement(FunctionCode.SYSTEM_ROLE, CommandCode.DELETE)]
         public async Task<IActionResult> DeleteRole(string id)
         {
             // Tìm vai trò cần xóa

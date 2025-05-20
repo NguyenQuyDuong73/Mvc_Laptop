@@ -8,6 +8,8 @@ using MvcLaptop.Models;
 using MvcLaptop.Services;
 using Serilog;
 using MvcLaptop.Utils.ConfigOptions.VNPay;
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 int optionDatabases = 1;
@@ -29,7 +31,7 @@ switch (optionDatabases)
         break;
 }
 RouteRazerPage();
-builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = false)
+builder.Services.AddDefaultIdentity<User>(options => options.SignIn.RequireConfirmedAccount = true)
     .AddRoles<Role>()
     .AddEntityFrameworkStores<MvcLaptopContext>();
 
@@ -43,7 +45,7 @@ builder.Services.AddSession(options =>
     options.Cookie.HttpOnly = true;  // Cookie chỉ có thể truy cập từ server
     options.Cookie.IsEssential = true;  // Làm cho cookie session là cần thiết
 });
-
+builder.Services.AddTransient<IEmailSender, EmailSender>();
 AddScoped();
 // Đăng ký AutoMapper
 builder.Services.AddAutoMapper(typeof(Program));
@@ -69,7 +71,7 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.RequireUniqueEmail = false;
 
     // Cấu hình đăng nhập.
-    options.SignIn.RequireConfirmedEmail = false;
+    options.SignIn.RequireConfirmedEmail = true;
     options.SignIn.RequireConfirmedPhoneNumber = false;
 });
 

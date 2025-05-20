@@ -36,6 +36,13 @@
                         <td>@order.Status</td>
                         <td>
                             <a asp-action="Details" asp-route-id="@order.Id" class="btn btn-primary btn-sm">Chi tiết</a>
+
+                            @if (order.Status == "Đã hủy thanh toán" || order.Status == "Giao dịch bị từ chối.")
+                            {
+                                <form asp-action="Cancel" asp-route-id="@order.Id" method="post" style="display:inline;">
+                                    <button type="submit" class="btn btn-danger btn-sm">Hủy đơn</button>
+                                </form>
+                            }
                         </td>
                     </tr>
                 }

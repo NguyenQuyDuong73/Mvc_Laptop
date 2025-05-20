@@ -6,13 +6,13 @@
 
 <h1>@ViewData["Title"]</h1>
 <a asp-action="Create" class="btn btn-primary mb-3">Tạo vai trò mới</a>
-<form asp-action="Index" method="get">
+@* <form asp-action="Index" method="get">
     <div class="form-group">
         <label for="searchName">Search by Name:</label>
         <input type="text" class="form-control" id="searchName" name="searchName" value="@ViewBag.SearchName">
     </div>
     <button type="submit" class="btn btn-primary">Search</button>
-</form>
+</form> *@
 @if (@Model.Items != null && @Model.Items.Any())
 {
     <table class="table table-striped">

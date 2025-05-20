@@ -12,18 +12,19 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.WebUtilities;
+using MvcLaptop.Models;
 
 namespace MvcLaptop.Areas.Identity.Pages.Account.Manage
 {
     public class EmailModel : PageModel
     {
-        private readonly UserManager<IdentityUser> _userManager;
-        private readonly SignInManager<IdentityUser> _signInManager;
+        private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IEmailSender _emailSender;
 
         public EmailModel(
-            UserManager<IdentityUser> userManager,
-            SignInManager<IdentityUser> signInManager,
+            UserManager<User> userManager,
+            SignInManager<User> signInManager,
             IEmailSender emailSender)
         {
             _userManager = userManager;
@@ -73,7 +74,7 @@ namespace MvcLaptop.Areas.Identity.Pages.Account.Manage
             public string NewEmail { get; set; }
         }
 
-        private async Task LoadAsync(IdentityUser user)
+        private async Task LoadAsync(User user)
         {
             var email = await _userManager.GetEmailAsync(user);
             Email = email;
@@ -128,11 +129,11 @@ namespace MvcLaptop.Areas.Identity.Pages.Account.Manage
                     "Confirm your email",
                     $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                StatusMessage = "Confirmation link to change email sent. Please check your email.";
+                StatusMessage = "Đã gửi liên kết xác nhận để thay đổi email. Vui lòng kiểm tra email của bạn..";
                 return RedirectToPage();
             }
 
-            StatusMessage = "Your email is unchanged.";
+            StatusMessage = "Email của bạn không thay đổi.";
             return RedirectToPage();
         }
 
@@ -164,7 +165,7 @@ namespace MvcLaptop.Areas.Identity.Pages.Account.Manage
                 "Confirm your email",
                 $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-            StatusMessage = "Verification email sent. Please check your email.";
+            StatusMessage = "Đã gửi email xác minh. Vui lòng kiểm tra email của bạn.";
             return RedirectToPage();
         }
     }
